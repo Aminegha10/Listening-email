@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMAB Order Preparation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #fff;
+            color: #000;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header .vertical-line-header {
+            width: 10px;
+            background-color: #e63812;
+            height: 65px;
+        }
+
+        .header img {
+            height: 150px;
+            width: 150px;
+        }
+
+        .header h1 {
+            color: #fff;
+            font-size: 24px;
+            margin: 0;
+            background-color: #e63812;
+            padding: 10px 25px;
+        }
+
+        .order-info {
+            padding: 20px 20px;
+            text-align: right;
+        }
+
+        .order-info p {
+            margin: 5px 0;
+            font-weight: bold;
+        }
+
+        .order-info p:first-child {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .order-info p span {
+            font-weight: bold;
+        }
+
+        .order-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .order-table th {
+            background-color: #3c3c3b;
+            color: #fff;
+            text-align: center;
+        }
+
+        .order-table td {
+            background-color: #c6c6c6;
+            color: #000;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .order-table tr:nth-child(even) td {
+            background-color: #f1f1f1;
+        }
+
+        .text-check p {
+            text-align: left;
+            font-weight: bold;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            padding: 20px 0;
+            color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            position: absolute;
+            bottom: 0;
+            width: 90%;
+        }
+
+        .footer .contact-info {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            width: 100%;
+            background-color: #e63812;
+            padding: 20px 5px;
+        }
+
+
+        .footer .signature {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .footer .contact-info-item {
+            display: flex;
+        }
+
+        .footer .vertical-line {
+            width: 10px;
+            background-color: #e63812;
+            height: 70px;
+        }
+
+        .footer .horizontal-line {
+            width: 10px;
+            background-color: #e63812;
+            height: 70px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-title">
+                <div class="vertical-line-header"></div>
+                <div class="vertical-line-header"></div>
+                <h1>Bon de préparation de commande</h1>
+            </div>
+        </div>
+        <div class="order-info">
+            <h3 class="">يرجى إعداد المنتجات التالية المتعلقة بالطلبية المذكورة</h3>
+            <p>رقم الطلب: <%= orderNumber %>
+            </p>
+            <p>تاريخ الطلب: <%= orderDate %>
+            </p>
+        </div>
+        <table class="order-table">
+            <thead>
+                <tr>
+                    <th>المخزن</th>
+                    <th>الباركود</th>
+                    <th>الكمية</th>
+                    <th>المنتج</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% products.forEach(p=> { %>
+                    <tr>
+                        <td>
+                            <%= p.warehouse %>
+                        </td>
+                        <td>
+                            <%= p.barcode %>
+                        </td>
+                        <td>
+                            <%= p.quantity %>
+                        </td>
+                        <td>
+                            <%= p.name %>
+                        </td>
+                    </tr>
+                    <% }); %>
+            </tbody>
+        </table>
+        <div class="text-check">
+            <h3>نرجو تأكيد استلامكم وإعلامنا عند الإنتهاء من الإعداد</h3>
+        </div>
+        <div class="footer">
+            <div class="contact-info">
+                <div class="contact-info-item">
+                    <div>+212 123 456 789</div>
+                </div>
+                <div class="contact-info-item">
+                    <div>contact@smab.com</div>
+                </div>
+                <div class="contact-info-item">
+                    <div>https://www.smab-co.com</div>
+                </div>
+            </div>
+            <div class="horizontal-line"></div>
+            <div class="vertical-line"></div>
+        </div>
+    </div>
+</body>
+
+</html>
