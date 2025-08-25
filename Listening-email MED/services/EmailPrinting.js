@@ -4,24 +4,25 @@ import path from "path";
 import logger from "../utils/Logger.js";
 import { fileURLToPath } from "url";
 import ejs from "ejs";
+import fs from "fs/promises";
 
 const { getPrinters, print } = pkg;
 // Recreate __dirname in ES modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 //
-const listPrinters = async () => {
-  try {
-    const printers = await getPrinters();
-    printers.forEach((printer) =>
-      logger.info("Available Printers: " + printer.name)
-    );
-    return printers;
-  } catch (error) {
-    logger.error("Error fetching printers:", error.message);
-    return [];
-  }
-};
+// const listPrinters = async () => {
+//   try {
+//     const printers = await getPrinters();
+//     printers.forEach((printer) =>
+//       logger.info("Available Printers: " + printer.name)
+//     );
+//     return printers;
+//   } catch (error) {
+//     logger.error("Error fetching printers:", error.message);
+//     return [];
+//   }
+// };
 //
 const generatePdf = async (orderInfo) => {
   //   console.log(orderInfo);
@@ -104,6 +105,7 @@ const generatePdf = async (orderInfo) => {
     });
 
     logger.info("PDF generated successfully: " + pdfFileName);
+    printPDF(absolutePdfPath, "EPSONE4B0DF (L6490 Series)");
     return absolutePdfPath;
   } catch (error) {
     logger.error(
@@ -120,4 +122,45 @@ const generatePdf = async (orderInfo) => {
     }
   }
 };
-export { listPrinters, generatePdf };
+
+const printPDF = async (filePath, printerName) => {
+  try {
+    // Check if we can access the file (important for PM2 with different working directory)
+    try {
+      await fs.access(filePath);
+    } catch (err) {
+      logger.error(`Cannot access file ${filePath}: ${err.message}`);
+      // Try with absolute path
+      const absolutePath = path.resolve(filePath);
+      logger.info(`Trying with absolute path: ${absolutePath}`);
+      filePath = absolutePath;
+    }
+
+    // Print with longer timeout for PM2
+    logger.info(`Sending ${filePath} to printer ${printerName}`);
+    await print(filePath, { printer: printerName });
+    logger.info(`Document ${filePath} sent to printer ${printerName}`);
+
+    // Add a small delay to let the printer process the job
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+    return true;
+  } catch (error) {
+    logger.error(`Error printing document ${filePath}:`, error.message);
+    logger.error(`Printer error details: ${JSON.stringify(error)}`);
+
+    // Retry mechanism with increased delay for PM2
+    try {
+      logger.info(`Retrying print for ${filePath} after 10 seconds...`);
+      await new Promise((resolve) => setTimeout(resolve, 10000));
+      await print(filePath, { printer: printerName });
+      logger.info(
+        `Retry successful: Document ${filePath} sent to printer ${printerName}`
+      );
+      return true;
+    } catch (retryError) {
+      logger.error(`Retry failed for ${filePath}:`, retryError.message);
+      return false;
+    }
+  }
+};
+export {  generatePdf, printPDF };

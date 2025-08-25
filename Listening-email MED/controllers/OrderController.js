@@ -35,7 +35,10 @@ const addOrder = async (products, orderDetails) => {
         notes: Array.isArray(notes) ? notes.join("\n") : notes || "",
         products,
       });
+
       logger.info(`Order created successfully: ID ${newOrder._id}`);
+      const res = await axios.get(`http://localhost:5000/${orderNumber}`);
+      console.log(res.data);
       const pdfPath = await generatePdf(orderInfo);
       return;
     } catch (err) {
