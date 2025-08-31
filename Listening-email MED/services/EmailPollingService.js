@@ -91,8 +91,7 @@ export default async function startPolling(oauth2Client) {
     try {
       const gmail = google.gmail({ version: "v1", auth: oauth2Client });
 
-      const query =
-        'is:unread subject:"إعداد الطلبية رقم" from:"Amine Ghanim"';
+      const query = 'is:unread subject:"إعداد الطلبية رقم" from:"Amine Ghanim"';
       const messagesRes = await gmail.users.messages.list({
         userId: "me",
         q: query,

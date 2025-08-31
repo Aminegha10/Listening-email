@@ -4,8 +4,11 @@ import { google } from "googleapis";
 import authRoutes from "./Routes/AuthRoutes.js";
 import startPolling from "./services/EmailPollingService.js";
 import dotenv from "dotenv";
+import pkg from "pdf-to-printer";
 import logger from "./utils/Logger.js";
 import connectDB from "./config/db.js";
+const { getPrinters } = pkg;
+
 
 dotenv.config();
 
@@ -50,19 +53,19 @@ app.get("/", (req, res) => {
 
 // Start polling
 startPolling(oauth2Client);
-// const listPrinters = async () => {
-//   try {
-//     const printers = await getPrinters();
-//     printers.forEach((printer) =>
-//       logger.info("Available Printers: " + printer.name)
-//     );
-//     return printers;
-//   } catch (error) {
-//     logger.error("Error fetching printers:", error.message);
-//     return [];
-//   }
-// };
-// await listPrinters();
+const listPrinters = async () => {
+  try {
+    const printers = await getPrinters();
+    printers.forEach((printer) =>
+      logger.info("Available Printers: " + printer.name)
+    );
+    return printers;
+  } catch (error) {
+    logger.error("Error fetching printers:", error.message);
+    return [];
+  }
+};
+await listPrinters();
 
 // Start server
 app.listen(port, () => {
