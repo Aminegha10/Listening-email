@@ -83,7 +83,7 @@ const AddOrder = async (req, res) => {
   }
 };
 
-const GetOrderStats = async (req, res) => {
+const GetOrderAndSalesStats = async (req, res) => {
   try {
     const { salesAgent, timeRange, type } = req.query;
 
@@ -170,6 +170,36 @@ const GetOrderStats = async (req, res) => {
       ...(salesAgent ? { salesAgent } : {}),
       createdAt: { $gte: startOfToday, $lte: endOfToday },
     });
+    // Sales By Month
+    const sales = await OrderModel.aggregate([
+      {
+        $group: {
+          _id: { $month: "$createdAt" },
+          totalSales: { $sum: "$price" },
+        },
+      },
+      { $sort: { _id: 1 } },
+    ]);
+
+    const monthNames = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+
+    const salesByMonth = sales.map((sale) => ({
+      month: monthNames[sale._id - 1],
+      sales: sale.totalSales,
+    }));
 
     // ============================
     // 📤 Send response
@@ -181,6 +211,7 @@ const GetOrderStats = async (req, res) => {
       agents: agentsAggregate,
       allAgents,
       totalSales,
+      salesByMonth,
     });
   } catch (error) {
     console.error("Failed to fetch order stats:", error.message);
@@ -188,87 +219,58 @@ const GetOrderStats = async (req, res) => {
   }
 };
 
-const GetRadarStats = async (req, res) => {
+const GetOrdersTableStats = async (req, res) => {
   try {
-    const { agent } = req.query; // "global" or specific agent
+    const { ordersDate, limit = 10, search = "" } = req.query; // default values
+    let dateFilter;
 
     const now = new Date();
-    const startOfYear = new Date(now.getFullYear(), 0, 1);
 
-    // Base filter
-    const baseFilter = agent && agent !== "global" ? { salesAgent: agent } : {};
+    if (ordersDate === "today") {
+      const startOfDay = new Date();
+      startOfDay.setHours(0, 0, 0, 0);
+      dateFilter = { $gte: startOfDay };
+    } else if (ordersDate === "last7Days") {
+      const sevenDaysAgo = new Date();
+      sevenDaysAgo.setDate(now.getDate() - 7);
+      dateFilter = { $gte: sevenDaysAgo };
+    } else if (ordersDate === "thisMonth") {
+      const startOfThisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+      const endOfThisMonth = new Date(
+        now.getFullYear(),
+        now.getMonth() + 1,
+        0,
+        23,
+        59,
+        59,
+        999
+      );
+      dateFilter = { $gte: startOfThisMonth, $lte: endOfThisMonth };
+    }
+    console.log(dateFilter);
 
-    // 1️⃣ Monthly aggregation
-    const monthlyRaw = await OrderModel.aggregate([
-      { $match: { ...baseFilter, createdAt: { $gte: startOfYear } } },
-      {
-        $group: {
-          _id: { month: { $month: "$createdAt" }, agent: "$salesAgent" },
-          leads: { $sum: 1 }, // all orders count as leads
-          orders: { $sum: { $cond: ["$isCompleted", 1, 0] } }, // only completed
-        },
-      },
-      {
-        $project: {
-          month: "$_id.month",
-          agent: "$_id.agent",
-          orders: 1,
-          leads: 1,
-          _id: 0,
-        },
-      },
-      { $sort: { month: 1 } },
-    ]);
+    // Build the final query
+    const query = {
+      ...(dateFilter && { createdAt: dateFilter }),
+      $or: [
+        { orderNumber: { $regex: search, $options: "i" } },
+        { salesAgent: { $regex: search, $options: "i" } },
+        { client: { $regex: search, $options: "i" } },
+      ],
+    };
 
-    const MONTHS = [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
-    ];
+    const numericLimit = parseInt(limit);
 
-    // 2️⃣ Restructure for front-end
-    const monthlyDataByAgent = {};
-    monthlyRaw.forEach((d) => {
-      const agentName = d.agent || "Unknown Agent";
-      if (!monthlyDataByAgent[agentName]) {
-        monthlyDataByAgent[agentName] = MONTHS.map((m) => ({
-          month: m,
-          orders: 0,
-          leads: 0,
-        }));
-      }
-      monthlyDataByAgent[agentName][d.month - 1] = {
-        month: MONTHS[d.month - 1],
-        orders: d.orders,
-        leads: d.leads,
-      };
-    });
+    const Orders = await OrderModel.find(
+      query,
+      "orderNumber salesAgent products client createdAt price"
+    ).limit(numericLimit);
 
-    // 3️⃣ Global monthly data (sum across agents)
-    const monthlyData = MONTHS.map((m, idx) => {
-      let orders = 0,
-        leads = 0;
-      Object.values(monthlyDataByAgent).forEach((agentArr) => {
-        orders += agentArr[idx].orders;
-        leads += agentArr[idx].leads;
-      });
-      return { month: m, orders, leads };
-    });
-
-    res.status(200).json({ monthlyData, monthlyDataByAgent });
-  } catch (err) {
-    console.error("Radar stats error:", err);
-    res.status(500).json({ error: "Failed to fetch radar stats" });
+    return res.json(Orders);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error fetching order table stats" });
   }
 };
 
-export { AddOrder, GetOrderStats, GetRadarStats };
+export { AddOrder, GetOrderAndSalesStats, GetOrdersTableStats };

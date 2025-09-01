@@ -2,8 +2,8 @@ import express from "express";
 import logger from "../utils/Logger.js";
 import {
   AddOrder,
-  GetOrderStats,
-  GetRadarStats,
+  GetOrderAndSalesStats,
+  GetOrdersTableStats,
 } from "../controllers/OrderController.js";
 
 const router = express.Router();
@@ -12,8 +12,7 @@ const router = express.Router();
 router.post("/Lead", AddOrder);
 
 // Get order stats (total + today, optional filter by salesAgent)
-router.get("/LeadStats", GetOrderStats);
-// Get radar orders/leads stats (optional filter by agent)
-router.get("/RadarStats", GetRadarStats);
+router.get("/LeadStats", GetOrderAndSalesStats);
+router.get("/OrdersTableStats", GetOrdersTableStats);
 
 export default router;
