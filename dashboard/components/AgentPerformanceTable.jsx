@@ -38,6 +38,14 @@ import {
 } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 import { useGetOrdersTableQuery } from "@/features/dataApi";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "./ui/dialog";
+import { Badge } from "./ui/badge";
 
 export const columns = [
   {
@@ -129,7 +137,78 @@ export const columns = [
         <div className="justify-center font-medium flex items-center gap-2">
           <span className="rounded-md bg-green-50 px-1.5 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-200 flex items-center gap-1">
             {products.length} Items
-            <Eye className="text-[#8C8C8C] size-4 cursor-pointer" />
+            <Dialog>
+              <DialogTrigger asChild>
+                <button>
+                  <Eye className="text-[#8C8C8C] size-4 cursor-pointer hover:text-gray-600 transition-colors" />
+                </button>
+              </DialogTrigger>
+              <DialogContent className="max-w-md">
+                <DialogHeader>
+                  <DialogTitle>
+                    Products - Order #<span className="text-[var(--color-primary)]">{row.getValue("orderNumber")}</span>
+                  </DialogTitle>
+                </DialogHeader>
+                <div className="mt-4">
+                  {products.length > 0 ? (
+                    <div className="space-y-3">
+                      {products.map((product, index) => (
+                        <div
+                          key={index}
+                          className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                        >
+                          <div className="flex-1">
+                            <h4 className="font-medium text-sm">
+                              {product.name || `Product ${index + 1}`}{" "}
+                            </h4>
+                            <div className="flex items-center gap-1">
+                              {product.barcode && (
+                                <p className="text-xs text-gray-600 mt-1">
+                                  {product.barcode}
+                                </p>
+                              )}
+                              <div>
+                                {product.warehouse == "MAG" ? (
+                                  <Badge
+                                    variant="destructive"
+                                    className="text-xs"
+                                  >
+                                    {product.warehouse}
+                                  </Badge>
+                                ) : (
+                                  <Badge
+                                    variant="outline"
+                                    className="text-xs bg-green-500 text-white"
+                                  >
+                                    {product.warehouse}
+                                  </Badge>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                          <div className="text-right ml-4">
+                            {product.quantity && (
+                              <p className="text-xs text-gray-500">
+                                Qty: {product.quantity}
+                              </p>
+                            )}
+                            {product.price && (
+                              <p className="font-medium text-sm">
+                                ${product.price}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-center text-gray-500 py-8">
+                      No products found for this order.
+                    </p>
+                  )}
+                </div>
+              </DialogContent>
+            </Dialog>
           </span>
         </div>
       );
@@ -173,6 +252,7 @@ export function AgentPerformanceTable() {
   const [rowSelection, setRowSelection] = React.useState({});
   const [ordersDate, setOrdersDate] = React.useState("today");
   const [search, setSearch] = React.useState("");
+  // const [openModal, setOpenModal] = React.useState(false);
 
   // Pass dynamic filter to query
   const {
@@ -216,9 +296,9 @@ export function AgentPerformanceTable() {
       {!isLoading && !error && (
         <>
           <div className="flex justify-between items-center py-4 gap-2">
-            <div>
+            <div className="">
               {ordersDate === "today" && (
-                <span>
+                <span className="text-xl text-[#8C8C8C]">
                   Today's{" "}
                   <span
                     className="font-bold"
