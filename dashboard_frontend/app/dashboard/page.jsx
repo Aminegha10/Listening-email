@@ -6,7 +6,7 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { SalesCounter } from "@/components/SalesCounter.jsx";
 // import { ChartAreaDefault } from "@/components/ChartAreaDefault.jsx";
 // import { ChartOrdersCount } from "@/components/ChartOrdersCount.jsx";
-import { AgentPerformanceTable } from "@/components/AgentPerformanceTable.jsx";
+import { OrdersTable } from "@/components/OrdersTable.jsx";
 
 export default function Page() {
   return (
@@ -27,7 +27,7 @@ export default function Page() {
                 <SalesAgentBarChart className="col-span-2" />
                 <SalesCounter />
               </div>
-              <AgentPerformanceTable />
+              <OrdersTable />
 
               {/* <div className="grid grid-cols-2 gap-8">
                 <ChartOrdersCount />

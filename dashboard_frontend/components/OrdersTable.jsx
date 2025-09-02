@@ -15,6 +15,8 @@ import {
   Eye,
   MoreHorizontal,
   Loader2,
+  Download,
+  ChevronDownCircle,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -46,6 +48,7 @@ import {
   DialogTrigger,
 } from "./ui/dialog";
 import { Badge } from "./ui/badge";
+import { exportToCSV, exportToJSON, exportToPDF } from "@/utils/exportUtils";
 
 export const columns = [
   {
@@ -146,7 +149,10 @@ export const columns = [
               <DialogContent className="max-w-md">
                 <DialogHeader>
                   <DialogTitle>
-                    Products - Order #<span className="text-[var(--color-primary)]">{row.getValue("orderNumber")}</span>
+                    Products - Order #
+                    <span className="text-[var(--color-primary)]">
+                      {row.getValue("orderNumber")}
+                    </span>
                   </DialogTitle>
                 </DialogHeader>
                 <div className="mt-4">
@@ -245,7 +251,7 @@ export const columns = [
   },
 ];
 
-export function AgentPerformanceTable() {
+export function OrdersTable() {
   const [sorting, setSorting] = React.useState([]);
   const [columnFilters, setColumnFilters] = React.useState([]);
   const [columnVisibility, setColumnVisibility] = React.useState({});
@@ -274,6 +280,13 @@ export function AgentPerformanceTable() {
     onRowSelectionChange: setRowSelection,
     state: { sorting, columnFilters, columnVisibility, rowSelection },
   });
+
+  const handleExportCSV = () =>
+    exportToCSV(table.getFilteredRowModel().rows, ordersDate);
+  const handleExportJSON = () =>
+    exportToJSON(table.getFilteredRowModel().rows, ordersDate);
+  const handleExportPDF = () =>
+    exportToPDF(table.getFilteredRowModel().rows, ordersDate);
 
   return (
     <div className="w-full">
@@ -381,6 +394,29 @@ export function AgentPerformanceTable() {
                         {column.id}
                       </DropdownMenuCheckboxItem>
                     ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+              {/* Export Dropdown */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className="flex items-center gap-2 bg-transparent"
+                  >
+                    <Download className="h-4 w-4" />
+                    Export <ChevronDown />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem onClick={handleExportCSV}>
+                    Export as CSV
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleExportJSON}>
+                    Export as JSON
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleExportPDF}>
+                    Export as PDF
+                  </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
