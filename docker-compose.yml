@@ -1,0 +1,20 @@
+version: '3.9'
+
+services:
+  frontend:
+    build: ./dashboard
+    ports:
+      - "8000:8000"
+    environment:
+      - NODE_ENV=production
+    depends_on:
+      - backend
+
+  backend:
+    build: ./dashboard_backend
+    env_file:
+      - ./dashboard_backend/.env
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=production
