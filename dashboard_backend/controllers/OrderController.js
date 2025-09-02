@@ -221,7 +221,7 @@ const GetOrderAndSalesStats = async (req, res) => {
 
 const GetOrdersTableStats = async (req, res) => {
   try {
-    const { ordersDate, limit = 10, search = "" } = req.query; // default values
+    const { ordersDate,  search = "" } = req.query; // default values
     let dateFilter;
 
     const now = new Date();
@@ -259,12 +259,13 @@ const GetOrdersTableStats = async (req, res) => {
       ],
     };
 
-    const numericLimit = parseInt(limit);
+    // const numericLimit = parseInt(limit);
 
     const Orders = await OrderModel.find(
       query,
       "orderNumber salesAgent products client createdAt price"
-    ).limit(numericLimit);
+    )
+    // .limit(numericLimit);
 
     return res.json(Orders);
   } catch (error) {
