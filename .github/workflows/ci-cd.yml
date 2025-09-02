@@ -1,4 +1,4 @@
-name: CI
+name: Smab_Dashboard_CI
 
 on:
   push:
