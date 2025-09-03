@@ -27,23 +27,23 @@ const data = {
   navMain: [
     {
       title: "Dashboard",
-      url: "#",
+      url: "/dashboard",
       icon: IconDashboard,
       isActive: true,
     },
     {
       title: "Tables",
-      url: "#",
+      url: "/dashboard/tables",
       icon: IconListDetails,
     },
     {
       title: "Billing",
-      url: "#",
+      url: "/dashboard/billing",
       icon: IconCreditCard,
     },
     {
       title: "RTL",
-      url: "#",
+      url: "/dashboard/rtl",
       icon: IconFileText,
     },
   ],
