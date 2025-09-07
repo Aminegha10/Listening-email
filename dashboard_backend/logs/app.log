@@ -93,3 +93,7 @@
 2025-09-04 17:51:03 [INFO]: MongoDB connected: ac-f6ojswm-shard-00-02.an5skqa.mongodb.net
 2025-09-04 17:52:13 [INFO]: MongoDB connected: ac-f6ojswm-shard-00-02.an5skqa.mongodb.net
 2025-09-07 05:32:59 [INFO]: MongoDB connected: localhost
+2025-09-07 19:59:24 [ERROR]: Error connecting to MongoDB: Authentication failed.
+2025-09-07 20:00:36 [INFO]: MongoDB connected: localhost
+2025-09-07 20:01:47 [ERROR]: Error connecting to MongoDB: getaddrinfo ENOTFOUND mongo
+2025-09-07 20:03:22 [INFO]: MongoDB connected: 217.65.146.240

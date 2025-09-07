@@ -1,11 +1,11 @@
 import express from "express";
-import dotenv from "dotenv";
+// import dotenv from "dotenv";
 import logger from "./utils/Logger.js";
 import connectDB from "./config/db.js";
 import OrderRoute from "./Routes/OrderRoute.js";
 import cors from "cors";
 
-dotenv.config();
+// dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 5000;

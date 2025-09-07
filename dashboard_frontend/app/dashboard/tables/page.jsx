@@ -1,9 +1,8 @@
-import React from 'react'
+import React from "react";
+import { OrdersTable } from "@/components/OrdersTable.jsx";
 
-const page = () => {
-  return (
-    <div>page</div>
-  )
-}
+const TablesPage = () => {
+  return <OrdersTable />;
+};
 
-export default page
+export default TablesPage;
