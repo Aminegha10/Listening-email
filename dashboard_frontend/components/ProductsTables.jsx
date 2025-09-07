@@ -28,15 +28,25 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "./ui/dialog";
 
 import { useGetProductsDetailsQuery } from "@/features/dataApi";
+import ProductInfoCard from "./ui/productCardInfo";
 
 export const columns = [
   {
     accessorKey: "productName",
     header: "Product Name",
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("productName")}</div>
+      <div className="capitalize text-center">
+        {row.getValue("productName")}
+      </div>
     ),
   },
   {
@@ -72,12 +82,14 @@ export const columns = [
     accessorKey: "ordersCount",
     header: "Orders Count",
     cell: ({ row }) => (
-      <div className="capitalize text-center">{row.getValue("ordersCount")}</div>
+      <div className="capitalize text-center">
+        {row.getValue("ordersCount")}
+      </div>
     ),
   },
   {
     accessorKey: "lastOrderedDate",
-    header: "Last Ordered Date",
+    header: () => <div className="text-center">Last Ordered</div>,
     cell: ({ row }) => (
       <div className="capitalize text-center">
         {row.getValue("lastOrderedDate")}
@@ -85,11 +97,20 @@ export const columns = [
     ),
   },
   {
-    accessorKey: "productName",
-    header: "Product Name",
+    accessorKey: "productDetails",
+    header: "Product Details",
     cell: ({ row }) => (
       <div className="capitalize flex items-center justify-center">
-        <Info className="h-4 w-4 text-[var(--color-primary)]" />
+        <Dialog>
+          <DialogTrigger asChild>
+            <button className="cursor-pointer">
+              <Info className="h-4 w-4 text-[var(--color-primary)]" />
+            </button>
+          </DialogTrigger>
+          <DialogContent className="bg-transparent p-0 shadow-none">
+            <ProductInfoCard data={row.original} />
+          </DialogContent>
+        </Dialog>
       </div>
     ),
   },
