@@ -221,7 +221,7 @@ const GetOrderAndSalesStats = async (req, res) => {
 
 const GetOrdersTableStats = async (req, res) => {
   try {
-    const { ordersDate,  search = "" } = req.query; // default values
+    const { ordersDate, search = "" } = req.query; // default values
     let dateFilter;
 
     const now = new Date();
@@ -264,7 +264,7 @@ const GetOrdersTableStats = async (req, res) => {
     const Orders = await OrderModel.find(
       query,
       "orderNumber salesAgent products client createdAt price"
-    )
+    );
     // .limit(numericLimit);
 
     return res.json(Orders);
@@ -274,4 +274,66 @@ const GetOrdersTableStats = async (req, res) => {
   }
 };
 
-export { AddOrder, GetOrderAndSalesStats, GetOrdersTableStats };
+const GetOrdersByAgents = async (req, res) => {
+  try {
+    const ordersByAgents = await OrderModel.aggregate([
+      {
+        $group: {
+          _id: "$salesAgent",
+          orders: { $sum: 1 },
+          sales: { $sum: "$price" },
+        },
+      },
+      {
+        $project: {
+          salesAgent: "$_id",
+          orders: 1,
+          sales: 1,
+          _id: 0, // optional: hide _id if you don’t want it
+        },
+      },
+      { $sort: { orders: -1 } },
+    ]);
+
+    res.status(200).json(ordersByAgents);
+  } catch (error) {
+    console.error("Failed to fetch orders by agents:", error.message);
+    res.status(500).json({ error: "Failed to fetch orders by agents" });
+  }
+};
+
+const GetTopProducts = async (req, res) => {
+  try {
+    const topProducts = await OrderModel.aggregate([
+      { $unwind: "$products" },
+      {
+        $group: {
+          _id: "$products.name",
+          totalQuantity: { $sum: "$products.quantity" },
+        },
+      },
+      { $sort: { totalQuantity: -1 } },
+      { $limit: 10 }, // top 10 products
+      {
+        $project: {
+          product: "$_id",
+          quantity: "$totalQuantity",
+          _id: 0,
+        },
+      },
+    ]);
+
+    res.status(200).json(topProducts);
+  } catch (error) {
+    logger.error(`Failed to fetch top products: ${error.message}`);
+    res.status(500).json({ error: "Failed to fetch top products" });
+  }
+};
+
+export {
+  AddOrder,
+  GetOrderAndSalesStats,
+  GetOrdersTableStats,
+  GetOrdersByAgents,
+  GetTopProducts,
+};

@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 // ✅ Get backend URL from environment variables
-const API_URL = "http://217.65.146.240:5000";
+const API_URL = "http://localhost:5000";
 
 export const DataApi = createApi({
   reducerPath: "api",
@@ -24,7 +24,24 @@ export const DataApi = createApi({
         params,
       }),
     }),
+    // ✅ Orders by agents endpoint
+    getOrdersByAgents: builder.query({
+      query: () => ({
+        url: "OrdersByAgents",
+      }),
+    }),
+    // ✅ Top products endpoint
+    getTopProducts: builder.query({
+      query: () => ({
+        url: "TopProducts",
+      }),
+    }),
   }),
 });
 
-export const { useGetLeadStatsQuery, useGetOrdersTableQuery } = DataApi;
+export const {
+  useGetLeadStatsQuery,
+  useGetOrdersTableQuery,
+  useGetOrdersByAgentsQuery,
+  useGetTopProductsQuery,
+} = DataApi;
