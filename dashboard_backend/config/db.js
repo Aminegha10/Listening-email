@@ -4,7 +4,7 @@ import logger from "../utils/Logger.js"; // assuming you use logger like Winston
 
 const connectDB = async () => {
   try {
-    const conn = await mongoose.connect(process.env.DB_URL);
+    const conn = await mongoose.connect(process.env.MONGO_URI);
     console.log("Database connected");
     logger.info(`MongoDB connected: ${conn.connection.host}`);
   } catch (error) {

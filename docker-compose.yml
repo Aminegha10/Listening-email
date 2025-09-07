@@ -4,17 +4,31 @@ services:
   frontend:
     build: ./dashboard_frontend
     ports:
-      - "8000:8000"
-    environment:
-      - NODE_ENV=production
+      - "8000:8000"  # access from host
+    env_file:
+      - ./dashboard_frontend/.env
     depends_on:
       - backend
 
   backend:
     build: ./dashboard_backend
+    ports:
+      - "5000:5000"  # optional: access API from host
     env_file:
       - ./dashboard_backend/.env
-    ports:
-      - "5000:5000"
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo:6
+    restart: always
     environment:
-      - NODE_ENV=production
+      MONGO_INITDB_ROOT_USERNAME: aminegha10
+      MONGO_INITDB_ROOT_PASSWORD: ghytfr45
+    ports:
+      - "2000:27017"  # optional: access from host for Compass
+    volumes:
+      - mongo_data:/data/db
+
+volumes:
+  mongo_data:
