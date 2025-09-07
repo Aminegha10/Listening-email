@@ -1,6 +1,10 @@
 // config/db.js
 import mongoose from "mongoose";
-import logger from "../utils/Logger.js"; // assuming you use logger like Winston
+import dotenv from "dotenv"; // <-- import dotenv
+import logger from "../utils/Logger.js";
+
+// Load environment variables
+dotenv.config(); // <-- call it at the top
 
 const connectDB = async () => {
   try {
