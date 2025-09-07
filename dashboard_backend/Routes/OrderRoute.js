@@ -5,7 +5,6 @@ import {
   GetOrderAndSalesStats,
   GetOrdersByAgents,
   GetOrdersTableStats,
-  GetTopProducts,
 } from "../controllers/OrderController.js";
 
 const router = express.Router();
@@ -17,5 +16,4 @@ router.post("/Lead", AddOrder);
 router.get("/LeadStats", GetOrderAndSalesStats);
 router.get("/OrdersTableStats", GetOrdersTableStats);
 router.get("/OrdersByAgents", GetOrdersByAgents);
-router.get("/TopProducts", GetTopProducts);
 export default router;

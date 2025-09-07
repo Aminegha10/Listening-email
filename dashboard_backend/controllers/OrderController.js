@@ -294,6 +294,7 @@ const GetOrdersByAgents = async (req, res) => {
       },
       { $sort: { orders: -1 } },
     ]);
+    
 
     res.status(200).json(ordersByAgents);
   } catch (error) {
@@ -302,38 +303,12 @@ const GetOrdersByAgents = async (req, res) => {
   }
 };
 
-const GetTopProducts = async (req, res) => {
-  try {
-    const topProducts = await OrderModel.aggregate([
-      { $unwind: "$products" },
-      {
-        $group: {
-          _id: "$products.name",
-          totalQuantity: { $sum: "$products.quantity" },
-        },
-      },
-      { $sort: { totalQuantity: -1 } },
-      { $limit: 10 }, // top 10 products
-      {
-        $project: {
-          product: "$_id",
-          quantity: "$totalQuantity",
-          _id: 0,
-        },
-      },
-    ]);
 
-    res.status(200).json(topProducts);
-  } catch (error) {
-    logger.error(`Failed to fetch top products: ${error.message}`);
-    res.status(500).json({ error: "Failed to fetch top products" });
-  }
-};
+
 
 export {
   AddOrder,
   GetOrderAndSalesStats,
   GetOrdersTableStats,
   GetOrdersByAgents,
-  GetTopProducts,
 };
