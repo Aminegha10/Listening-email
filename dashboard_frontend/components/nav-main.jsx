@@ -1,6 +1,5 @@
 "use client"
 
-import type { Icon } from "@tabler/icons-react"
 import { usePathname } from "next/navigation"
 import {
   SidebarGroup,
@@ -11,15 +10,7 @@ import {
 } from "@/components/ui/sidebar"
 import Link from "next/link"
 
-export function NavMain({
-  items,
-}: {
-  items: {
-    title: string
-    url: string
-    icon?: Icon
-  }[]
-}) {
+export function NavMain({ items }) {
   const pathname = usePathname()
 
   return (
@@ -30,7 +21,7 @@ export function NavMain({
             const isActive = pathname === item.url
 
             return (
-              <SidebarMenuItem key={item.title} className="">
+              <SidebarMenuItem key={item.title}>
                 <SidebarMenuButton
                   className={
                     isActive

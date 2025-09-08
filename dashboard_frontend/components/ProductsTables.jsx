@@ -17,8 +17,9 @@ import {
   Info,
   Package,
   TrendingUp,
-  CheckB
 } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+
 import { Loader2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
