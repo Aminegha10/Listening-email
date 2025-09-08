@@ -8,7 +8,17 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { ArrowUpDown, Boxes, ChevronDown, Download, Info } from "lucide-react";
+import {
+  ArrowUpDown,
+  Boxes,
+  ChartColumn,
+  ChevronDown,
+  Download,
+  Info,
+  Package,
+  TrendingUp,
+  CheckB
+} from "lucide-react";
 import { Loader2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -41,6 +51,28 @@ import ProductInfoCard from "./ui/productCardInfo";
 
 export const columns = [
   {
+    id: "select",
+    header: ({ table }) => (
+      <Checkbox
+        checked={
+          table.getIsAllPageRowsSelected() ||
+          (table.getIsSomePageRowsSelected() && "indeterminate")
+        }
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        aria-label="Select all"
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        aria-label="Select row"
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },
+  {
     accessorKey: "productName",
     header: "Product Name",
     cell: ({ row }) => (
@@ -62,7 +94,7 @@ export const columns = [
     cell: ({ row }) => (
       <div className="lowercase justify-center flex items-center gap-2">
         {row.getValue("quantitySold")}{" "}
-        <Boxes className="h-4 w-4 text-[var(--color-primary)]" />
+        <ChartColumn className="h-4 w-4 text-[var(--color-primary)]" />
       </div>
     ),
   },
@@ -111,6 +143,15 @@ export const columns = [
             <ProductInfoCard data={row.original} />
           </DialogContent>
         </Dialog>
+      </div>
+    ),
+  },
+  {
+    accessorKey: "trend",
+    header: "Trend",
+    cell: () => (
+      <div className="capitalize text-center">
+        <TrendingUp className="text-green-500 h-4 w-4" />
       </div>
     ),
   },
@@ -195,7 +236,7 @@ export function ProductsTables() {
           </div>
 
           {/* Table */}
-          <div className="overflow-hidden rounded-md border">
+          <div className="overflow-hidden rounded-md border shadow-[0px_2px_8px_0px_rgba(0,_0,_0,_0.08)]">
             <Table>
               <TableHeader>
                 {table.getHeaderGroups().map((headerGroup) => (

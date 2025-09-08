@@ -118,3 +118,8 @@
 2025-09-07 22:55:07 [INFO]: MongoDB connected: 217.65.146.240
 2025-09-07 22:58:32 [INFO]: MongoDB connected: 217.65.146.240
 2025-09-07 23:28:52 [INFO]: MongoDB connected: 217.65.146.240
+2025-09-08 01:14:23 [ERROR]: Failed to fetch all products: connect ENETUNREACH 217.65.146.240:2000
+2025-09-08 01:14:39 [ERROR]: Failed to fetch all products: connect ENETUNREACH 217.65.146.240:2000
+2025-09-08 09:45:01 [ERROR]: Error connecting to MongoDB: connect ENETUNREACH 217.65.146.240:2000
+2025-09-08 09:46:56 [ERROR]: Error connecting to MongoDB: Server selection timed out after 30000 ms
+2025-09-08 09:48:12 [ERROR]: Error connecting to MongoDB: Server selection timed out after 30000 ms
