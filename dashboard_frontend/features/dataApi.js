@@ -39,6 +39,13 @@ export const DataApi = createApi({
         url: "TopProducts",
       }),
     }),
+    // ✅ Products details endpoint
+    getProductsDetails: builder.query({
+      query: () => ({
+        url: "ProductsDetails",
+      }),
+    }),
+    
   }),
 });
 
@@ -47,4 +54,5 @@ export const {
   useGetOrdersTableQuery,
   useGetOrdersByAgentsQuery,
   useGetTopProductsQuery,
+  useGetProductsDetailsQuery,
 } = DataApi;
