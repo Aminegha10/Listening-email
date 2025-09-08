@@ -8,8 +8,8 @@ export const dynamic = "force-dynamic";
 export const DataApi = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
-    // baseUrl: `http://217.65.146.240:5000/api/`, // 👈 backend base URL browser to backend container in server
-    baseUrl: `http://localhost:5000/api/`,
+    baseUrl: `http://217.65.146.240:5000/api/`, // 👈 backend base URL browser to backend container in server
+    // baseUrl: `http://localhost:5000/api/`,
   }),
   endpoints: (builder) => ({
     // ✅ Stats endpoint (salesAgent optional)
