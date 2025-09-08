@@ -74,11 +74,11 @@ export const ChartPieLabelList = () => {
             config={dynamicConfig}
             className="[&_.recharts-text]:fill-background mx-auto aspect-square max-h-[250px]"
           >
-            <PieChart>
+            <PieChart width={400} height={300}>
               <ChartTooltip
                 content={<ChartTooltipContent nameKey="orders" hideLabel />}
               />
-              <Pie data={chartData} dataKey="orders">
+              <Pie data={chartData} dataKey="orders" >
                 <LabelList
                   dataKey="salesAgent"
                   className="fill-background"

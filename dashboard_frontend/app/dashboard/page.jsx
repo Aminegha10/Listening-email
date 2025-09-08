@@ -4,6 +4,7 @@ import { SalesCounter } from "@/components/SalesCounter.jsx";
 import { OrdersTable } from "@/components/OrdersTable.jsx";
 import { ChartPieLabelList } from "@/components/ChartPieLabelList.jsx";
 // import { ChartTopProducts } from "@/components/ChartTopProducts.jsx";
+import { TopSellingProducts } from "@/components/TopSellingProducts.jsx";
 export default function DashboardPage() {
   return (
     <div className="flex flex-col gap-6">
@@ -12,6 +13,7 @@ export default function DashboardPage() {
         <SalesAgentBarChart className="col-span-2" />
         <SalesCounter />
         <ChartPieLabelList />
+        <TopSellingProducts />
       </div>
       {/* <ChartTopProducts /> */}
       <OrdersTable />
