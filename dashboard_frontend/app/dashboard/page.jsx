@@ -9,8 +9,8 @@ export default function DashboardPage() {
   return (
     <div className="flex flex-col gap-6">
       <SectionCards />
-      <div className="grid grid-cols-2 gap-4">
-        <SalesAgentBarChart className="col-span-2" />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <SalesAgentBarChart className="md:col-span-2" />
         <SalesCounter />
         <ChartPieLabelList />
         <TopSellingProducts />

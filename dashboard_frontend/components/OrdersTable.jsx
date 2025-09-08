@@ -308,8 +308,8 @@ export function OrdersTable() {
 
       {!isLoading && !error && (
         <>
-          <div className="flex justify-between items-center py-4 gap-2">
-            <div className="">
+          <div className="flex flex-col sm:flex-row justify-between items-center py-4 gap-2">
+            <div className="mb-2 sm:mb-0">
               {ordersDate === "today" && (
                 <span className="text-xl text-[#8C8C8C]">
                   Today's{" "}
@@ -345,16 +345,16 @@ export function OrdersTable() {
               )}
             </div>
 
-            <div className="space-x-2 flex">
+            <div className="space-x-0 space-y-2 sm:space-x-2 sm:space-y-0 flex flex-col sm:flex-row w-full sm:w-auto">
               <Input
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search orders..."
-                className=""
+                className="w-full sm:w-auto"
               />
               {/* Orders Filter Dropdown */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="outline">
+                  <Button variant="outline" className="w-full sm:w-auto">
                     Filter Orders <ChevronDown />
                   </Button>
                 </DropdownMenuTrigger>
@@ -374,7 +374,7 @@ export function OrdersTable() {
               {/* Columns Dropdown */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="outline">
+                  <Button variant="outline" className="w-full sm:w-auto">
                     Columns <ChevronDown />
                   </Button>
                 </DropdownMenuTrigger>
@@ -401,7 +401,7 @@ export function OrdersTable() {
                 <DropdownMenuTrigger asChild>
                   <Button
                     variant="outline"
-                    className="flex items-center gap-2 bg-transparent"
+                    className="flex items-center gap-2 bg-transparent w-full sm:w-auto"
                   >
                     <Download className="h-4 w-4" />
                     Export <ChevronDown />
@@ -423,8 +423,8 @@ export function OrdersTable() {
           </div>
 
           {/* Table */}
-          <div className="overflow-hidden rounded-md border">
-            <Table>
+          <div className="overflow-x-auto rounded-md border">
+            <Table className="min-w-[600px] sm:min-w-0">
               <TableHeader>
                 {table.getHeaderGroups().map((headerGroup) => (
                   <TableRow key={headerGroup.id}>
@@ -473,8 +473,8 @@ export function OrdersTable() {
           </div>
 
           {/* Pagination */}
-          <div className="flex items-center justify-end space-x-2 py-4">
-            <div className="text-muted-foreground flex-1 text-sm">
+          <div className="flex flex-col sm:flex-row items-center justify-between space-y-2 sm:space-y-0 sm:space-x-2 py-4">
+            <div className="text-muted-foreground flex-1 text-sm text-center sm:text-left">
               {table.getFilteredSelectedRowModel().rows.length} of{" "}
               {table.getFilteredRowModel().rows.length} row(s) selected.
             </div>

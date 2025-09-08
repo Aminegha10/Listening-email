@@ -55,8 +55,8 @@ export default function SalesAgentBarChart() {
   return (
     <Card>
       <CardHeader>
-        <div className="flex justify-between items-center gap-2 flex-wrap">
-          <div>
+        <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-start flex-wrap">
+          <div className="space-y-1">
             <CardTitle>
               Agent {type === "orders" ? "Orders" : "Sales"}
             </CardTitle>
@@ -69,9 +69,9 @@ export default function SalesAgentBarChart() {
                 : "Year to Date"}
             </CardDescription>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap  gap-2 sm:flex-row sm:items-center">
             <Select value={type} onValueChange={setType}>
-              <SelectTrigger className="min-w-[120px]">
+              <SelectTrigger >
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -80,7 +80,7 @@ export default function SalesAgentBarChart() {
               </SelectContent>
             </Select>
             <Select value={timeRange} onValueChange={setTimeRange}>
-              <SelectTrigger className="min-w-[120px]">
+              <SelectTrigger >
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -90,7 +90,7 @@ export default function SalesAgentBarChart() {
               </SelectContent>
             </Select>
             <Select value={agentFilter} onValueChange={setAgentFilter}>
-              <SelectTrigger className="min-w-[140px]">
+              <SelectTrigger >
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -124,22 +124,24 @@ export default function SalesAgentBarChart() {
 
         {chartData.length > 0 && (
           <>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart
-                data={chartData}
-                margin={{ top: 20, right: 30, left: 0, bottom: 5 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Bar
-                  dataKey="value" // ✅ now consistent
-                  fill="var(--color-primary)"
-                  radius={[4, 4, 0, 0]}
-                />
-              </BarChart>
-            </ResponsiveContainer>
+            <div className="w-full" style={{ minHeight: 200 }}>
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart
+                  data={chartData}
+                  margin={{ top: 20, right: 30, left: 0, bottom: 5 }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip />
+                  <Bar
+                    dataKey="value"
+                    fill="var(--color-primary)"
+                    radius={[4, 4, 0, 0]}
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
 
             <div className="mt-4 text-center font-medium">
               <Badge variant="secondary">
@@ -151,7 +153,7 @@ export default function SalesAgentBarChart() {
           </>
         )}
         {chartData.length === 0 && (
-          <div className="flex  justify-center pt-12 text-gray-500">
+          <div className="flex justify-center pt-12 text-gray-500">
             {type === "orders"
               ? "No order data available"
               : "No sales data available"}
