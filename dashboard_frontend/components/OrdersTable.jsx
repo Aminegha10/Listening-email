@@ -221,34 +221,41 @@ export const columns = [
     },
   },
   {
-    id: "actions",
-    enableHiding: false,
-    header: () => <div className="text-center">Action</div>,
-    cell: ({ row }) => {
-      const order = row.original;
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(order.id)}
-            >
-              Copy order ID
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View order details</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
-    },
+    accessorKey: "typedepaiement",
+    header: "Payment Type",
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue("typedepaiement")}</div>
+    ),
   },
+  // {
+  //   id: "actions",
+  //   enableHiding: false,
+  //   header: () => <div className="text-center">Action</div>,
+  //   cell: ({ row }) => {
+  //     const order = row.original;
+  //     return (
+  //       <DropdownMenu>
+  //         <DropdownMenuTrigger asChild>
+  //           <Button variant="ghost" className="h-8 w-8 p-0">
+  //             <span className="sr-only">Open menu</span>
+  //             <MoreHorizontal />
+  //           </Button>
+  //         </DropdownMenuTrigger>
+  //         <DropdownMenuContent align="end">
+  //           <DropdownMenuLabel>Actions</DropdownMenuLabel>
+  //           <DropdownMenuItem
+  //             onClick={() => navigator.clipboard.writeText(order.id)}
+  //           >
+  //             Copy order ID
+  //           </DropdownMenuItem>
+  //           <DropdownMenuSeparator />
+  //           <DropdownMenuItem>View customer</DropdownMenuItem>
+  //           <DropdownMenuItem>View order details</DropdownMenuItem>
+  //         </DropdownMenuContent>
+  //       </DropdownMenu>
+  //     );
+  //   },
+  // },
 ];
 
 export function OrdersTable() {
@@ -321,7 +328,7 @@ export function OrdersTable() {
                   </span>
                 </span>
               )}
-              {ordersDate === "last7days" && (
+              {ordersDate === "last7Days" && (
                 <span>
                   Last 7 Days{" "}
                   <span
@@ -362,7 +369,7 @@ export function OrdersTable() {
                   <DropdownMenuItem onClick={() => setOrdersDate("today")}>
                     Today's Orders
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setOrdersDate("last7days")}>
+                  <DropdownMenuItem onClick={() => setOrdersDate("last7Days")}>
                     Last 7 Days
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => setOrdersDate("thisMonth")}>

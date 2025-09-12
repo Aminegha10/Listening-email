@@ -115,8 +115,9 @@ export const columns = [
     accessorKey: "ordersCount",
     header: "Orders Count",
     cell: ({ row }) => (
-      <div className="capitalize text-center">
-        {row.getValue("ordersCount")}
+      <div className="lowercase justify-center flex items-center gap-2">
+        {row.getValue("ordersCount")}{" "}
+        <Package className="h-4 w-4 text-[var(--color-primary)]" />
       </div>
     ),
   },

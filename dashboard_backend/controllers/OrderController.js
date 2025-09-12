@@ -263,7 +263,7 @@ const GetOrdersTableStats = async (req, res) => {
 
     const Orders = await OrderModel.find(
       query,
-      "orderNumber salesAgent products client createdAt price"
+      "orderNumber salesAgent products client createdAt price typedepaiement"
     );
     // .limit(numericLimit);
 

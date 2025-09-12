@@ -10,7 +10,7 @@
   --card-foreground: oklch(0.2 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.2 0 0);
-  --primary: oklch(0.7 0.15 180); /* Teal primary color */
+  --primary: #00bca2; /* Teal primary color */
   --primary-foreground: oklch(1 0 0); /* White text on teal */
   --secondary: oklch(0.96 0 0); /* Light gray */
   --secondary-foreground: oklch(0.2 0 0);
