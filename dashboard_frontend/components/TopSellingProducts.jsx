@@ -1,6 +1,15 @@
 "use client";
 
-import { ChevronDown, Crown, Download, TrendingUp, Trophy } from "lucide-react";
+import {
+  ChevronDown,
+  Crown,
+  Download,
+  FileJson,
+  FileText,
+  Sheet,
+  TrendingUp,
+  Trophy,
+} from "lucide-react";
 import { Pie, PieChart, Cell } from "recharts";
 
 import {
@@ -28,11 +37,7 @@ import {
 
 import { useGetTopProductsQuery } from "@/features/dataApi";
 import { Button } from "./ui/button";
-// import {
-//   handleExportCSV,
-//   handleExportJSON,
-//   handleExportPDF,
-// } from "@/utils/exportUtils";
+import { exportToPDF } from "@/utils/exportUtils";
 
 export const description = "A pie chart showing top-selling products";
 
@@ -62,14 +67,15 @@ const COLORS = [
 
 // export functions with date suffix
 // const handleExportCSV = () =>
-//   exportToCSV(table.getFilteredRowModel().rows, ordersDate);
+//   exportToCSV();
 // const handleExportJSON = () =>
-//   exportToJSON(table.getFilteredRowModel().rows, ordersDate);
-// const handleExportPDF = () =>
-//   exportToPDF(table.getFilteredRowModel().rows, ordersDate);
+//   exportToJSON();
 
 export function TopSellingProducts() {
   const { data: TopProducts, isLoading, isError } = useGetTopProductsQuery();
+
+  const handleExportPDF = () =>
+    exportToPDF(TopProducts, null, "TopSellingProducts");
 
   if (!TopProducts || TopProducts.length === 0)
     return <p className="text-center text-gray-500">No data available</p>;
@@ -107,9 +113,15 @@ export function TopSellingProducts() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuItem>Export as CSV</DropdownMenuItem>
-              <DropdownMenuItem>Export as JSON</DropdownMenuItem>
-              <DropdownMenuItem>Export as PDF</DropdownMenuItem>
+              <DropdownMenuItem>
+                Export as CSV <Sheet />
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                Export as JSON <FileJson />
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={handleExportPDF}>
+                Export as PDF <FileText />
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

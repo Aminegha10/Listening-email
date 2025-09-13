@@ -1,34 +1,47 @@
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 
-export const exportToCSV = (data, ordersDate) => {
-  if (data.length == 0) return;
+// csv export
+export const exportToCSV = (data, filterDate, dataType) => {
+  if (!data?.length) return;
 
-  const headers = [
-    "Order #",
-    "Client",
-    "Price",
-    "Sales Agent",
-    "Products Count",
-  ];
-  const csvContent = [
-    headers.join(","),
-    ...data.map((row) =>
-      [
-        row.getValue("orderNumber"),
-        row.getValue("client"),
-        row.getValue("price"),
-        row.getValue("salesAgent"),
-        (row.getValue("products") || []).length,
-      ].join(",")
-    ),
-  ].join("\n");
+  const headers =
+    dataType === "Orders"
+      ? ["Order #", "Client", "Price", "Sales Agent", "Products Count"]
+      : [
+          "Product Name",
+          "Quantity Sold",
+          "Revenue",
+          "Orders Count",
+          "Last Order Date",
+        ];
+
+  const rows =
+    dataType === "Orders"
+      ? data.map((row) => [
+          row.getValue?.("orderNumber") || "N/A",
+          row.getValue?.("client") || "N/A",
+          row.getValue?.("price") || "N/A",
+          row.getValue?.("salesAgent") || "N/A",
+          (row.getValue?.("products") || []).length,
+        ])
+      : data.map((row) => [
+          row.getValue?.("productName") || "N/A",
+          row.getValue?.("quantitySold") || "N/A",
+          row.getValue?.("revenue") || "N/A",
+          row.getValue?.("ordersCount") || "N/A",
+          row.getValue?.("lastOrderedDate") || "N/A",
+        ]);
+
+  const csvContent = [headers.join(","), ...rows.map((r) => r.join(","))].join(
+    "\n"
+  );
 
   const blob = new Blob([csvContent], { type: "text/csv" });
   const url = window.URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = `orders-${ordersDate}-${
+  a.download = `${dataType}-${filterDate}-${
     new Date().toISOString().split("T")[0]
   }.csv`;
   document.body.appendChild(a);
@@ -37,23 +50,33 @@ export const exportToCSV = (data, ordersDate) => {
   window.URL.revokeObjectURL(url);
 };
 
-export const exportToJSON = (data, ordersDate) => {
-  if (data.length == 0) return;
+// json export
+export const exportToJSON = (data, filterDate, dataType) => {
+  if (!data?.length) return;
 
-  const exportData = data.map((row) => ({
-    orderNumber: row.getValue("orderNumber"),
-    client: row.getValue("client"),
-    price: row.getValue("price"),
-    salesAgent: row.getValue("salesAgent"),
-    products: row.getValue("products"),
-  }));
+  const exportData =
+    dataType === "Orders"
+      ? data.map((row) => ({
+          orderNumber: row.getValue?.("orderNumber") || "N/A",
+          client: row.getValue?.("client") || "N/A",
+          price: row.getValue?.("price") || "N/A",
+          salesAgent: row.getValue?.("salesAgent") || "N/A",
+          products: row.getValue?.("products") || [],
+        }))
+      : data.map((row) => ({
+          productName: row.getValue?.("productName") || "N/A",
+          quantitySold: row.getValue?.("quantitySold") || "N/A",
+          revenue: row.getValue?.("revenue") || "N/A",
+          ordersCount: row.getValue?.("ordersCount") || "N/A",
+          lastOrderedDate: row.getValue?.("lastOrderedDate") || "N/A",
+        }));
 
   const jsonContent = JSON.stringify(exportData, null, 2);
   const blob = new Blob([jsonContent], { type: "application/json" });
   const url = window.URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = `orders-${ordersDate}-${
+  a.download = `${dataType}-${filterDate}-${
     new Date().toISOString().split("T")[0]
   }.json`;
   document.body.appendChild(a);
@@ -62,8 +85,10 @@ export const exportToJSON = (data, ordersDate) => {
   window.URL.revokeObjectURL(url);
 };
 
+// pdf export
 export const exportToPDF = (data, filterDate, dataType) => {
   if (data.length == 0) return;
+  if (filterDate == null) filterDate = "AllTime";
   const doc = new jsPDF();
   // Title and date
   doc.setFontSize(18);
@@ -77,7 +102,15 @@ export const exportToPDF = (data, filterDate, dataType) => {
   const headers =
     dataType == "Orders"
       ? ["Order #", "Client", "Price", "Sales Agent", "Products Count"]
-      : ["Product Name", "Quantity Sold", "Revenue", "Orders Count", "Last Order Date"];
+      : dataType == "Products"
+      ? [
+          "Product Name",
+          "Quantity Sold",
+          "Revenue",
+          "Orders Count",
+          "Last Order Date",
+        ]
+      : ["product", "quantity"];
 
   // Prepare table rows
   const rows =
@@ -89,13 +122,15 @@ export const exportToPDF = (data, filterDate, dataType) => {
           row.getValue("salesAgent"),
           (row.getValue("products") || []).length,
         ])
-      : data.map((row) => [
+      : dataType == "Products"
+      ? data.map((row) => [
           row.getValue("productName"),
           row.getValue("quantitySold"),
           row.getValue("revenue") || "N/A",
           row.getValue("ordersCount"),
           row.getValue("lastOrderedDate"),
-        ]);
+        ])
+      : data.map((row) => [row.product, row.quantity]);
 
   // Generate table
   autoTable(doc, {
@@ -105,7 +140,9 @@ export const exportToPDF = (data, filterDate, dataType) => {
   });
 
   // Save PDF
-  doc.save(`${dataType}-${filterDate}-${new Date().toISOString().split("T")[0]}.pdf`);
+  doc.save(
+    `${dataType}-${filterDate}-${new Date().toISOString().split("T")[0]}.pdf`
+  );
 };
 
 // export const exportToPDF = (data, ordersDate) => {

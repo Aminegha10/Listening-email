@@ -222,9 +222,11 @@ export const columns = [
   },
   {
     accessorKey: "typedepaiement",
-    header: "Payment Type",
+    header: <div className="text-center">Payment Type</div>,
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("typedepaiement")}</div>
+      <span class="rounded-md text-center bg-sky-50 px-1.5 py-1 text-xs font-medium text-sky-700 ring-1 ring-inset ring-sky-200">
+        {row.getValue("typedepaiement")}
+      </span>
     ),
   },
   // {
