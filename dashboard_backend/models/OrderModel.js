@@ -21,9 +21,19 @@ const orderSchema = new mongoose.Schema(
   { timestamps: true }
 );
 // ✅ Text index for searching client and salesAgent
-orderSchema.index({ client: "text", salesAgent: "text" });
+orderSchema.index({
+  client: "text",
+  salesAgent: "text",
+  "products.name": "text",
+  "products.barcode": "text",
+});
+// ✅ Unique index on orderNumber to prevent duplicates
+orderSchema.index({ orderNumber: 1 }, { unique: true });
+// ✅ Index on products.barcode for faster product searches
+orderSchema.index({ "products.barcode": 1 });
 
 // ✅ Date index for faster date filtering
+
 orderSchema.index({ createdAt: 1 });
 mongoose
   .model("Order", orderSchema)

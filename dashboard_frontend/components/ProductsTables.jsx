@@ -19,9 +19,8 @@ import {
   TrendingUp,
 } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
-
+import { exportToCSV, exportToJSON, exportToPDF } from "@/utils/exportUtils";
 import { Loader2 } from "lucide-react";
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -100,14 +99,14 @@ export const columns = [
     ),
   },
   {
-    accessorKey: "Revenue",
+    accessorKey: "revenue",
     header: () => <div className="text-right">Revenue</div>,
     cell: ({ row }) => {
-      const Revenue = parseFloat(row.getValue("Revenue"));
+      const revenue = parseFloat(row.getValue("revenue"));
       const formatted = new Intl.NumberFormat("en-US", {
         style: "currency",
         currency: "USD",
-      }).format(Revenue);
+      }).format(revenue);
       return <div className="text-right font-medium">{formatted}</div>;
     },
   },
@@ -165,8 +164,12 @@ export function ProductsTables() {
   const [columnVisibility, setColumnVisibility] = React.useState({});
   const [rowSelection, setRowSelection] = React.useState({});
   const [search, setSearch] = React.useState("");
+  const [productsDate, setProductsDate] = React.useState("today");
 
-  const { data, isLoading, isError, error } = useGetProductsDetailsQuery();
+  const { data, isLoading, isError, error } = useGetProductsDetailsQuery({
+    productsDate,
+    search,
+  });
 
   const table = useReactTable({
     data: data || [],
@@ -181,6 +184,14 @@ export function ProductsTables() {
     onRowSelectionChange: setRowSelection,
     state: { sorting, columnFilters, columnVisibility, rowSelection },
   });
+  const dataType = "products";
+
+  const handleExportCSV = () =>
+    exportToCSV(table.getFilteredRowModel().rows, productsDate, "Products");
+  const handleExportJSON = () =>
+    exportToJSON(table.getFilteredRowModel().rows, productsDate, "Products");
+  const handleExportPDF = () =>
+    exportToPDF(table.getFilteredRowModel().rows, productsDate, "Products");
 
   return (
     <div className="w-full">
@@ -204,37 +215,88 @@ export function ProductsTables() {
         <>
           {/* Filters & Column Menu */}
           <div className="flex justify-between items-center py-4 gap-2">
-            <Input
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search products..."
-              className="max-w-sm"
-            />
+            <div>
+              <Input
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search products..."
+                className="max-w-sm"
+              />
+            </div>
 
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline">
-                  Columns <ChevronDown />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                {table
-                  .getAllColumns()
-                  .filter((c) => c.getCanHide())
-                  .map((column) => (
-                    <DropdownMenuCheckboxItem
-                      key={column.id}
-                      className="capitalize"
-                      checked={column.getIsVisible()}
-                      onCheckedChange={(value) =>
-                        column.toggleVisibility(!!value)
-                      }
-                    >
-                      {column.id}
-                    </DropdownMenuCheckboxItem>
-                  ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <div className="flex items-center gap-2">
+              {/* filter by product date */}
+              {/* Orders Filter Dropdown */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline">
+                    Filter Orders <ChevronDown />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem onClick={() => setProductsDate("today")}>
+                    Today's Orders
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => setProductsDate("last7Days")}
+                  >
+                    Last 7 Days
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => setProductsDate("thisMonth")}
+                  >
+                    This Month
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline">
+                    Columns <ChevronDown />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  {table
+                    .getAllColumns()
+                    .filter((c) => c.getCanHide())
+                    .map((column) => (
+                      <DropdownMenuCheckboxItem
+                        key={column.id}
+                        className="capitalize"
+                        checked={column.getIsVisible()}
+                        onCheckedChange={(value) =>
+                          column.toggleVisibility(!!value)
+                        }
+                      >
+                        {column.id}
+                      </DropdownMenuCheckboxItem>
+                    ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+              {/* Export Dropdown */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className="flex items-center gap-2 bg-transparent"
+                  >
+                    <Download className="h-4 w-4" />
+                    Export <ChevronDown />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem onClick={handleExportCSV}>
+                    Export as CSV
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleExportJSON}>
+                    Export as JSON
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleExportPDF}>
+                    Export as PDF
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
           </div>
 
           {/* Table */}

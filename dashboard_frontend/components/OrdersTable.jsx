@@ -287,13 +287,14 @@ export function OrdersTable() {
     onRowSelectionChange: setRowSelection,
     state: { sorting, columnFilters, columnVisibility, rowSelection },
   });
+  const dataType = "orders";
 
   const handleExportCSV = () =>
-    exportToCSV(table.getFilteredRowModel().rows, ordersDate);
+    exportToCSV(table.getFilteredRowModel().rows, ordersDate, "Orders");
   const handleExportJSON = () =>
-    exportToJSON(table.getFilteredRowModel().rows, ordersDate);
+    exportToJSON(table.getFilteredRowModel().rows, ordersDate, "Orders");
   const handleExportPDF = () =>
-    exportToPDF(table.getFilteredRowModel().rows, ordersDate);
+    exportToPDF(table.getFilteredRowModel().rows, ordersDate, "Orders");
 
   return (
     <div className="w-full">

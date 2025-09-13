@@ -62,33 +62,40 @@ export const exportToJSON = (data, ordersDate) => {
   window.URL.revokeObjectURL(url);
 };
 
-export const exportToPDF = (data, ordersDate) => {
+export const exportToPDF = (data, filterDate, dataType) => {
   if (data.length == 0) return;
   const doc = new jsPDF();
-
   // Title and date
   doc.setFontSize(18);
-  doc.text(`Orders Report - ${ordersDate}`, 14, 20);
+  doc.text(`${dataType} Report - ${filterDate}`, 14, 20);
   doc.setFontSize(12);
   doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 28);
+  doc.setFontSize(8);
+  doc.text(`Number of ${dataType}: ${data.length}`, 14, 34);
 
   // Prepare table headers
-  const headers = [
-    "Order #",
-    "Client",
-    "Price",
-    "Sales Agent",
-    "Products Count",
-  ];
+  const headers =
+    dataType == "Orders"
+      ? ["Order #", "Client", "Price", "Sales Agent", "Products Count"]
+      : ["Product Name", "Quantity Sold", "Revenue", "Orders Count", "Last Order Date"];
 
   // Prepare table rows
-  const rows = data.map((row) => [
-    row.getValue("orderNumber"),
-    row.getValue("client"),
-    row.getValue("price"),
-    row.getValue("salesAgent"),
-    (row.getValue("products") || []).length,
-  ]);
+  const rows =
+    dataType == "Orders"
+      ? data.map((row) => [
+          row.getValue("orderNumber"),
+          row.getValue("client"),
+          row.getValue("price"),
+          row.getValue("salesAgent"),
+          (row.getValue("products") || []).length,
+        ])
+      : data.map((row) => [
+          row.getValue("productName"),
+          row.getValue("quantitySold"),
+          row.getValue("revenue") || "N/A",
+          row.getValue("ordersCount"),
+          row.getValue("lastOrderedDate"),
+        ]);
 
   // Generate table
   autoTable(doc, {
@@ -98,9 +105,7 @@ export const exportToPDF = (data, ordersDate) => {
   });
 
   // Save PDF
-  doc.save(
-    `orders-${ordersDate}-${new Date().toISOString().split("T")[0]}.pdf`
-  );
+  doc.save(`${dataType}-${filterDate}-${new Date().toISOString().split("T")[0]}.pdf`);
 };
 
 // export const exportToPDF = (data, ordersDate) => {
