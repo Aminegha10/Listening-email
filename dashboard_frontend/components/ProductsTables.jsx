@@ -191,7 +191,12 @@ export function ProductsTables() {
   const handleExportJSON = () =>
     exportToJSON(table.getFilteredRowModel().rows, productsDate, "Products");
   const handleExportPDF = () =>
-    exportToPDF(table.getFilteredRowModel().rows, productsDate, "Products");
+    exportToPDF(
+      table.getFilteredRowModel().rows,
+      productsDate,
+      "Products",
+      null
+    );
 
   return (
     <div className="w-full">

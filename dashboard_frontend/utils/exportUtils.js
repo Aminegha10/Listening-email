@@ -86,9 +86,10 @@ export const exportToJSON = (data, filterDate, dataType) => {
 };
 
 // pdf export
-export const exportToPDF = (data, filterDate, dataType) => {
+export const exportToPDF = (data, filterDate, dataType, filterPieChart) => {
   if (data.length == 0) return;
   if (filterDate == null) filterDate = "AllTime";
+  console.log(data);
   const doc = new jsPDF();
   // Title and date
   doc.setFontSize(18);
@@ -110,9 +111,10 @@ export const exportToPDF = (data, filterDate, dataType) => {
           "Orders Count",
           "Last Order Date",
         ]
-      : ["product", "quantity"];
+      : ["product", filterPieChart];
 
   // Prepare table rows
+  console.log(filterPieChart);
   const rows =
     dataType == "Orders"
       ? data.map((row) => [
@@ -122,7 +124,8 @@ export const exportToPDF = (data, filterDate, dataType) => {
           row.getValue("salesAgent"),
           (row.getValue("products") || []).length,
         ])
-      : dataType == "Products"
+      : // for productsDetails table
+      dataType == "Products"
       ? data.map((row) => [
           row.getValue("productName"),
           row.getValue("quantitySold"),
@@ -130,7 +133,8 @@ export const exportToPDF = (data, filterDate, dataType) => {
           row.getValue("ordersCount"),
           row.getValue("lastOrderedDate"),
         ])
-      : data.map((row) => [row.product, row.quantity]);
+      : // for TopSellingProducts pie chart
+        data.map((row) => [row.product, row[filterPieChart]]);
 
   // Generate table
   autoTable(doc, {

@@ -14,8 +14,17 @@ export default function DashboardPage() {
         <SalesAgentBarChart className="col-span-2" />
         <SalesCounter />
         {/* <ChartPieLabelList /> */}
-        <TopSellingProducts />
-        <TopSalesAgents />
+      </div>
+      <div className="grid grid-cols-9 grid-rows-6 gap-4">
+        <div className="col-span-5 row-span-3">
+          <TopSellingProducts />
+        </div>
+        <div className="col-span-4 row-span-6 col-start-6">
+          <TopSalesAgents />
+        </div>
+        <div className="col-span-5 row-span-3 row-start-4">
+          <TopSellingProducts />
+        </div>
       </div>
       {/* <ChartTopProducts /> */}
       <OrdersTable />

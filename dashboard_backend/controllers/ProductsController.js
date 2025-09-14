@@ -3,31 +3,65 @@ import logger from "../utils/Logger.js";
 
 const GetTopProducts = async (req, res) => {
   try {
-    const topProducts = await OrderModel.aggregate([
+    const { filter } = req.query; // 'revenue', 'unitsSold', 'ordersCount'
+
+    if (
+      !filter ||
+      !["revenue", "unitsSold", "ordersCount"].includes(filter)
+    ) {
+      return res.status(400).json({
+        message:
+          "Invalid filter. Use 'revenue', 'unitsSold' or 'ordersCount'.",
+      });
+    }
+
+    // Determine the field to calculate and sort by
+    let sortField, projectFields;
+    if (filter === "revenue") {
+      sortField = "revenue";
+      projectFields = {
+        revenue: {
+          $sum: { $multiply: ["$products.price", "$products.quantity"] },
+        },
+      };
+    } else if (filter === "unitsSold") {
+      sortField = "unitsSold";
+      projectFields = { unitsSold: { $sum: "$products.quantity" } };
+    } else if (filter === "ordersCount") {
+      sortField = "ordersCount";
+      projectFields = { ordersCount: { $sum: 1 } };
+    }
+
+    const pipeline = [
       { $unwind: "$products" },
       {
         $group: {
           _id: "$products.name",
-          totalQuantity: { $sum: "$products.quantity" },
+          ...projectFields,
         },
       },
-      { $sort: { totalQuantity: -1 } },
-      { $limit: 10 }, // top 10 products
       {
         $project: {
-          product: "$_id",
-          quantity: "$totalQuantity",
-          _id: 0,
+          product: "$_id", // rename _id to product
+          ...Object.keys(projectFields).reduce(
+            (acc, key) => ({ ...acc, [key]: 1 }),
+            {}
+          ),
+          _id: 0, // hide original _id
         },
       },
-    ]);
+      { $sort: { [sortField]: -1 } },
+      { $limit: 10 },
+    ];
 
-    res.status(200).json(topProducts);
-  } catch (error) {
-    logger.error(`Failed to fetch top products: ${error.message}`);
-    res.status(500).json({ error: "Failed to fetch top products" });
+    const topProducts = await OrderModel.aggregate(pipeline);
+    res.status(200).json({ topProducts });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
   }
 };
+
 const GetProductsDetails = async (req, res) => {
   try {
     const { productsDate, search } = req.query; // default values
@@ -65,9 +99,7 @@ const GetProductsDetails = async (req, res) => {
             {
               // it gives you the whole document if one product match the search
               $match: {
-                $or: [
-                  { "products.name": { $regex: search, $options: "i" } },
-                ],
+                $or: [{ "products.name": { $regex: search, $options: "i" } }],
               },
             },
           ]

@@ -35,8 +35,9 @@ export const DataApi = createApi({
     }),
     // ✅ Top products endpoint
     getTopProducts: builder.query({
-      query: () => ({
+      query: (params) => ({
         url: "TopProducts",
+        params,
       }),
     }),
     // ✅ Products details endpoint

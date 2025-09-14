@@ -106,7 +106,7 @@ export default function SalesAgentBarChart() {
       </CardHeader>
 
       <CardContent>
-        {isLoading && (
+        {isLoading ? (
           <div className="flex justify-center py-6">
             <ThreeDot
               variant="pulsate"
@@ -114,15 +114,11 @@ export default function SalesAgentBarChart() {
               size="medium"
             />
           </div>
-        )}
-
-        {error && (
+        ) : error ? (
           <div className="flex justify-center py-6 text-red-500">
             Error loading data
           </div>
-        )}
-
-        {chartData.length > 0 && (
+        ) : chartData.length > 0 ? (
           <>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart
@@ -149,13 +145,14 @@ export default function SalesAgentBarChart() {
               </Badge>
             </div>
           </>
-        )}
-        {chartData.length === 0 && (
-          <div className="flex  justify-center pt-12 text-gray-500">
-            {type === "orders"
-              ? "No order data available"
-              : "No sales data available"}
-          </div>
+        ) : (
+          <>
+            <div className="flex  justify-center pt-12 text-gray-500">
+              {type === "orders"
+                ? "No order data available"
+                : "No sales data available"}
+            </div>
+          </>
         )}
       </CardContent>
     </Card>

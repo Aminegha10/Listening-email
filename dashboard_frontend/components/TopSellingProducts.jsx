@@ -11,7 +11,7 @@ import {
   Trophy,
 } from "lucide-react";
 import { Pie, PieChart, Cell } from "recharts";
-
+import { Badge } from "./ui/badge";
 import {
   Card,
   CardContent,
@@ -38,6 +38,8 @@ import {
 import { useGetTopProductsQuery } from "@/features/dataApi";
 import { Button } from "./ui/button";
 import { exportToPDF } from "@/utils/exportUtils";
+import { useState } from "react";
+import { Riple } from "react-loading-indicators";
 
 export const description = "A pie chart showing top-selling products";
 
@@ -72,16 +74,16 @@ const COLORS = [
 //   exportToJSON();
 
 export function TopSellingProducts() {
-  const { data: TopProducts, isLoading, isError } = useGetTopProductsQuery();
+  const [filter, setFilter] = useState("revenue"); // default filter
+  const { data, isLoading, isError } = useGetTopProductsQuery({ filter });
+  console.log(data);
+  const TopProducts = data?.topProducts;
 
   const handleExportPDF = () =>
-    exportToPDF(TopProducts, null, "TopSellingProducts");
-
-  if (!TopProducts || TopProducts.length === 0)
-    return <p className="text-center text-gray-500">No data available</p>;
+    exportToPDF(TopProducts, null, "TopSellingProducts", filter);
 
   // ✅ Create a chartConfig dynamically (like chartConfig in ChartPieLabel)
-  const chartConfig = TopProducts.reduce((acc, product, index) => {
+  const chartConfig = TopProducts?.reduce((acc, product, index) => {
     acc[product.product] = {
       label: product.product,
       color: COLORS[index % COLORS.length],
@@ -101,7 +103,31 @@ export function TopSellingProducts() {
           </CardTitle>
           {/* <CardDescription>January - June 2024</CardDescription> */}
         </div>
-        <div>
+        <div className="flex items-center gap-2">
+          {/* by existing in order or by revenue */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="outline"
+                className="flex items-center gap-2 bg-transparent"
+              >
+                <Download className="h-4 w-4" />
+                Filter Products <ChevronDown />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem onClick={() => setFilter("revenue")}>
+                Top Revenue
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setFilter("unitsSold")}>
+                Most Sold
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setFilter("ordersCount")}>
+                Most Orders Count
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
@@ -128,13 +154,22 @@ export function TopSellingProducts() {
       </CardHeader>
 
       {/* Chart */}
-      <CardContent className="flex-1 pb-0">
+      <CardContent className=" flex-1 pb-0">
         {isLoading ? (
-          <div className="text-center text-gray-500">Loading...</div>
+          <div className=" h-full w-full flex justify-center items-center">
+            <Riple
+              color="var(--color-primary)"
+              size="medium"
+              text=""
+              textColor=""
+            />
+          </div>
         ) : isError ? (
           <div className="text-center text-red-500">
             Error loading chart data
           </div>
+        ) : !TopProducts || TopProducts.length === 0 ? (
+          <p className="text-center text-gray-500">No data available</p>
         ) : (
           <ChartContainer
             config={chartConfig}
@@ -144,7 +179,7 @@ export function TopSellingProducts() {
               <ChartTooltip content={<ChartTooltipContent hideLabel />} />
               <Pie
                 data={TopProducts}
-                dataKey="quantity"
+                dataKey={filter}
                 nameKey="product"
                 label
                 stroke="0"
@@ -154,6 +189,11 @@ export function TopSellingProducts() {
                 ))}
               </Pie>
             </PieChart>
+            {/* <div className="mt-4 text-center font-medium">
+              <Badge variant="secondary">
+                Total Products: {data?.productTotals[0].totalProducts}
+              </Badge>
+            </div> */}
           </ChartContainer>
         )}
       </CardContent>
@@ -183,16 +223,16 @@ export function TopSellingProducts() {
                   </span>
                 </div>
                 <div className="text-base font-bold text-gray-800">
-                  {TopProducts[0].product}
+                  {TopProducts?.[0].product}
                 </div>
                 <div className="flex items-center justify-center gap-1 text-sm">
                   <span
                     className="text-xl font-extrabold"
                     style={{ color: "#00bca2" }}
                   >
-                    {TopProducts[0].quantity}
+                    {TopProducts?.[0][filter]}
                   </span>
-                  <span className="text-gray-600">orders</span>
+                  <span className="text-gray-600">{filter}</span>
                 </div>
               </div>
             </div>

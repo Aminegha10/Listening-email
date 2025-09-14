@@ -24,7 +24,7 @@ export const description = "A simple area chart";
 export function SalesCounter() {
   // API request
   const { data: leadStats, isLoading, error } = useGetLeadStatsQuery();
-
+  console.log("Lead Stats Data:", leadStats);
   // Map API data to chart format
   const chartData =
     leadStats?.salesByMonth.map((item) => ({
