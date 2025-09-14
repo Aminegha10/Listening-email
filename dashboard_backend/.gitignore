@@ -1,9 +1,9 @@
 # Ignore Node.js modules
 node_modules/
+logs/
 npm-debug.log
 yarn-error.log
 
 # Ignore environment variables
 .env
 tokens.json
-logs/
