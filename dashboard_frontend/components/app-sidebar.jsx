@@ -9,6 +9,8 @@ import {
   LogIn,
   UserPlus,
   HelpCircle,
+  User2,
+  ChevronUp,
 } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
@@ -23,8 +25,23 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarFooter,
+  SidebarMenuSub,
+  SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
+import {
+  Collapsible,
+  CollapsibleTrigger,
+  CollapsibleContent,
+} from "@/components/ui/collapsible";
+import { useLogoutMutation } from "@/features/authApi";
+import { useRouter } from "next/navigation";
 
 const data = {
   navMain: [
@@ -70,6 +87,17 @@ const data = {
 };
 
 export function AppSidebar({ ...props }) {
+  const router = useRouter();
+
+  const [logout, { isLoading }] = useLogoutMutation();
+  const handleLogout = async () => {
+    try {
+      await logout();
+      router.push("/login");
+    } catch (err) {
+      console.error("Logout failed:", err);
+    }
+  };
   return (
     <Sidebar
       collapsible="offcanvas"
@@ -102,20 +130,58 @@ export function AppSidebar({ ...props }) {
           title="ACCOUNT PAGES"
           className="mt-6"
         />
+        {/* Collapsible Menu */}
+        <Collapsible>
+          <SidebarMenuItem>
+            <CollapsibleTrigger asChild>
+              <SidebarMenuButton>
+                Settings
+                <ChevronUp className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
+              </SidebarMenuButton>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <SidebarMenuSub>
+                <SidebarMenuSubItem>
+                  <Link href="/settings/profile">Profile</Link>
+                </SidebarMenuSubItem>
+                <SidebarMenuSubItem>
+                  <Link href="/settings/security">Security</Link>
+                </SidebarMenuSubItem>
+                <SidebarMenuSubItem>
+                  <Link href="/settings/notifications">Notifications</Link>
+                </SidebarMenuSubItem>
+              </SidebarMenuSub>
+            </CollapsibleContent>
+          </SidebarMenuItem>
+        </Collapsible>
       </SidebarContent>
-      <SidebarFooter className="p-4">
-        <Card className="bg-teal-500 text-white p-4 text-center shadow-lg border-0">
-          <HelpCircle className="h-8 w-8 mx-auto mb-2" />
-          <h3 className="font-semibold mb-1">Need help?</h3>
-          <p className="text-sm text-teal-100 mb-3">Please check our docs</p>
-          <Button
-            variant="secondary"
-            size="sm"
-            className="bg-white text-teal-500 hover:bg-gray-100 font-medium"
-          >
-            DOCUMENTATION
-          </Button>
-        </Card>
+      <SidebarFooter>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <SidebarMenuButton>
+                  <User2 /> Username
+                  <ChevronUp className="ml-auto" />
+                </SidebarMenuButton>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                side="top"
+                className="w-[--radix-popper-anchor-width]"
+              >
+                <DropdownMenuItem>
+                  <span>Account</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <span>Billing</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleLogout()}>
+                  <span>Sign out</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </SidebarMenuItem>
+        </SidebarMenu>
       </SidebarFooter>
     </Sidebar>
   );

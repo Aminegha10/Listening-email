@@ -6,7 +6,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const dynamic = "force-dynamic";
 
 export const DataApi = createApi({
-  reducerPath: "api",
+  reducerPath: "dataAPi",
   baseQuery: fetchBaseQuery({
     // baseUrl: `http://217.65.146.240:5000/api/`, // 👈 backend base URL browser to backend container in server
     baseUrl: `http://localhost:5000/api/`,
@@ -47,6 +47,13 @@ export const DataApi = createApi({
         params,
       }),
     }),
+    // top clients
+    getClients: builder.query({
+      query: (params) => ({
+        url: "getClients",
+        params,
+      }),
+    }),
   }),
 });
 
@@ -56,4 +63,5 @@ export const {
   useGetOrdersByAgentsQuery,
   useGetTopProductsQuery,
   useGetProductsDetailsQuery,
+  useGetClientsQuery,
 } = DataApi;

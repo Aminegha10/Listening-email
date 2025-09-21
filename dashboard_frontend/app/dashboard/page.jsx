@@ -3,9 +3,10 @@ import { SectionCards } from "@/components/section-cards";
 import { SalesCounter } from "@/components/SalesCounter.jsx";
 import { OrdersTable } from "@/components/OrdersTable.jsx";
 // import { ChartPieLabelList } from "@/components/ChartPieLabelList.jsx";
-import { TopSalesAgents } from "@/components/TopSalesAgents.jsx";
+import { TopClients } from "@/components/TopClients.jsx";
 // import { ChartTopProducts } from "@/components/ChartTopProducts.jsx";
-import { TopSellingProducts } from "@/components/TopSellingProducts.jsx";
+import { TopProducts } from "@/components/TopProducts.jsx";
+import { ShareButton } from "@/components/ShareButton.jsx";
 export default function DashboardPage() {
   return (
     <div className="flex flex-col gap-6">
@@ -15,19 +16,20 @@ export default function DashboardPage() {
         <SalesCounter />
         {/* <ChartPieLabelList /> */}
       </div>
-      <div className="grid grid-cols-9 grid-rows-6 gap-4">
+      <div className="grid grid-cols-9 grid-rows-6 gap-4 h-[1200px]">
         <div className="col-span-5 row-span-3">
-          <TopSellingProducts />
+          <TopProducts />
         </div>
-        <div className="col-span-4 row-span-6 col-start-6">
-          <TopSalesAgents />
+        <div className="col-span-4 row-span-6 col-start-6 overflow-auto">
+          <TopClients />
         </div>
-        <div className="col-span-5 row-span-3 row-start-4">
-          <TopSellingProducts />
+        <div className="col-span-5 row-span-3 row-start-4 ">
+          <TopProducts />
         </div>
       </div>
       {/* <ChartTopProducts /> */}
       <OrdersTable />
+      <ShareButton />
     </div>
   );
 }

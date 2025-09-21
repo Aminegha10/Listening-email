@@ -1,14 +1,15 @@
-import React from "react";
+"use client";
 import { OrdersTable } from "@/components/OrdersTable.jsx";
 import { ProductsTables } from "../../../components/ProductsTables";
-import { SalesAgentTable } from "../../../components/SalesAgentTable";
+import { ClientsTable } from "../../../components/ClientsTable";
+import { useEffect } from "react";
 
 const TablesPage = () => {
   return (
     <div>
-      <ProductsTables />
-      <SalesAgentTable />
-      <OrdersTable />
+      <ClientsTable />
+      <OrdersTable id="clients" />
+      <ProductsTables id="products" />
     </div>
   );
 };

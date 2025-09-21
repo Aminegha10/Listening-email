@@ -158,13 +158,13 @@ export const columns = [
   },
 ];
 
-export function ProductsTables() {
+export function ProductsTables({ id }) {
   const [sorting, setSorting] = React.useState([]);
   const [columnFilters, setColumnFilters] = React.useState([]);
   const [columnVisibility, setColumnVisibility] = React.useState({});
   const [rowSelection, setRowSelection] = React.useState({});
   const [search, setSearch] = React.useState("");
-  const [productsDate, setProductsDate] = React.useState("today");
+  const [productsDate, setProductsDate] = React.useState("last7Days");
 
   const { data, isLoading, isError, error } = useGetProductsDetailsQuery({
     productsDate,
@@ -305,7 +305,10 @@ export function ProductsTables() {
           </div>
 
           {/* Table */}
-          <div className="overflow-hidden rounded-md border shadow-[0px_2px_8px_0px_rgba(0,_0,_0,_0.08)]">
+          <div
+            className="overflow-hidden rounded-md border shadow-[0px_2px_8px_0px_rgba(0,_0,_0,_0.08)] "
+            id={id}
+          >
             <Table>
               <TableHeader>
                 {table.getHeaderGroups().map((headerGroup) => (
