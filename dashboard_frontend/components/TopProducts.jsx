@@ -6,9 +6,14 @@ import {
   Download,
   FileJson,
   FileText,
+  Funnel,
   Sheet,
+  ShoppingBasket,
+  Table,
+  TableOfContents,
   TrendingUp,
   Trophy,
+  Users,
 } from "lucide-react";
 import { Pie, PieChart, Cell } from "recharts";
 import { Badge } from "./ui/badge";
@@ -40,6 +45,7 @@ import { Button } from "./ui/button";
 import { exportToPDF } from "@/utils/exportUtils";
 import { useState } from "react";
 import { Riple } from "react-loading-indicators";
+import Link from "next/link";
 
 export const description = "A pie chart showing top-selling products";
 
@@ -73,7 +79,7 @@ const COLORS = [
 // const handleExportJSON = () =>
 //   exportToJSON();
 
-export function TopSellingProducts() {
+export function TopProducts() {
   const [filter, setFilter] = useState("revenue"); // default filter
   const { data, isLoading, isError } = useGetTopProductsQuery({ filter });
   console.log(data);
@@ -92,65 +98,103 @@ export function TopSellingProducts() {
   }, {});
 
   return (
-    <Card className="flex flex-col">
+    <Card className="flex flex-col py-0">
       {/* Header */}
-      <CardHeader className="flex items-center justify-between pb-0">
-        <div>
-          <CardTitle>
+      <CardHeader className=" ">
+        {/* <div> */}
+        {/* <CardTitle>
             <span className="py-1 px-2.5 border-none rounded bg-green-100 text-xl text-green-800 font-medium">
               Top 10-Selling Products
             </span>
-          </CardTitle>
-          {/* <CardDescription>January - June 2024</CardDescription> */}
-        </div>
-        <div className="flex items-center gap-2">
-          {/* by existing in order or by revenue */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="outline"
-                className="flex items-center gap-2 bg-transparent"
-              >
-                <Download className="h-4 w-4" />
-                Filter Products <ChevronDown />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuItem onClick={() => setFilter("revenue")}>
-                Top Revenue
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setFilter("unitsSold")}>
-                Most Sold
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setFilter("ordersCount")}>
-                Most Orders Count
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          </CardTitle> */}
+        {/* <CardDescription>January - June 2024</CardDescription> */}
+        {/* </div> */}
+        <div className="p-6 border-b flex justify-between items-center border-slate-200">
+          <div className="flex gap-3">
+            <div className="flex items-center justify-between gap-3">
+              <div className="p-2 bg-indigo-100 rounded-lg">
+                <ShoppingBasket className="h-5 w-5 text-indigo-600" />
+              </div>
+              <div>
+                <h3 className="text-xl font-semibold text-slate-900">
+                  Top 10 Products
+                </h3>
+                <p className="text-sm text-slate-500">
+                  Showing 10 of 22 clients
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="flex gap-2 items-center">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="flex items-center gap-2 bg-transparent cursor-pointer "
+                >
+                  <Funnel />
+                  Filter Products <ChevronDown />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem
+                  className="cursor-pointer"
+                  onClick={() => setFilter("revenue")}
+                >
+                  Top Revenue
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  className="cursor-pointer"
+                  onClick={() => setFilter("unitsSold")}
+                >
+                  Most Sold
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  className="cursor-pointer"
+                  onClick={() => setFilter("ordersCount")}
+                >
+                  Most Orders Count
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
 
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="outline"
-                className="flex items-center gap-2 bg-transparent"
-              >
-                <Download className="h-4 w-4" />
-                Export <ChevronDown />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuItem>
-                Export as CSV <Sheet />
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                Export as JSON <FileJson />
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={handleExportPDF}>
-                Export as PDF <FileText />
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="flex items-center gap-2 bg-transparent"
+                >
+                  <Download className="h-4 w-4" />
+                  Export <ChevronDown />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem className="cursor-pointer">
+                  Export as CSV <Sheet />
+                </DropdownMenuItem>
+                <DropdownMenuItem className="cursor-pointer">
+                  Export as JSON <FileJson />
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  className="cursor-pointer"
+                  onClick={handleExportPDF}
+                >
+                  Export as PDF <FileText />
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            <div>
+              <Link href="/dashboard/tables#products" passHref>
+                <Button className="px-3 py-2 bg-white hover:bg-slate-200 text-slate-700 rounded-lg cursor-pointer transition-all duration-200 flex items-center gap-2 border border-slate-300 hover:border-slate-400">
+                  <Table className="h-4 w-4" />
+                </Button>
+              </Link>
+            </div>
+          </div>
         </div>
+        {/* <div className="flex items-center gap-2"> */}
+        {/* by existing in order or by revenue */}
+        {/* </div> */}
       </CardHeader>
 
       {/* Chart */}

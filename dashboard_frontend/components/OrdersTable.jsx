@@ -222,11 +222,13 @@ export const columns = [
   },
   {
     accessorKey: "typedepaiement",
-    header: <div className="text-center">Payment Type</div>,
+    header: <div className="text-left">Payment Type</div>,
     cell: ({ row }) => (
-      <span class="rounded-md text-center bg-sky-50 px-1.5 py-1 text-xs font-medium text-sky-700 ring-1 ring-inset ring-sky-200">
-        {row.getValue("typedepaiement")}
-      </span>
+      <div className="">
+        <span className="rounded-md  bg-sky-50 px-1.5 py-1 text-xs font-medium text-sky-700 ring-1 ring-inset ring-sky-200">
+          {row.getValue("typedepaiement")}
+        </span>
+      </div>
     ),
   },
   // {
@@ -260,12 +262,12 @@ export const columns = [
   // },
 ];
 
-export function OrdersTable() {
+export function OrdersTable({ id }) {
   const [sorting, setSorting] = React.useState([]);
   const [columnFilters, setColumnFilters] = React.useState([]);
   const [columnVisibility, setColumnVisibility] = React.useState({});
   const [rowSelection, setRowSelection] = React.useState({});
-  const [ordersDate, setOrdersDate] = React.useState("today");
+  const [ordersDate, setOrdersDate] = React.useState("last7Days");
   const [search, setSearch] = React.useState("");
   // const [openModal, setOpenModal] = React.useState(false);
 
@@ -433,7 +435,7 @@ export function OrdersTable() {
           </div>
 
           {/* Table */}
-          <div className="overflow-hidden rounded-md border">
+          <div className="overflow-hidden rounded-md border" id={id}>
             <Table>
               <TableHeader>
                 {table.getHeaderGroups().map((headerGroup) => (
