@@ -11,6 +11,8 @@ import {
   HelpCircle,
   User2,
   ChevronUp,
+  Shield,
+  Settings,
 } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
@@ -42,6 +44,7 @@ import {
 } from "@/components/ui/collapsible";
 import { useLogoutMutation } from "@/features/authApi";
 import { useRouter } from "next/navigation";
+import { useSelector } from "react-redux";
 
 const data = {
   navMain: [
@@ -88,7 +91,9 @@ const data = {
 
 export function AppSidebar({ ...props }) {
   const router = useRouter();
-
+  const { user } = useSelector((state) => state.auth);
+  console.log(user);
+  const isAdmin = user?.role === "admin";
   const [logout, { isLoading }] = useLogoutMutation();
   const handleLogout = async () => {
     try {
@@ -98,11 +103,12 @@ export function AppSidebar({ ...props }) {
       console.error("Logout failed:", err);
     }
   };
+
   return (
     <Sidebar
       collapsible="offcanvas"
       {...props}
-      className="border-r bg-white dark:bg-gray-800"
+      className="border-r  dark:bg-gray-800"
     >
       <SidebarHeader className="border-b border-gray-100 dark:border-gray-700">
         <SidebarMenu>
@@ -125,17 +131,40 @@ export function AppSidebar({ ...props }) {
       </SidebarHeader>
       <SidebarContent className="px-2 py-4">
         <NavMain items={data.navMain} />
-        <NavSecondary
-          items={data.accountPages}
-          title="ACCOUNT PAGES"
-          className="mt-6"
-        />
-        {/* Collapsible Menu */}
+        {isAdmin ? (
+          <>
+            {/* Collapsible Menu */}
+            <Collapsible>
+              <SidebarMenuItem>
+                <CollapsibleTrigger asChild>
+                  <SidebarMenuButton>
+                    <Shield /> Administartion
+                    <ChevronUp className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
+                  </SidebarMenuButton>
+                </CollapsibleTrigger>
+                <CollapsibleContent>
+                  <SidebarMenuSub>
+                    <SidebarMenuSubItem>
+                      <Link href="/dashboard/administration/users">Users</Link>
+                    </SidebarMenuSubItem>
+                    <SidebarMenuSubItem>
+                      <Link href="/settings/security">Security</Link>
+                    </SidebarMenuSubItem>
+                    <SidebarMenuSubItem>
+                      <Link href="/settings/notifications">Notifications</Link>
+                    </SidebarMenuSubItem>
+                  </SidebarMenuSub>
+                </CollapsibleContent>
+              </SidebarMenuItem>
+            </Collapsible>
+            {/* Collapsible Menu */}
+          </>
+        ) : null}{" "}
         <Collapsible>
           <SidebarMenuItem>
             <CollapsibleTrigger asChild>
               <SidebarMenuButton>
-                Settings
+                <Settings /> Settings
                 <ChevronUp className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
               </SidebarMenuButton>
             </CollapsibleTrigger>

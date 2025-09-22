@@ -5,13 +5,13 @@ const GetTopProducts = async (req, res) => {
   try {
     const { filter } = req.query; // 'revenue', 'unitsSold', 'ordersCount'
 
-    if (
-      !filter ||
-      !["revenue", "unitsSold", "ordersCount"].includes(filter)
-    ) {
+    if (!filter || !["revenue", "unitsSold", "ordersCount"].includes(filter)) {
+      logger.error(
+        `Invalid filter. Use 'revenue', 'unitsSold' or 'ordersCount'.`
+      );
+
       return res.status(400).json({
-        message:
-          "Invalid filter. Use 'revenue', 'unitsSold' or 'ordersCount'.",
+        message: "Invalid filter. Use 'revenue', 'unitsSold' or 'ordersCount'.",
       });
     }
 
@@ -55,9 +55,10 @@ const GetTopProducts = async (req, res) => {
     ];
 
     const topProducts = await OrderModel.aggregate(pipeline);
+    logger.info("Fetched top products successfully");
     res.status(200).json({ topProducts });
   } catch (err) {
-    console.error(err);
+    logger.error(`Failed to fetch top products: ${err.message}`);
     res.status(500).json({ message: "Server error" });
   }
 };
@@ -132,7 +133,7 @@ const GetProductsDetails = async (req, res) => {
       },
       { $sort: { quantitySold: -1 } },
     ]);
-
+    logger.info("Fetched product details successfully");
     res.status(200).json(products);
   } catch (error) {
     logger.error(`Failed to fetch all products: ${error.message}`);

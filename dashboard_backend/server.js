@@ -6,6 +6,7 @@ import OrderRoute from "./Routes/OrderRoute.js";
 import ProductsRoute from "./Routes/ProductsRoute.js";
 import ClientsRoute from "./Routes/ClientsRoute.js";
 import AuthRoute from "./Routes/AuthRoute.js";
+import UsersRoute from "./Routes/Users.js";
 import cookieParser from "cookie-parser";
 
 import cors from "cors";
@@ -32,6 +33,7 @@ app.use(express.json());
 app.use("/api", OrderRoute);
 app.use("/api", ProductsRoute);
 app.use("/api", ClientsRoute);
+app.use("/api", UsersRoute);
 app.use("/api/auth", AuthRoute);
 
 app.listen(port, () => {

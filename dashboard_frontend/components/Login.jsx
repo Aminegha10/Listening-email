@@ -14,8 +14,12 @@ const Login = () => {
 
   const onSubmit = async (data) => {
     try {
-      await login(data).unwrap();
-      router.push("/dashboard");
+      const res = await login(data).unwrap();
+      if (res.mustChangePassword) {
+        router.push("/change-password");
+      } else {
+        router.push("/dashboard");
+      }
     } catch (err) {
       console.log(err);
     }

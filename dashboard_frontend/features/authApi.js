@@ -26,6 +26,24 @@ export const authApi = createApi({
   }),
 
   endpoints: (builder) => ({
+    register: builder.mutation({
+      query: (credentials) => ({
+        url: "register",
+        method: "POST", // ✅ Usually login is POST
+        body: credentials, // ✅ Send data in request body
+      }),
+      // async onQueryStarted(args, { dispatch, queryFulfilled }) {
+      //   try {
+      //     // console.log("d");
+      //     const { data } = await queryFulfilled;
+      //     dispatch(
+      //       setCredentials({ accessToken: data.accessToken, user: data.user })
+      //     );
+      //   } catch (err) {
+      //     console.log("err");
+      //   }
+      // },
+    }),
     login: builder.mutation({
       query: (credentials) => ({
         url: "login",
@@ -56,7 +74,8 @@ export const authApi = createApi({
             setCredentials({ accessToken: data.accessToken, user: data.user })
           );
         } catch (err) {
-          dispatch(logout()); // refresh failed
+          // dispatch(logout()); // refresh failed
+          console.log("youve been logged out");
         }
       },
     }),
@@ -68,5 +87,9 @@ export const authApi = createApi({
     }),
   }),
 });
-export const { useLoginMutation, useRefreshMutation, useLogoutMutation } =
-  authApi;
+export const {
+  useLoginMutation,
+  useRefreshMutation,
+  useLogoutMutation,
+  useRegisterMutation,
+} = authApi;

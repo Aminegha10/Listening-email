@@ -19,7 +19,11 @@ export const DataApi = createApi({
         params, // RTK Query handles encoding automatically
       }),
     }),
-
+    getAllUsers: builder.query({
+      query: () => ({
+        url: "allUsers",
+      }),
+    }),
     // ✅ Orders table endpoint
     getOrdersTable: builder.query({
       query: (params) => ({
@@ -64,4 +68,5 @@ export const {
   useGetTopProductsQuery,
   useGetProductsDetailsQuery,
   useGetClientsQuery,
+  useGetAllUsersQuery,
 } = DataApi;

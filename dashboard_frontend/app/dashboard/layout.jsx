@@ -18,6 +18,7 @@ export default function DashboardLayout({ children }) {
     const checkAccess = async () => {
       if (!accessToken) {
         try {
+          console.log('z')
           const res = await refresh().unwrap();
           dispatch(
             setCredentials({ accessToken: res.accessToken, user: res.user })
