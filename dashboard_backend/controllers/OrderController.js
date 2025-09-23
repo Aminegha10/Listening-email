@@ -19,6 +19,7 @@ const AddOrder = async (req, res) => {
       `https://smabapi.qalqul.io/api/qalqul-leads/lead/${orderNumber}`,
       { headers: { Authorization: `${process.env.API_TOKEN}` } }
     );
+    // console.log(data);
 
     const lead = { ...data.lead, ...req.body };
 
@@ -27,10 +28,11 @@ const AddOrder = async (req, res) => {
     const normalizedNotes = Array.isArray(notes)
       ? notes.join("\n")
       : notes || "";
-    // is Order completed
-    console.log(lead);
-    const isCompleted =
-      lead.pipelineStage.label === "Confirmation de réception" ? true : false;
+    // logger.log(lead);
+    // // is Order completed
+    // logger.log(lead);
+    // const isCompleted =
+    //   lead.pipelineStage.label === "Confirmation de réception" ? true : false;
 
     logger.info(
       `Creating or updating order #${orderNumber} with ${products.length} product(s).`
@@ -47,14 +49,14 @@ const AddOrder = async (req, res) => {
         orderDate: orderDate ? new Date(orderDate) : null,
         notes: normalizedNotes,
         products,
-        isCompleted,
+        // isCompleted,
       });
 
       logger.info(`Order created successfully: ID ${newOrder._id}`);
       return res.send(newOrder);
     } catch (err) {
       if (err.code !== 11000) throw err;
-      logger.warn(
+      logger.error(
         `Duplicate order #${orderNumber} found. Updating existing order...`
       );
     }
@@ -214,7 +216,7 @@ const GetOrderAndSalesStats = async (req, res) => {
       salesByMonth,
     });
   } catch (error) {
-    console.error("Failed to fetch order stats:", error.message);
+    logger.error("Failed to fetch order stats:", error.message);
     res.status(500).json({ error: "Failed to fetch order stats" });
   }
 };
@@ -247,7 +249,7 @@ const GetOrdersTableStats = async (req, res) => {
       );
       dateFilter = { $gte: startOfThisMonth, $lte: endOfThisMonth };
     }
-    console.log(dateFilter);
+    // logger.info(dateFilter);
 
     // Build the final query
     const query = {
@@ -269,8 +271,8 @@ const GetOrdersTableStats = async (req, res) => {
 
     return res.json(Orders);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Error fetching order table stats" });
+    // logger.error(error);
+    res.status(500).json(error.message);
   }
 };
 
@@ -294,17 +296,13 @@ const GetOrdersByAgents = async (req, res) => {
       },
       { $sort: { orders: -1 } },
     ]);
-    
 
     res.status(200).json(ordersByAgents);
   } catch (error) {
-    console.error("Failed to fetch orders by agents:", error.message);
+    logger.error("Failed to fetch orders by agents:", error.message);
     res.status(500).json({ error: "Failed to fetch orders by agents" });
   }
 };
-
-
-
 
 export {
   AddOrder,

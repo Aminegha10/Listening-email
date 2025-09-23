@@ -9,7 +9,6 @@ import logger from "./utils/Logger.js";
 import connectDB from "./config/db.js";
 const { getPrinters } = pkg;
 
-
 dotenv.config();
 
 const app = express();
@@ -69,5 +68,5 @@ await listPrinters();
 
 // Start server
 app.listen(port, () => {
-  console.log(`Server running at http://localhost:`, port);
+  logger.info(`Server running at http://localhost:`, port);
 });

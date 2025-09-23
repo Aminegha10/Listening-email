@@ -15,7 +15,7 @@ const orderSchema = new mongoose.Schema(
     price: Number,
     typedepaiement: String,
     notes: String,
-    isCompleted: { type: Boolean },
+    // isCompleted: { type: Boolean },
     products: [productSchema], // Flexible array of products
   },
   { timestamps: true }

@@ -1,54 +1,50 @@
 // utils/logger.js
 import { createLogger, format, transports } from "winston";
-import DailyRotateFile from "winston-daily-rotate-file";
+import fs from "fs";
+import path from "path";
 
-const logFormat = format.combine(
-  format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
-  format.printf(({ timestamp, level, message }) => {
-    return `${timestamp} [${level.toUpperCase()}]: ${message}`;
-  })
-);
+// 🗓 Get today's date manually (YYYY-MM-DD)
+const today = new Date().toISOString().split("T")[0];
+
+// 🗂 Define log directories
+const baseLogDir = path.join(process.cwd(), "logs");
+const errorsDir = path.join(baseLogDir, "errors");
+const infosDir = path.join(baseLogDir, "infos");
+
+// 🏗️ Create directories if they don't exist
+[baseLogDir, errorsDir, infosDir].forEach((dir) => {
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
+});
 
 const logger = createLogger({
   level: "info",
-  format: logFormat,
+  format: format.combine(
+    format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
+    format.printf(({ timestamp, level, message }) => {
+      return `${timestamp} [${level.toUpperCase()}]: ${message}`;
+    })
+  ),
   transports: [
-    // Console output
+    // 🖥 Console log
     new transports.Console(),
 
-    // Combined (info + error) logs
-    new DailyRotateFile({
-      filename: "logs/app-%DATE%.log",
-      datePattern: "YYYY-MM-DD",
-      zippedArchive: true,
-      maxSize: "20m",
-      maxFiles: "20d", // Keep logs for 20 days
-      level: "info", // includes info + error
+    // 📂 Combined log (all levels)
+    new transports.File({
+      filename: path.join(baseLogDir, `app-${today}.log`),
     }),
 
-    // Info-only logs
-    new DailyRotateFile({
-      filename: "logs/infos/info-%DATE%.log",
-      datePattern: "YYYY-MM-DD",
-      zippedArchive: true,
-      maxSize: "20m",
-      maxFiles: "14d",
-      level: "info",
-      // Filter out errors
-      format: format.combine(
-        logFormat,
-        format((info) => (info.level === "info" ? info : false))()
-      ),
-    }),
-
-    // Error-only logs
-    new DailyRotateFile({
-      filename: "logs/errors/error-%DATE%.log",
-      datePattern: "YYYY-MM-DD",
-      zippedArchive: true,
-      maxSize: "20m",
-      maxFiles: "14d",
+    // 📂 Errors only
+    new transports.File({
       level: "error",
+      filename: path.join(errorsDir, `errors-${today}.log`),
+    }),
+
+    // 📂 Infos only
+    new transports.File({
+      level: "info",
+      filename: path.join(infosDir, `infos-${today}.log`),
     }),
   ],
 });

@@ -18,7 +18,7 @@ const GetClients = async (req, res) => {
         revenue: {
           $sum: { $multiply: ["$products.price", "$products.quantity"] },
         },
-        ordersCount: { $sum: 1 },
+        orders: { $addToSet: "$_id" },
         productsQuantity: { $sum: "$products.quantity" },
       };
       isRevenue = false; // not used for sorting here
@@ -31,7 +31,7 @@ const GetClients = async (req, res) => {
       };
     } else if (filter === "ordersCount") {
       group = {
-        ordersCount: { $sum: 1 },
+        orders: { $addToSet: "$_id" },
       };
     } else if (filter == "productsQuantity") {
       group = {
@@ -64,7 +64,7 @@ const GetClients = async (req, res) => {
         $project: {
           clientName: "$_id",
           revenue: 1,
-          ordersCount: 1,
+          ordersCount: { $size: { $ifNull: ["$orders", []] } },
           productsQuantity: 1,
           _id: 0,
         },
