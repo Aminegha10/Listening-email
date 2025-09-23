@@ -12,17 +12,17 @@ export const authApi = createApi({
     // baseUrl: `http://217.65.146.240:5000/api/`, // 👈 backend base URL browser to backend container in server
     baseUrl: `http://localhost:5000/api/auth/`,
     credentials: "include", // ✅ SEND COOKIES
-    // prepareHeaders: (headers, { getState }) => {
-    //   // Get token from Redux store (or any state)
-    //   const token = getState().auth.accessToken;
-    //   // If token exists, set Authorization header
-    //   if (token) {
-    //     headers.set("Authorization", `Bearer ${token}`);
-    //   }
+    prepareHeaders: (headers, { getState }) => {
+      // Get token from Redux store (or any state)
+      const token = getState().auth.accessToken;
+      // If token exists, set Authorization header
+      if (token) {
+        headers.set("Authorization", `Bearer ${token}`);
+      }
 
-    //   // Always return headers
-    //   return headers;
-    // },
+      // Always return headers
+      return headers;
+    },
   }),
 
   endpoints: (builder) => ({
@@ -58,9 +58,27 @@ export const authApi = createApi({
             setCredentials({ accessToken: data.accessToken, user: data.user })
           );
         } catch (err) {
-          console.log("err");
+          console.log(err);
         }
       },
+    }),
+    updatePassword: builder.mutation({
+      query: (newPassword) => ({
+        url: "updatePassword",
+        method: "PUT", // ✅ Usually login is POST
+        body: { newPassword }, // ✅ Send data in request body
+      }),
+      // async onQueryStarted(args, { dispatch, queryFulfilled }) {
+      //   try {
+      //     // console.log("d");
+      //     const { data } = await queryFulfilled;
+      //     dispatch(
+      //       setCredentials({ accessToken: data.accessToken, user: data.user })
+      //     );
+      //   } catch (err) {
+      //     console.log("err");
+      //   }
+      // },
     }),
     refresh: builder.mutation({
       query: () => ({
@@ -91,5 +109,6 @@ export const {
   useLoginMutation,
   useRefreshMutation,
   useLogoutMutation,
+  useUpdatePasswordMutation,
   useRegisterMutation,
 } = authApi;

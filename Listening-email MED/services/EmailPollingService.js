@@ -145,9 +145,9 @@ export default async function startPolling(oauth2Client) {
         const parsedBody = parseEmailBody(body);
 
         logger.info(`Parsed order number: ${parsedBody.orderNumber}`);
-        logger.info(
-          `Parsed products: ${JSON.stringify(parsedBody.products, null, 2)}`
-        );
+        // logger.info(
+        //   `Parsed products: ${JSON.stringify(parsedBody.products, null, 2)}`
+        // );
 
         await addOrder(parsedBody.products, parsedBody);
       }

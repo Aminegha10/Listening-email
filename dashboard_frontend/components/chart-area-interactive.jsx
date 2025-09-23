@@ -29,7 +29,7 @@ import { ThreeDot } from "react-loading-indicators";
 import { Badge } from "./ui/badge";
 
 export default function SalesAgentBarChart() {
-  const [timeRange, setTimeRange] = useState("last_7");
+  const [timeRange, setTimeRange] = useState("last_30");
   const [agentFilter, setAgentFilter] = useState("all");
   const [type, setType] = useState("orders");
 
@@ -42,6 +42,7 @@ export default function SalesAgentBarChart() {
     timeRange,
     type,
   });
+  console.log(stats);
 
   // 📊 Chart data
   const chartData = useMemo(() => {

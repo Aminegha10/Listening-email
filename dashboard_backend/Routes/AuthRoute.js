@@ -5,6 +5,7 @@ import {
   login,
   refresh,
   logout,
+  updatePassword,
 } from "../controllers/AuthController.js";
 import { verifyToken } from "../middleware/auth.js";
 
@@ -16,5 +17,6 @@ router.post("/refresh", refresh);
 router.get("/test", verifyToken, (req, res) => {
   res.send("test");
 });
+router.put("/updatePassword", verifyToken, updatePassword);
 router.post("/logout", logout);
 export default router;

@@ -8,22 +8,44 @@ const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET;
 
 export const register = async (req, res) => {
   try {
-    const { name, email, role } = req.body;
+    const { name, email, role, password } = req.body;
+
+    // Check if user already exists
     const existing = await UserModel.findOne({ email });
-    if (existing)
+    if (existing) {
       return res.status(400).json({ message: "User already exists" });
-    const tempPassword = generateTempPassword();
-    const hashed = await bcrypt.hash(tempPassword, 10);
+    }
+
+    let hashedPassword;
+    let tempPassword = null;
+
+    if (role === "admin") {
+      // For admins: use provided password
+      hashedPassword = await bcrypt.hash(password, 10);
+    } else {
+      // For other roles: generate temporary password
+      tempPassword = generateTempPassword();
+      hashedPassword = await bcrypt.hash(tempPassword, 10);
+    }
+
+    // Create the user
     const newUser = await UserModel.create({
       name,
       email,
-      password: hashed,
+      password: hashedPassword,
       role,
     });
-    console.log(tempPassword);
-    res
-      .status(201)
-      .json({ message: "User registered", user: newUser, tempPassword });
+
+    // Log temp password if generated
+    if (tempPassword) {
+      console.log("Temporary password:", tempPassword);
+    }
+
+    res.status(201).json({
+      message: "User registered",
+      user: newUser,
+      tempPassword: tempPassword || undefined, // only send if it exists
+    });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -31,8 +53,8 @@ export const register = async (req, res) => {
 
 export const login = async (req, res) => {
   try {
-    // verify database data if matched
     const { email, password } = req.body;
+
     const user = await UserModel.findOne({ email });
     if (!user) return res.status(400).json({ message: "Invalid credentials" });
 
@@ -40,56 +62,44 @@ export const login = async (req, res) => {
     if (!isMatch)
       return res.status(400).json({ message: "Invalid credentials" });
 
-    // Generate tokens
-    const accessToken = jwt.sign(
-      { id: user._id, role: user.role },
+    // Short-lived access token for temp-password users
+    let accessToken = jwt.sign(
+      { id: user._id, mustChangePassword: user.mustChangePassword },
       JWT_SECRET,
-      { expiresIn: "5s" }
-    );
-    // generate refresh token
-    const refreshToken = jwt.sign(
-      { id: user._id, role: user.role, name: user.name },
-      JWT_REFRESH_SECRET,
-      {
-        expiresIn: "7d",
-      }
+      { expiresIn: "5m" } // only valid for update-password
     );
 
-    // Store refresh token in cookie (HttpOnly)
-    res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // false on localhost
-      sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
-      maxAge: 7 * 24 * 60 * 60 * 1000, // multiply by 1000 to convert seconds → milliseconds
-      path: "/",
-    });
+    // Normal refresh token if password already changed
+    let refreshToken = null;
+    if (!user.mustChangePassword) {
+      refreshToken = jwt.sign(
+        { id: user._id, role: user.role, name: user.name },
+        JWT_REFRESH_SECRET,
+        { expiresIn: "7d" }
+      );
 
-    //     httpOnly: true → cannot be accessed via JS, but middleware can read it. ✅
-
-    // secure: process.env.NODE_ENV === "production" → only sent over HTTPS in production.
-
-    // If you’re testing on http://localhost:3000, this won’t be sent. ❌
-
-    // sameSite: "strict" → the cookie is not sent on cross-site requests.
-
-    // If you’re testing with a different port or domain, the cookie may not be included.
-
-    // You are probably running backend on localhost:5000 and frontend on localhost:3000.
-
-    // sameSite: strict + different ports = cookie not sent.
-
-    // That’s why req.cookies.get("refreshToken") in middleware is undefined.
-
-    // maxAge → fine.
+      res.cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+        path: "/",
+      });
+    }
+    console.log("e", refreshToken);
 
     res.json({
       accessToken,
-      user: { id: user._id, name: user.name, role: user.role },
+      user: {
+        id: user._id,
+        name: user.name,
+        role: user.role,
+        newUser: user.mustChangePassword,
+      },
     });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
-  // console.log(req.body);
 };
 
 export const refresh = (req, res) => {
@@ -116,4 +126,39 @@ export const refresh = (req, res) => {
 export const logout = (req, res) => {
   res.clearCookie("refreshToken");
   res.json({ message: "Logged out" });
+};
+
+export const updatePassword = async (req, res) => {
+  try {
+    console.log(req.id);
+    const { newPassword } = req.body;
+    const userId = req.user.id;
+    // console("update");
+
+    if (!userId || !newPassword) {
+      return res
+        .status(400)
+        .json({ message: "User ID and new password are required" });
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    const user = await UserModel.findByIdAndUpdate(
+      userId,
+      {
+        password: hashedPassword,
+        mustChangePassword: false,
+      },
+      { new: true } // return updated doc
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json({ message: "Password updated successfully", user });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
 };

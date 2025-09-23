@@ -16,6 +16,7 @@ export function middleware(req) {
     url.pathname = "/dashboard";
     return NextResponse.redirect(url);
   }
+  
 
   // Otherwise, allow
   return NextResponse.next();
