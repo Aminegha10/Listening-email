@@ -9,8 +9,8 @@ import { setCredentials } from "./authSlice";
 export const authApi = createApi({
   reducerPath: "authApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: `http://217.65.146.240:5000/api/`, // 👈 backend base URL browser to backend container in server
-    // baseUrl: `http://localhost:5000/api/auth/`,
+    // baseUrl: `http://217.65.146.240:5000/api/`, // 👈 backend base URL browser to backend container in server
+    baseUrl: `http://localhost:5000/api/auth/`,
     credentials: "include", // ✅ SEND COOKIES
     prepareHeaders: (headers, { getState }) => {
       // Get token from Redux store (or any state)
