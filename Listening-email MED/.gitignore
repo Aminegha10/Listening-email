@@ -6,3 +6,4 @@ yarn-error.log
 # Ignore environment variables
 .env
 tokens.json
+logs/
