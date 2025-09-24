@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-// const API_URL = process.env.local.NEXT_PUBLIC_API_URL;
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 // This is a dynamic route
 export const dynamic = "force-dynamic";
@@ -9,7 +9,7 @@ export const DataApi = createApi({
   reducerPath: "dataAPi",
   baseQuery: fetchBaseQuery({
     // baseUrl: `http://217.65.146.240:5000/api/`, // 👈 backend base URL browser to backend container in server
-    baseUrl: `http://localhost:5000/api/`,
+    baseUrl: `${API_URL}/api/`,
   }),
   endpoints: (builder) => ({
     // ✅ Stats endpoint (salesAgent optional)
