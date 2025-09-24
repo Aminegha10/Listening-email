@@ -1,23 +1,20 @@
 
 services:
   frontend:
-    build: 
-      context: ./dashboard_frontend
-      args:
-        NEXT_PUBLIC_API_URL: http://217.65.146.240:5000
+    image: aminegha10/smab_emaildashboard_fullstack-frontend
     ports:
-      - "8000:8000"  # access from host this is port forwording
+      - "8000:8000"
     env_file:
-      - ./dashboard_frontend/.env.production
+      - ./smab_emaildashboard_fullstack-frontend/.env
     depends_on:
       - backend
 
   backend:
-    build: ./dashboard_backend
+    image: aminegha10/smab_emaildashboard_fullstack-backend
     ports:
-      - "5000:5000"  # optional: access API from host
+      - "5000:5000"
     env_file:
-      - ./dashboard_backend/.env.production
+      - ./smab_emaildashboard_fullstack-backend/.env
     depends_on:
       - mongo
 

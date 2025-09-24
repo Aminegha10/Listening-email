@@ -17,8 +17,7 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 # Set env for build
-ARG NEXT_PUBLIC_API_URL
-ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_API_URL=http://217.65.146.240:5000
 
 # Build the Next.js app
 RUN npm run build
