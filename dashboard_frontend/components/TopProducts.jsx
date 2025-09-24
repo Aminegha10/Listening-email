@@ -80,7 +80,7 @@ const COLORS = [
 //   exportToJSON();
 
 export function TopProducts() {
-  const [filter, setFilter] = useState("revenue"); // default filter
+  const [filter, setFilter] = useState("unitsSold"); // default filter
   const { data, isLoading, isError } = useGetTopProductsQuery({ filter });
   console.log(data);
   const TopProducts = data?.topProducts;
@@ -98,196 +98,220 @@ export function TopProducts() {
   }, {});
 
   return (
-    <Card className="flex flex-col py-0">
-      {/* Header */}
-      <CardHeader className=" ">
-        {/* <div> */}
-        {/* <CardTitle>
+    <>
+      <Card className="flex flex-col py-0">
+        {/* Header */}
+        <CardHeader className=" ">
+          {/* <div> */}
+          {/* <CardTitle>
             <span className="py-1 px-2.5 border-none rounded bg-green-100 text-xl text-green-800 font-medium">
               Top 10-Selling Products
             </span>
           </CardTitle> */}
-        {/* <CardDescription>January - June 2024</CardDescription> */}
-        {/* </div> */}
-        <div className="p-6 border-b flex justify-between items-center border-slate-200">
-          <div className="flex gap-3">
-            <div className="flex items-center justify-between gap-3">
-              <div className="p-2 bg-indigo-100 rounded-lg">
-                <ShoppingBasket className="h-5 w-5 text-indigo-600" />
+          {/* <CardDescription>January - June 2024</CardDescription> */}
+          {/* </div> */}
+          <div className="p-6 border-b flex justify-between items-center border-slate-200">
+            <div className="flex gap-3">
+              <div className="flex items-center justify-between gap-3">
+                <div className="p-2 bg-indigo-100 rounded-lg">
+                  <ShoppingBasket className="h-5 w-5 text-indigo-600" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-slate-900">
+                    Top 10 Products
+                  </h3>
+                  <p className="text-sm text-slate-500">
+                    Showing 10 of 22 clients
+                  </p>
+                </div>
               </div>
+            </div>
+            <div className="flex gap-2 items-center">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className="flex items-center gap-2 bg-transparent cursor-pointer "
+                  >
+                    <Funnel />
+                    Filter Products <ChevronDown />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem
+                    className="cursor-pointer"
+                    onClick={() => setFilter("revenue")}
+                  >
+                    Top Revenue
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    className="cursor-pointer"
+                    onClick={() => setFilter("unitsSold")}
+                  >
+                    Most Sold
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    className="cursor-pointer"
+                    onClick={() => setFilter("ordersCount")}
+                  >
+                    Most Orders Count
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className="flex items-center gap-2 bg-transparent"
+                  >
+                    <Download className="h-4 w-4" />
+                    Export <ChevronDown />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem className="cursor-pointer">
+                    Export as CSV <Sheet />
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="cursor-pointer">
+                    Export as JSON <FileJson />
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    className="cursor-pointer"
+                    onClick={handleExportPDF}
+                  >
+                    Export as PDF <FileText />
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
               <div>
-                <h3 className="text-xl font-semibold text-slate-900">
-                  Top 10 Products
-                </h3>
-                <p className="text-sm text-slate-500">
-                  Showing 10 of 22 clients
-                </p>
+                <Link href="/dashboard/tables#products" passHref>
+                  <Button className="px-3 py-2 bg-white hover:bg-slate-200 text-slate-700 rounded-lg cursor-pointer transition-all duration-200 flex items-center gap-2 border border-slate-300 hover:border-slate-400">
+                    <Table className="h-4 w-4" />
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>
-          <div className="flex gap-2 items-center">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="outline"
-                  className="flex items-center gap-2 bg-transparent cursor-pointer "
-                >
-                  <Funnel />
-                  Filter Products <ChevronDown />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuItem
-                  className="cursor-pointer"
-                  onClick={() => setFilter("revenue")}
-                >
-                  Top Revenue
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  className="cursor-pointer"
-                  onClick={() => setFilter("unitsSold")}
-                >
-                  Most Sold
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  className="cursor-pointer"
-                  onClick={() => setFilter("ordersCount")}
-                >
-                  Most Orders Count
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+          {/* <div className="flex items-center gap-2"> */}
+          {/* by existing in order or by revenue */}
+          {/* </div> */}
+        </CardHeader>
 
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="outline"
-                  className="flex items-center gap-2 bg-transparent"
-                >
-                  <Download className="h-4 w-4" />
-                  Export <ChevronDown />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuItem className="cursor-pointer">
-                  Export as CSV <Sheet />
-                </DropdownMenuItem>
-                <DropdownMenuItem className="cursor-pointer">
-                  Export as JSON <FileJson />
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  className="cursor-pointer"
-                  onClick={handleExportPDF}
-                >
-                  Export as PDF <FileText />
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-            <div>
-              <Link href="/dashboard/tables#products" passHref>
-                <Button className="px-3 py-2 bg-white hover:bg-slate-200 text-slate-700 rounded-lg cursor-pointer transition-all duration-200 flex items-center gap-2 border border-slate-300 hover:border-slate-400">
-                  <Table className="h-4 w-4" />
-                </Button>
-              </Link>
+        {/* Chart */}
+        <CardContent className=" flex-1 pb-0">
+          {isLoading ? (
+            <div className=" h-full w-full flex justify-center items-center">
+              <Riple
+                color="var(--color-primary)"
+                size="medium"
+                text=""
+                textColor=""
+              />
             </div>
-          </div>
-        </div>
-        {/* <div className="flex items-center gap-2"> */}
-        {/* by existing in order or by revenue */}
-        {/* </div> */}
-      </CardHeader>
-
-      {/* Chart */}
-      <CardContent className=" flex-1 pb-0">
-        {isLoading ? (
-          <div className=" h-full w-full flex justify-center items-center">
-            <Riple
-              color="var(--color-primary)"
-              size="medium"
-              text=""
-              textColor=""
-            />
-          </div>
-        ) : isError ? (
-          <div className="text-center text-red-500">
-            Error loading chart data
-          </div>
-        ) : !TopProducts || TopProducts.length === 0 ? (
-          <p className="text-center text-gray-500">No data available</p>
-        ) : (
-          <ChartContainer
-            config={chartConfig}
-            className="[&_.recharts-pie-label-text]:fill-foreground mx-auto aspect-square max-h-[300px] pb-0"
-          >
-            <PieChart>
-              <ChartTooltip content={<ChartTooltipContent hideLabel />} />
-              <Pie
-                data={TopProducts}
-                dataKey={filter}
-                nameKey="product"
-                label
-                stroke="0"
-              >
-                {TopProducts.map((entry, index) => (
-                  <Cell key={index} fill={chartConfig[entry.product].color} />
-                ))}
-              </Pie>
-            </PieChart>
-            {/* <div className="mt-4 text-center font-medium">
+          ) : isError ? (
+            <div className="text-center text-red-500">
+              Error loading chart data
+            </div>
+          ) : !TopProducts || TopProducts.length === 0 ? (
+            <p className="text-center text-gray-500">No data available</p>
+          ) : (
+            <ChartContainer
+              config={chartConfig}
+              className="[&_.recharts-pie-label-text]:fill-foreground mx-auto aspect-square max-h-[300px] pb-0"
+            >
+              <PieChart>
+                <ChartTooltip content={<ChartTooltipContent hideLabel />} />
+                <Pie
+                  data={TopProducts}
+                  dataKey={filter}
+                  nameKey="product"
+                  label
+                  stroke="0"
+                >
+                  {TopProducts.map((entry, index) => (
+                    <Cell key={index} fill={chartConfig[entry.product].color} />
+                  ))}
+                </Pie>
+              </PieChart>
+              {/* <div className="mt-4 text-center font-medium">
               <Badge variant="secondary">
                 Total Products: {data?.productTotals[0].totalProducts}
               </Badge>
             </div> */}
-          </ChartContainer>
-        )}
-      </CardContent>
+            </ChartContainer>
+          )}
+        </CardContent>
 
-      {/* Footer with Top Performer */}
-      <CardFooter className="flex-col gap-3 text-sm border-t bg-gradient-to-r from-gray-50 to-gray-100/50 rounded-b-lg">
-        <div className="w-full">
-          <div
-            className="flex items-center justify-center gap-3 p-4 bg-gradient-to-r from-teal-50 to-emerald-50 border-2 rounded-xl shadow-md hover:shadow-lg transition-shadow"
-            style={{ borderColor: "#00bca2" }}
-          >
-            <div className="flex items-center justify-center gap-2">
-              <div
-                className="p-2 rounded-full shadow-lg"
-                style={{ backgroundColor: "#00bca2" }}
-              >
-                <Crown className="w-5 h-5 text-white" />
-              </div>
-              <div className="text-center">
-                <div className="flex items-center justify-center gap-2 mb-1">
-                  <Trophy className="w-4 h-4" style={{ color: "#00bca2" }} />
-                  <span
-                    className="text-xs font-semibold uppercase tracking-wider"
-                    style={{ color: "#00bca2" }}
-                  >
-                    Top Performer
-                  </span>
+        {/* Footer with Top Performer */}
+        {/* <CardFooter className="flex-col gap-3 text-sm border-t bg-gradient-to-r from-gray-50 to-gray-100/50 rounded-b-lg">
+          <div className="w-full">
+            <div
+              className="flex items-center justify-center gap-3 p-4 bg-gradient-to-r from-teal-50 to-emerald-50 border-2 rounded-xl shadow-md hover:shadow-lg transition-shadow"
+              style={{ borderColor: "#00bca2" }}
+            >
+              <div className="flex items-center justify-center gap-2">
+                <div
+                  className="p-2 rounded-full shadow-lg"
+                  style={{ backgroundColor: "#00bca2" }}
+                >
+                  <Crown className="w-5 h-5 text-white" />
                 </div>
-                <div className="text-base font-bold text-gray-800">
-                  {TopProducts?.[0].product}
-                </div>
-                <div className="flex items-center justify-center gap-1 text-sm">
-                  <span
-                    className="text-xl font-extrabold"
-                    style={{ color: "#00bca2" }}
-                  >
-                    {TopProducts?.[0][filter]}
-                  </span>
-                  <span className="text-gray-600">{filter}</span>
+                <div className="text-center">
+                  <div className="flex items-center justify-center gap-2 mb-1">
+                    <Trophy className="w-4 h-4" style={{ color: "#00bca2" }} />
+                    <span
+                      className="text-xs font-semibold uppercase tracking-wider"
+                      style={{ color: "#00bca2" }}
+                    >
+                      Top Performer
+                    </span>
+                  </div>
+                  <div className="text-base font-bold text-gray-800">
+                    {TopProducts?.[0].product}
+                  </div>
+                  <div className="flex items-center justify-center gap-1 text-sm">
+                    <span
+                      className="text-xl font-extrabold"
+                      style={{ color: "#00bca2" }}
+                    >
+                      {TopProducts?.[0][filter]}
+                    </span>
+                    <span className="text-gray-600">{filter}</span>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          <div className="flex items-center justify-center gap-2 mt-3 text-xs text-gray-600">
-            <TrendingUp className="w-4 h-4 text-green-500" />
-            <span>Leading the team with exceptional performance</span>
+            <div className="flex items-center justify-center gap-2 mt-3 text-xs text-gray-600">
+              <TrendingUp className="w-4 h-4 text-green-500" />
+              <span>Leading the team with exceptional performance</span>
+            </div>
           </div>
-        </div>
-      </CardFooter>
-    </Card>
+        </CardFooter> */}
+      </Card>
+      {/* Performance Highlight */}
+      {/* <Card className="mb-8 bg-gradient-to-r from-emerald-50 to-teal-50 border-emerald-200">
+        <CardContent className="p-6">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-emerald-500 rounded-full flex items-center justify-center">
+              <TrendingUp className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <p className="text-sm text-emerald-600 font-medium">
+                TOP PERFORMER
+              </p>
+              <p className="text-lg font-semibold text-emerald-800">
+                Soudeuse à tapis 900 verticale
+              </p>
+              <p className="text-sm text-emerald-600">4 units sold</p>
+            </div>
+          </div>
+          <p className="text-sm text-emerald-600 mt-2">
+            Leading the team with exceptional performance
+          </p>
+        </CardContent>
+      </Card> */}
+    </>
   );
 }

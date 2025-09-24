@@ -27,6 +27,9 @@ import {
 } from "recharts";
 import { ThreeDot } from "react-loading-indicators";
 import { Badge } from "./ui/badge";
+import { ChartNoAxesCombined, Table, Users } from "lucide-react";
+import Link from "next/link";
+import { Button } from "./ui/button";
 
 export default function SalesAgentBarChart() {
   const [timeRange, setTimeRange] = useState("last_30");
@@ -55,22 +58,30 @@ export default function SalesAgentBarChart() {
 
   return (
     <Card>
-      <CardHeader>
-        <div className="flex justify-between items-center gap-2 flex-wrap">
-          <div>
-            <CardTitle>
-              Agent {type === "orders" ? "Orders" : "Sales"}
-            </CardTitle>
-            <CardDescription className="text-[#8C8C8C]">
-              {type === "orders" ? "Orders" : "Sales"}{" "}
-              {timeRange === "last_7"
-                ? "Last 7 Days"
-                : timeRange === "last_30"
-                ? "Last 30 Days"
-                : "Year to Date"}
-            </CardDescription>
+      <CardHeader className="px-6 border-b border-slate-200">
+        <div className="flex items-center justify-between flex-wrap gap-3">
+          {/* Left section */}
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-indigo-100 rounded-lg">
+              <ChartNoAxesCombined className="h-5 w-5 text-indigo-600" />
+            </div>
+            <div>
+              <h3 className="text-xl font-semibold text-slate-900">
+                Agent {type === "orders" ? "Orders" : "Sales"}
+              </h3>
+              <p className="text-sm text-slate-500">
+                {type === "orders" ? "Orders" : "Sales"}{" "}
+                {timeRange === "last_7"
+                  ? "Last 7 Days"
+                  : timeRange === "last_30"
+                  ? "Last 30 Days"
+                  : "Year to Date"}
+              </p>
+            </div>
           </div>
-          <div className="flex items-center gap-2">
+
+          {/* Right section */}
+          <div className="flex items-center gap-2 flex-wrap">
             <Select value={type} onValueChange={setType}>
               <SelectTrigger className="min-w-[120px]">
                 <SelectValue />
@@ -80,6 +91,7 @@ export default function SalesAgentBarChart() {
                 <SelectItem value="sales">Sales</SelectItem>
               </SelectContent>
             </Select>
+
             <Select value={timeRange} onValueChange={setTimeRange}>
               <SelectTrigger className="min-w-[120px]">
                 <SelectValue />
@@ -90,6 +102,7 @@ export default function SalesAgentBarChart() {
                 <SelectItem value="ytd">Current Year</SelectItem>
               </SelectContent>
             </Select>
+
             <Select value={agentFilter} onValueChange={setAgentFilter}>
               <SelectTrigger className="min-w-[140px]">
                 <SelectValue />
@@ -102,6 +115,12 @@ export default function SalesAgentBarChart() {
                 ))}
               </SelectContent>
             </Select>
+
+            {/* <Link href="/dashboard/tables#agents" passHref>
+              <Button className="px-3 py-2 bg-white hover:bg-slate-200 text-slate-700 rounded-lg cursor-pointer transition-all duration-200 flex items-center gap-2 border border-slate-300 hover:border-slate-400">
+                <Table className="h-4 w-4" />
+              </Button>
+            </Link> */}
           </div>
         </div>
       </CardHeader>

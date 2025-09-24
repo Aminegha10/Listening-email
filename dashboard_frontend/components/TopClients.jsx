@@ -28,6 +28,7 @@ import {
 import { Riple } from "react-loading-indicators";
 import { Button } from "./ui/button";
 import Link from "next/link";
+import { Avatar, AvatarFallback } from "./ui/avatar";
 
 // const mockClients = [
 //   {
@@ -329,7 +330,7 @@ function TopClients() {
         </div> */}
 
       {/* Clients Card */}
-      <div className="bg-white rounded-xl shadow-lg border border-slate-200">
+      <div className="bg-white rounded-xl shadow-sm border border-slate-200">
         <div className="p-6 border-b border-slate-200">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -430,11 +431,11 @@ function TopClients() {
                     </div>
                   </div>
 
-                  <div className="flex-shrink-0">
-                    <div className="w-12 h-12 bg-gradient-to-br from-indigo-400 to-indigo-600 rounded-full flex items-center justify-center text-white font-semibold text-sm">
+                  <Avatar className="w-12 h-12">
+                    <AvatarFallback className="bg-emerald-100 text-emerald-700 text-xs">
                       KA
-                    </div>
-                  </div>
+                    </AvatarFallback>
+                  </Avatar>
 
                   <div className="flex-grow min-w-0">
                     <div className="flex items-center gap-2 mb-1">

@@ -1,6 +1,6 @@
 "use client";
 
-import { TrendingUp } from "lucide-react";
+import { ChartNoAxesCombined, TrendingUp, Users } from "lucide-react";
 import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
 
 import {
@@ -42,11 +42,56 @@ export function SalesCounter() {
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>Area Chart</CardTitle>
-        <CardDescription>
-          Showing total sales for the last 6 months
-        </CardDescription>
+      <CardHeader className="px-6 border-b border-slate-200">
+        <div className="flex items-center justify-between flex-wrap gap-3">
+          {/* Left section */}
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-indigo-100 rounded-lg">
+              <ChartNoAxesCombined className="h-5 w-5 text-indigo-600" />
+            </div>
+            <div>
+              <h3 className="text-xl font-semibold text-slate-900">
+                Area Chart
+              </h3>
+              <p className="text-sm text-slate-500">
+                Showing total sales for the last 6 months
+              </p>
+            </div>
+          </div>
+
+          {/* Right section - optional actions/buttons */}
+          {/* <div className="flex items-center gap-2 flex-wrap">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="flex items-center gap-2 bg-transparent cursor-pointer"
+                >
+                  <Funnel />
+                  Filter
+                  <ChevronDown />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem className="cursor-pointer">
+                  Last 7 Days
+                </DropdownMenuItem>
+                <DropdownMenuItem className="cursor-pointer">
+                  Last 30 Days
+                </DropdownMenuItem>
+                <DropdownMenuItem className="cursor-pointer">
+                  Last 6 Months
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            <Link href="/dashboard/tables#sales" passHref>
+              <Button className="px-3 py-2 bg-white hover:bg-slate-200 text-slate-700 rounded-lg cursor-pointer transition-all duration-200 flex items-center gap-2 border border-slate-300 hover:border-slate-400">
+                <Table className="h-4 w-4" />
+              </Button>
+            </Link>
+          </div> */}
+        </div>
       </CardHeader>
 
       <CardContent>
