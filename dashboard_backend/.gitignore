@@ -5,5 +5,6 @@ npm-debug.log
 yarn-error.log
 
 # Ignore environment variables
-.env
+.env*
 tokens.json
+

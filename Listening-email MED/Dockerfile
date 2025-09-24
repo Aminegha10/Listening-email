@@ -13,8 +13,8 @@ RUN npm install
 # Copy app source code
 COPY . .
 
-# Expose port your app listens to
-EXPOSE 3000
+# Expose port your app listens to /// the expose is just This is informational only.
+EXPOSE 3000 
 
 # Start the app
 CMD ["npm", "start"]

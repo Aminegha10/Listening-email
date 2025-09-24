@@ -6,7 +6,6 @@ import startPolling from "./services/EmailPollingService.js";
 import dotenv from "dotenv";
 import pkg from "pdf-to-printer";
 import logger from "./utils/Logger.js";
-import connectDB from "./config/db.js";
 const { getPrinters } = pkg;
 
 dotenv.config();
@@ -36,7 +35,6 @@ export const SCOPES = [
   "https://www.googleapis.com/auth/gmail.modify",
 ];
 
-connectDB();
 
 // Use routes
 app.use(authRoutes);

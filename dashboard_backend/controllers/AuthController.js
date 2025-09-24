@@ -1,11 +1,10 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
 import UserModel from "../models/UserModel.js";
 import { generateTempPassword } from "../utils/generateTempPassword.js";
-
-const JWT_SECRET = process.env.JWT_SECRET;
-const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET;
-
+// const JWT_SECRET = process.env.JWT_SECRET;
+// const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET;
 export const register = async (req, res) => {
   try {
     const { name, email, role, password } = req.body;
@@ -52,8 +51,10 @@ export const register = async (req, res) => {
 };
 
 export const login = async (req, res) => {
+  // console.log(JWT_SECRET);
   try {
     const { email, password } = req.body;
+    console.log(req.body);
 
     const user = await UserModel.findOne({ email });
     if (!user) return res.status(400).json({ message: "Invalid credentials" });
@@ -61,20 +62,21 @@ export const login = async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch)
       return res.status(400).json({ message: "Invalid credentials" });
-
+    console.log(user);
     // Short-lived access token for temp-password users
     let accessToken = jwt.sign(
       { id: user._id, mustChangePassword: user.mustChangePassword },
-      JWT_SECRET,
+      process.env.JWT_SECRET,
       { expiresIn: "5m" } // only valid for update-password
     );
+    console.log(accessToken);
 
     // Normal refresh token if password already changed
     let refreshToken = null;
     if (!user.mustChangePassword) {
       refreshToken = jwt.sign(
         { id: user._id, role: user.role, name: user.name },
-        JWT_REFRESH_SECRET,
+        process.env.JWT_REFRESH_SECRET,
         { expiresIn: "7d" }
       );
 
@@ -106,13 +108,13 @@ export const refresh = (req, res) => {
   const token = req.cookies.refreshToken;
   if (!token) return res.status(401).json({ message: "No refresh token" });
 
-  jwt.verify(token, JWT_REFRESH_SECRET, async (err, decoded) => {
+  jwt.verify(token, process.env.JWT_REFRESH_SECRET, async (err, decoded) => {
     if (err) return res.status(403).json({ message: "Invalid refresh token" });
 
     // 1. Create a new access token
     const accessToken = jwt.sign(
       { id: decoded.id, role: decoded.role }, // optional: include role in token
-      JWT_SECRET,
+      process.env.JWT_SECRET,
       { expiresIn: "15m" }
     );
 

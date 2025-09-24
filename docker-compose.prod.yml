@@ -4,11 +4,11 @@ services:
     build: 
       context: ./dashboard_frontend
       args:
-        NEXT_PUBLIC_API_URL: http://localhost:5000
+        NEXT_PUBLIC_API_URL: http://217.65.146.240:5000
     ports:
       - "8000:8000"  # access from host this is port forwording
     env_file:
-      - ./dashboard_frontend/.env.development
+      - ./dashboard_frontend/.env.production
     depends_on:
       - backend
 
@@ -17,7 +17,7 @@ services:
     ports:
       - "5000:5000"  # optional: access API from host
     env_file:
-      - ./dashboard_backend/.env.development
+      - ./dashboard_backend/.env.production
     depends_on:
       - mongo
 
@@ -27,8 +27,6 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: aminegha10
       MONGO_INITDB_ROOT_PASSWORD: ghytfr45
-    ports:
-      - "2000:27017"  # optional: access from host for Compass
     volumes:
       - mongo_data:/data/db
 

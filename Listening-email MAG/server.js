@@ -5,7 +5,6 @@ import authRoutes from "./Routes/AuthRoutes.js";
 import startPolling from "./services/EmailPollingService.js";
 import dotenv from "dotenv";
 import logger from "./utils/Logger.js";
-import connectDB from "./config/db.js";
 
 dotenv.config();
 
@@ -33,8 +32,6 @@ export const SCOPES = [
   "https://www.googleapis.com/auth/gmail.readonly",
   "https://www.googleapis.com/auth/gmail.modify",
 ];
-
-connectDB();
 
 // Use routes
 app.use(authRoutes);

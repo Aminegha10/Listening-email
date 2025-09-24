@@ -1,1 +1,7 @@
 2025-09-23 17:58:13 [ERROR]: Error fetching printers:
+2025-09-23 19:24:47 [ERROR]: Error connecting to MongoDB: getaddrinfo ENOTFOUND mongo
+2025-09-23 19:26:31 [ERROR]: Error connecting to MongoDB: Authentication failed.
+2025-09-23 19:26:52 [ERROR]: Error connecting to MongoDB: Authentication failed.
+2025-09-23 19:28:06 [ERROR]: Error connecting to MongoDB: Authentication failed.
+2025-09-23 19:29:22 [ERROR]: Error connecting to MongoDB: Authentication failed.
+2025-09-23 19:30:42 [ERROR]: Error connecting to MongoDB: Authentication failed.

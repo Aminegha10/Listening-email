@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { setCredentials } from "./authSlice";
 
-// const API_URL = process.env.local.NEXT_PUBLIC_API_URL;
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 // This isyttttt(tyhtttttyyy) a dynamic route
 // export const dynamic = "force-dynamic";
@@ -10,7 +10,7 @@ export const authApi = createApi({
   reducerPath: "authApi",
   baseQuery: fetchBaseQuery({
     // baseUrl: `http://217.65.146.240:5000/api/`, // 👈 backend base URL browser to backend container in server
-    baseUrl: `http://localhost:5000/api/auth/`,
+    baseUrl: `${API_URL}/api/auth/`,
     credentials: "include", // ✅ SEND COOKIES
     prepareHeaders: (headers, { getState }) => {
       // Get token from Redux store (or any state)
