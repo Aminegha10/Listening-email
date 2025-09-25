@@ -8,13 +8,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import {
-  ArrowUpDown,
-  ChevronDown,
-  Download,
-  MoreHorizontal,
-  Package,
-} from "lucide-react";
+import { ArrowUpDown, ChevronDown, Download, Package } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -23,11 +17,8 @@ import {
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-// import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -37,6 +28,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useGetClientsQuery } from "@/features/dataApi";
+import { Input } from "./ui/input";
 
 export const columns = [
   {
@@ -49,6 +41,7 @@ export const columns = [
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
         aria-label="Select all"
+        className="border-2 border-primary/20 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
       />
     ),
     cell: ({ row }) => (
@@ -56,6 +49,7 @@ export const columns = [
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
         aria-label="Select row"
+        className="border-2 border-primary/20 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
       />
     ),
     enableSorting: false,
@@ -63,131 +57,84 @@ export const columns = [
   },
   {
     accessorKey: "clientName",
-    header: <div className="text-left">Client Name</div>,
+    header: "Client Name",
     cell: ({ row }) => (
-      <div className="capitalize text-left">{row.getValue("clientName")}</div>
+      <div className="capitalize text-center font-medium text-foreground">
+        {row.getValue("clientName")}
+      </div>
     ),
   },
   {
     accessorKey: "ordersCount",
     header: ({ column }) => (
-      <div className="text-center">
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Orders Count <ArrowUpDown />
-        </Button>
-      </div>
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        className="hover:bg-primary/5 hover:text-primary font-semibold"
+      >
+        Orders Count <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
     ),
     cell: ({ row }) => (
-      <div className="lowercase justify-center flex items-center gap-2">
+      <div className="justify-center flex items-center gap-2 font-medium">
         {row.getValue("ordersCount")}
-        <Package className="h-4 w-4 text-[var(--color-primary)]" />
+        <Package className="h-4 w-4 text-primary" />
       </div>
     ),
   },
   {
     accessorKey: "productsQuantity",
     header: ({ column }) => (
-      <div className="flex justify-center">
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Products Ordered <ArrowUpDown />
-        </Button>
-      </div>
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        className="hover:bg-primary/5 hover:text-primary font-semibold"
+      >
+        Products Ordered <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
     ),
     cell: ({ row }) => (
-      <div className="lowercase justify-center flex items-center gap-2">
+      <div className="justify-center flex items-center gap-2 font-medium">
         {row.getValue("productsQuantity")}
-        <Package className="h-4 w-4 text-[var(--color-primary)]" />
+        <Package className="h-4 w-4 text-primary" />
       </div>
     ),
   },
   {
     accessorKey: "orderAverage",
-    header: <div className="text-center">Order Average</div>,
-    cell: ({ row }) => (
-      <div className="flex justify-center items-center">
-        <span className="rounded-md bg-green-50 px-1.5 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-200 gap-1">
+    header: "Order Average",
+    cell: () => (
+      <div className="flex justify-center">
+        <span className="rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-200">
           Daily
         </span>
       </div>
     ),
   },
-  // {
-  //   accessorKey: "averageOrder",
-  //   header: ({ column }) => (
-  //     <Button
-  //       variant="ghost"
-  //       onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-  //     >
-  //       Orders Count <ArrowUpDown />
-  //     </Button>
-  //   ),
-  //   cell: ({ row }) => (
-  //     <div className="lowercase justify-center flex items-center gap-2">
-  //       {row.getValue("ordersCount")}
-  //       <Package className="h-4 w-4 text-[var(--color-primary)]" />
-  //     </div>
-  //   ),
-  // },
   {
     accessorKey: "revenue",
     header: ({ column }) => (
-      <div className="text-center">
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Revenue <ArrowUpDown />
-        </Button>
-        {/* <div className="text-center">Revenue</div> */}
-      </div>
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        className="hover:bg-primary/5 hover:text-primary font-semibold"
+      >
+        Revenue <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
     ),
     cell: ({ row }) => {
       const amount = parseFloat(row.getValue("revenue"));
-
-      // Format the amount as a dollar amount
       const formatted = new Intl.NumberFormat("en-US", {
         style: "currency",
         currency: "USD",
       }).format(amount);
-
-      return <div className="text-center font-medium">{formatted}</div>;
+      return (
+        <div className="text-center font-semibold text-primary">
+          {formatted}
+        </div>
+      );
     },
   },
-  // {
-  //   id: "actions",
-  //   enableHiding: false,
-  //   cell: ({ row }) => {
-  //     const payment = row.original;
-
-  //     return (
-  //       <DropdownMenu>
-  //         <DropdownMenuTrigger asChild>
-  //           <Button variant="ghost" className="h-8 w-8 p-0">
-  //             <span className="sr-only">Open menu</span>
-  //             <MoreHorizontal />
-  //           </Button>
-  //         </DropdownMenuTrigger>
-  //         <DropdownMenuContent align="end">
-  //           <DropdownMenuLabel>Actions</DropdownMenuLabel>
-  //           <DropdownMenuItem
-  //             onClick={() => navigator.clipboard.writeText(payment.id)}
-  //           >
-  //             Copy payment ID
-  //           </DropdownMenuItem>
-  //           <DropdownMenuSeparator />
-  //           <DropdownMenuItem>View customer</DropdownMenuItem>
-  //           <DropdownMenuItem>View payment details</DropdownMenuItem>
-  //         </DropdownMenuContent>
-  //       </DropdownMenu>
-  //     );
-  //   },
-  // },
 ];
 
 export function ClientsTable() {
@@ -195,15 +142,17 @@ export function ClientsTable() {
   const [columnFilters, setColumnFilters] = React.useState([]);
   const [columnVisibility, setColumnVisibility] = React.useState({});
   const [rowSelection, setRowSelection] = React.useState({});
+
   const {
-    data: clients,
+    data: clients = [],
     isLoading,
     isError,
-  } = useGetClientsQuery({ filter: "all" });
-  console.log(clients);
+  } = useGetClientsQuery({
+    filter: "all",
+  });
 
   const table = useReactTable({
-    data: clients,
+    data: clients || [],
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -213,57 +162,44 @@ export function ClientsTable() {
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
-    state: {
-      sorting,
-      columnFilters,
-      columnVisibility,
-      rowSelection,
-    },
+    state: { sorting, columnFilters, columnVisibility, rowSelection },
   });
 
   return (
-    <div className="w-full">
-      <div className="flex items-center py-4">
-        {/* <Input
-          placeholder="Filter emails..."
-          value={table.getColumn("email")?.getFilterValue() ?? ""}
-          onChange={(event) =>
-            table.getColumn("email")?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
-        /> */}
-        {/* Export Dropdown */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="outline"
-              className="flex items-center gap-2 bg-transparent"
+    <div className="w-full space-y-3 max-w-full overflow-hidden">
+      {/* Top bar with Export + Columns */}
+      <div className="flex flex-col sm:flex-row justify-between items-center gap-2 ">
+        <div className="relative w-full sm:max-w-xs">
+          <Input
+            // value={search}
+            // onChange={(e) => setSearch(e.target.value)}
+            placeholder="🔍 Search orders..."
+            className="pl-8 border border-border focus:border-primary transition-colors bg-background text-sm h-8"
+          />
+        </div>
+        <div className="flex items-center gap-2 flex-wrap">
+          {/* Columns Dropdown */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="outline"
+                size="sm"
+                className="rounded-lg border border-border hover:border-primary hover:bg-primary/5 transition-all duration-200 font-medium bg-transparent text-xs"
+              >
+                Columns <ChevronDown className="ml-1 h-3 w-3" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              align="end"
+              className="rounded-lg shadow-lg border border-border"
             >
-              <Download className="h-4 w-4" />
-              Export <ChevronDown />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuItem>Export as CSV</DropdownMenuItem>
-            <DropdownMenuItem>Export as JSON</DropdownMenuItem>
-            <DropdownMenuItem>Export as PDF</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-        {/* <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
-              Columns <ChevronDown />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => {
-                return (
+              {table
+                .getAllColumns()
+                .filter((c) => c.getCanHide())
+                .map((column) => (
                   <DropdownMenuCheckboxItem
                     key={column.id}
-                    className="capitalize"
+                    className="capitalize hover:bg-primary/10 hover:text-primary cursor-pointer text-sm"
                     checked={column.getIsVisible()}
                     onCheckedChange={(value) =>
                       column.toggleVisibility(!!value)
@@ -271,96 +207,165 @@ export function ClientsTable() {
                   >
                     {column.id}
                   </DropdownMenuCheckboxItem>
-                );
-              })}
-          </DropdownMenuContent>
-        </DropdownMenu> */}
+                ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          {/* Export Dropdown */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="outline"
+                size="sm"
+                className="flex items-center gap-1 rounded-lg border border-border hover:border-primary hover:bg-primary/5 transition-all duration-200 font-medium bg-transparent text-xs"
+              >
+                <Download className="h-3 w-3" />
+                Export <ChevronDown className="ml-1 h-3 w-3" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              align="end"
+              className="rounded-lg shadow-lg border border-border"
+            >
+              <DropdownMenuItem className="hover:bg-primary/10 hover:text-primary cursor-pointer text-sm">
+                Export as CSV
+              </DropdownMenuItem>
+              <DropdownMenuItem className="hover:bg-primary/10 hover:text-primary cursor-pointer text-sm">
+                Export as JSON
+              </DropdownMenuItem>
+              <DropdownMenuItem className="hover:bg-primary/10 hover:text-primary cursor-pointer text-sm">
+                Export as PDF
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
 
-      {isLoading ? (
-        <>...isloading</>
-      ) : isError ? (
-        <>....errors</>
-      ) : (
-        <>
-          <div className="overflow-hidden rounded-md border">
-            <Table>
-              <TableHeader>
-                {table.getHeaderGroups().map((headerGroup) => (
-                  <TableRow key={headerGroup.id}>
-                    {headerGroup.headers.map((header) => {
-                      return (
-                        <TableHead key={header.id}>
-                          {header.isPlaceholder
-                            ? null
-                            : flexRender(
-                                header.column.columnDef.header,
-                                header.getContext()
-                              )}
-                        </TableHead>
-                      );
-                    })}
-                  </TableRow>
+      {/* Table */}
+      <div className="overflow-auto rounded-lg border border-border bg-card shadow-sm">
+        <Table>
+          <TableHeader className="bg-muted/50 border-b border-border sticky top-0 z-10">
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id} className="hover:bg-transparent">
+                {headerGroup.headers.map((header) => (
+                  <TableHead
+                    key={header.id}
+                    className="text-xs font-bold text-foreground py-2 px-3 border-r border-border/50 last:border-r-0 whitespace-nowrap"
+                  >
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                  </TableHead>
                 ))}
-              </TableHeader>
-              <TableBody>
-                {table.getRowModel().rows?.length ? (
-                  table.getRowModel().rows.map((row) => (
-                    <TableRow
-                      key={row.id}
-                      data-state={row.getIsSelected() && "selected"}
-                    >
-                      {row.getVisibleCells().map((cell) => (
-                        <TableCell key={cell.id}>
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
-                          )}
-                        </TableCell>
-                      ))}
-                    </TableRow>
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell
-                      colSpan={columns.length}
-                      className="h-24 text-center"
-                    >
-                      No results.
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </div>
+              </TableRow>
+            ))}
+          </TableHeader>
 
-          {/* footer */}
-          <div className="flex items-center justify-end space-x-2 py-4">
-            <div className="text-muted-foreground flex-1 text-sm">
-              {table.getFilteredSelectedRowModel().rows.length} of{" "}
-              {table.getFilteredRowModel().rows.length} row(s) selected.
-            </div>
-            <div className="space-x-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => table.previousPage()}
-                disabled={!table.getCanPreviousPage()}
-              >
-                Previous
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => table.nextPage()}
-                disabled={!table.getCanNextPage()}
-              >
-                Next
-              </Button>
-            </div>
+          <TableBody>
+            {isLoading ? (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center text-muted-foreground"
+                >
+                  Loading clients...
+                </TableCell>
+              </TableRow>
+            ) : isError ? (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center text-red-500"
+                >
+                  Error loading clients.
+                </TableCell>
+              </TableRow>
+            ) : table.getRowModel().rows.length ? (
+              table.getRowModel().rows.map((row, idx) => (
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && "selected"}
+                  className={`hover:bg-primary/5 transition-all duration-200 border-b border-border/50 ${
+                    idx % 2 === 0 ? "bg-background" : "bg-muted/20"
+                  } ${
+                    row.getIsSelected() ? "bg-primary/10 border-primary/20" : ""
+                  }`}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell
+                      key={cell.id}
+                      className="py-2 px-3 border-r border-border/30 last:border-r-0 text-xs"
+                    >
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center text-muted-foreground py-6"
+                >
+                  <div className="flex flex-col items-center gap-2">
+                    <Package className="h-6 w-6 text-muted-foreground/50" />
+                    <span className="text-sm font-medium">
+                      No results found.
+                    </span>
+                    <span className="text-xs">Try adjusting your filters</span>
+                  </div>
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
+
+      {/* Footer */}
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-2 p-3 bg-card rounded-lg border border-border">
+        <div className="text-xs text-muted-foreground font-medium">
+          <span className="text-primary font-semibold">
+            {table.getFilteredSelectedRowModel().rows.length}
+          </span>{" "}
+          of{" "}
+          <span className="text-primary font-semibold">
+            {table.getFilteredRowModel().rows.length}
+          </span>{" "}
+          row(s) selected.
+        </div>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            className="rounded-lg border border-border hover:border-primary hover:bg-primary/5 transition-all duration-200 font-medium bg-transparent text-xs px-3 py-1"
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+          >
+            Previous
+          </Button>
+          <div className="flex items-center gap-1 px-2 py-1 bg-primary/10 rounded text-xs">
+            <span className="font-medium text-primary">
+              Page {table.getState().pagination.pageIndex + 1} of{" "}
+              {table.getPageCount()}
+            </span>
           </div>
-        </>
-      )}
+          <Button
+            variant="outline"
+            size="sm"
+            className="rounded-lg border border-border hover:border-primary hover:bg-primary/5 transition-all duration-200 font-medium bg-transparent text-xs px-3 py-1"
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+          >
+            Next
+          </Button>
+        </div>
+      </div>
     </div>
   );
 }

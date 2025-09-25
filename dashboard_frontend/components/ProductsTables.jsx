@@ -10,8 +10,7 @@ import {
 } from "@tanstack/react-table";
 import {
   ArrowUpDown,
-  Boxes,
-  ChartColumn,
+  CarIcon as ChartColumn,
   ChevronDown,
   Download,
   Info,
@@ -20,7 +19,6 @@ import {
 } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { exportToCSV, exportToJSON, exportToPDF } from "@/utils/exportUtils";
-import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -38,13 +36,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "./ui/dialog";
+import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog";
 
 import { useGetProductsDetailsQuery } from "@/features/dataApi";
 import ProductInfoCard from "./ui/productCardInfo";
@@ -60,6 +52,7 @@ export const columns = [
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
         aria-label="Select all"
+        className="border-2 border-primary/20 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
       />
     ),
     cell: ({ row }) => (
@@ -67,6 +60,7 @@ export const columns = [
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
         aria-label="Select row"
+        className="border-2 border-primary/20 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
       />
     ),
     enableSorting: false,
@@ -76,7 +70,7 @@ export const columns = [
     accessorKey: "productName",
     header: "Product Name",
     cell: ({ row }) => (
-      <div className="capitalize text-center">
+      <div className="capitalize text-center font-medium text-foreground">
         {row.getValue("productName")}
       </div>
     ),
@@ -87,48 +81,63 @@ export const columns = [
       <Button
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        className="hover:bg-primary/5 hover:text-primary font-semibold"
       >
-        Quantity Sold <ArrowUpDown />
+        Quantity Sold <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
     cell: ({ row }) => (
-      <div className="lowercase justify-center flex items-center gap-2">
+      <div className="lowercase justify-center flex items-center gap-2 font-medium">
         {row.getValue("quantitySold")}{" "}
-        <ChartColumn className="h-4 w-4 text-[var(--color-primary)]" />
+        <ChartColumn className="h-4 w-4 text-primary" />
       </div>
     ),
   },
   {
     accessorKey: "revenue",
-    header: () => <div className="text-right">Revenue</div>,
+    header: () => <div className="text-right font-semibold">Revenue</div>,
     cell: ({ row }) => {
-      const revenue = parseFloat(row.getValue("revenue"));
+      const revenue = Number.parseFloat(row.getValue("revenue"));
       const formatted = new Intl.NumberFormat("en-US", {
         style: "currency",
         currency: "USD",
       }).format(revenue);
-      return <div className="text-right font-medium">{formatted}</div>;
+      return (
+        <div className="text-right font-semibold text-primary">{formatted}</div>
+      );
     },
   },
   {
     accessorKey: "ordersCount",
     header: "Orders Count",
     cell: ({ row }) => (
-      <div className="lowercase justify-center flex items-center gap-2">
+      <div className="lowercase justify-center flex items-center gap-2 font-medium">
         {row.getValue("ordersCount")}{" "}
-        <Package className="h-4 w-4 text-[var(--color-primary)]" />
+        <Package className="h-4 w-4 text-primary" />
       </div>
     ),
   },
   {
     accessorKey: "lastOrderedDate",
-    header: () => <div className="text-center">Last Ordered</div>,
-    cell: ({ row }) => (
-      <div className="capitalize text-center">
-        {row.getValue("lastOrderedDate")}
-      </div>
-    ),
+    header: () => <div className="text-center font-semibold">Last Ordered</div>,
+    cell: ({ row }) => {
+      const dateValue = row.getValue("lastOrderedDate");
+      const formattedDate = dateValue
+        ? new Date(dateValue).toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+          })
+        : "-";
+
+      return (
+        <div className="capitalize text-center font-medium text-muted-foreground">
+          {formattedDate}
+        </div>
+      );
+    },
   },
+
   {
     accessorKey: "productDetails",
     header: "Product Details",
@@ -136,8 +145,8 @@ export const columns = [
       <div className="capitalize flex items-center justify-center">
         <Dialog>
           <DialogTrigger asChild>
-            <button className="cursor-pointer">
-              <Info className="h-4 w-4 text-[var(--color-primary)]" />
+            <button className="cursor-pointer p-2 rounded-lg hover:bg-primary/10 transition-colors">
+              <Info className="h-4 w-4 text-primary" />
             </button>
           </DialogTrigger>
           <DialogContent className="bg-transparent p-0 shadow-none">
@@ -152,7 +161,9 @@ export const columns = [
     header: "Trend",
     cell: () => (
       <div className="capitalize text-center">
-        <TrendingUp className="text-green-500 h-4 w-4" />
+        <div className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-green-50">
+          <TrendingUp className="text-green-600 h-4 w-4" />
+        </div>
       </div>
     ),
   },
@@ -199,192 +210,236 @@ export function ProductsTables({ id }) {
     );
 
   return (
-    <div className="w-full">
-      {isLoading && (
-        <div className="flex justify-center items-center h-40">
-          <Loader2 className="h-6 w-6 animate-spin text-gray-500" />
-          <span className="ml-2 text-gray-500">Loading products...</span>
+    <div className="w-full space-y-3 max-w-full overflow-hidden">
+      <div className="flex flex-col sm:flex-row justify-between items-center gap-2 ">
+        <div className="relative w-full sm:max-w-xs">
+          <Input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="🔍 Search products..."
+            className="pl-8 border border-border focus:border-primary transition-colors bg-background text-sm h-8"
+          />
         </div>
-      )}
 
-      {isError && (
-        <div className="flex justify-center items-center h-40">
-          <p className="text-red-500">
-            Failed to load products:{" "}
-            {error?.data?.message || error?.error || "Unknown error"}
-          </p>
-        </div>
-      )}
+        <div className="flex items-center gap-2 flex-wrap">
+          {/* Orders Filter Dropdown */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="outline"
+                size="sm"
+                className="rounded-lg border border-border hover:border-primary hover:bg-primary/5 transition-all duration-200 font-medium bg-transparent text-xs"
+              >
+                Filter <ChevronDown className="ml-1 h-3 w-3" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              align="end"
+              className="rounded-lg shadow-lg border border-border"
+            >
+              <DropdownMenuItem
+                onClick={() => setProductsDate("today")}
+                className="hover:bg-primary/10 hover:text-primary cursor-pointer text-sm"
+              >
+                Today's Orders
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => setProductsDate("last7Days")}
+                className="hover:bg-primary/10 hover:text-primary cursor-pointer text-sm"
+              >
+                Last 7 Days
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => setProductsDate("thisMonth")}
+                className="hover:bg-primary/10 hover:text-primary cursor-pointer text-sm"
+              >
+                This Month
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
 
-      {!isLoading && !isError && (
-        <>
-          {/* Filters & Column Menu */}
-          <div className="flex justify-between items-center py-4 gap-2">
-            <div>
-              <Input
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search products..."
-                className="max-w-sm"
-              />
-            </div>
-
-            <div className="flex items-center gap-2">
-              {/* filter by product date */}
-              {/* Orders Filter Dropdown */}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline">
-                    Filter Orders <ChevronDown />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  <DropdownMenuItem onClick={() => setProductsDate("today")}>
-                    Today's Orders
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={() => setProductsDate("last7Days")}
+          {/* Columns Dropdown */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="outline"
+                size="sm"
+                className="rounded-lg border border-border hover:border-primary hover:bg-primary/5 transition-all duration-200 font-medium bg-transparent text-xs"
+              >
+                Columns <ChevronDown className="ml-1 h-3 w-3" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              align="end"
+              className="rounded-lg shadow-lg border border-border"
+            >
+              {table
+                .getAllColumns()
+                .filter((c) => c.getCanHide())
+                .map((column) => (
+                  <DropdownMenuCheckboxItem
+                    key={column.id}
+                    className="capitalize hover:bg-primary/10 hover:text-primary cursor-pointer text-sm"
+                    checked={column.getIsVisible()}
+                    onCheckedChange={(value) =>
+                      column.toggleVisibility(!!value)
+                    }
                   >
-                    Last 7 Days
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={() => setProductsDate("thisMonth")}
-                  >
-                    This Month
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline">
-                    Columns <ChevronDown />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  {table
-                    .getAllColumns()
-                    .filter((c) => c.getCanHide())
-                    .map((column) => (
-                      <DropdownMenuCheckboxItem
-                        key={column.id}
-                        className="capitalize"
-                        checked={column.getIsVisible()}
-                        onCheckedChange={(value) =>
-                          column.toggleVisibility(!!value)
-                        }
-                      >
-                        {column.id}
-                      </DropdownMenuCheckboxItem>
-                    ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
-              {/* Export Dropdown */}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className="flex items-center gap-2 bg-transparent"
-                  >
-                    <Download className="h-4 w-4" />
-                    Export <ChevronDown />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  <DropdownMenuItem onClick={handleExportCSV}>
-                    Export as CSV
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={handleExportJSON}>
-                    Export as JSON
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={handleExportPDF}>
-                    Export as PDF
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-          </div>
-
-          {/* Table */}
-          <div
-            className="overflow-hidden rounded-md border shadow-[0px_2px_8px_0px_rgba(0,_0,_0,_0.08)] "
-            id={id}
-          >
-            <Table>
-              <TableHeader>
-                {table.getHeaderGroups().map((headerGroup) => (
-                  <TableRow key={headerGroup.id}>
-                    {headerGroup.headers.map((header) => (
-                      <TableHead key={header.id}>
-                        {header.isPlaceholder
-                          ? null
-                          : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext()
-                            )}
-                      </TableHead>
-                    ))}
-                  </TableRow>
+                    {column.id}
+                  </DropdownMenuCheckboxItem>
                 ))}
-              </TableHeader>
+            </DropdownMenuContent>
+          </DropdownMenu>
 
-              <TableBody>
-                {table.getRowModel().rows.length ? (
-                  table.getRowModel().rows.map((row) => (
-                    <TableRow
-                      key={row.id}
-                      data-state={row.getIsSelected() && "selected"}
-                    >
-                      {row.getVisibleCells().map((cell) => (
-                        <TableCell key={cell.id}>
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
-                          )}
-                        </TableCell>
-                      ))}
-                    </TableRow>
-                  ))
-                ) : (
-                  <TableRow>
+          {/* Export Dropdown */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="outline"
+                size="sm"
+                className="flex items-center gap-1 rounded-lg border border-border hover:border-primary hover:bg-primary/5 transition-all duration-200 font-medium bg-transparent text-xs"
+              >
+                <Download className="h-3 w-3" />
+                Export <ChevronDown className="ml-1 h-3 w-3" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              align="end"
+              className="rounded-lg shadow-lg border border-border"
+            >
+              <DropdownMenuItem
+                onClick={handleExportCSV}
+                className="hover:bg-primary/10 hover:text-primary cursor-pointer text-sm"
+              >
+                Export as CSV
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={handleExportJSON}
+                className="hover:bg-primary/10 hover:text-primary cursor-pointer text-sm"
+              >
+                Export as JSON
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={handleExportPDF}
+                className="hover:bg-primary/10 hover:text-primary cursor-pointer text-sm"
+              >
+                Export as PDF
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </div>
+
+      <div
+        className="overflow-auto rounded-lg border border-border bg-card shadow-sm"
+        id={id}
+      >
+        <Table>
+          <TableHeader className="bg-muted/50 border-b border-border sticky top-0 z-10">
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id} className="hover:bg-transparent">
+                {headerGroup.headers.map((header) => (
+                  <TableHead
+                    key={header.id}
+                    className="text-xs font-bold text-foreground py-2 px-3 border-r border-border/50 last:border-r-0 whitespace-nowrap"
+                  >
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                  </TableHead>
+                ))}
+              </TableRow>
+            ))}
+          </TableHeader>
+
+          <TableBody>
+            {table.getRowModel().rows.length ? (
+              table.getRowModel().rows.map((row, idx) => (
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && "selected"}
+                  className={`hover:bg-primary/5 transition-all duration-200 border-b border-border/50 ${
+                    idx % 2 === 0 ? "bg-background" : "bg-muted/20"
+                  } ${
+                    row.getIsSelected() ? "bg-primary/10 border-primary/20" : ""
+                  }`}
+                >
+                  {row.getVisibleCells().map((cell) => (
                     <TableCell
-                      colSpan={columns.length}
-                      className="h-24 text-center"
+                      key={cell.id}
+                      className="py-2 px-3 border-r border-border/30 last:border-r-0 text-xs"
                     >
-                      No results.
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
                     </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </div>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center text-muted-foreground py-6"
+                >
+                  <div className="flex flex-col items-center gap-2">
+                    <Package className="h-6 w-6 text-muted-foreground/50" />
+                    <span className="text-sm font-medium">
+                      No results found.
+                    </span>
+                    <span className="text-xs">
+                      Try adjusting your search or filters
+                    </span>
+                  </div>
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
 
-          {/* Pagination */}
-          <div className="flex items-center justify-end space-x-2 py-4">
-            <div className="text-muted-foreground flex-1 text-sm">
-              {table.getFilteredSelectedRowModel().rows.length} of{" "}
-              {table.getFilteredRowModel().rows.length} row(s) selected.
-            </div>
-            <div className="space-x-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => table.previousPage()}
-                disabled={!table.getCanPreviousPage()}
-              >
-                Previous
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => table.nextPage()}
-                disabled={!table.getCanNextPage()}
-              >
-                Next
-              </Button>
-            </div>
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-2 p-3 bg-card rounded-lg border border-border">
+        <div className="text-xs text-muted-foreground font-medium">
+          <span className="text-primary font-semibold">
+            {table.getFilteredSelectedRowModel().rows.length}
+          </span>{" "}
+          of{" "}
+          <span className="text-primary font-semibold">
+            {table.getFilteredRowModel().rows.length}
+          </span>{" "}
+          row(s) selected.
+        </div>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            className="rounded-lg border border-border hover:border-primary hover:bg-primary/5 transition-all duration-200 font-medium bg-transparent text-xs px-3 py-1"
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+          >
+            Previous
+          </Button>
+          <div className="flex items-center gap-1 px-2 py-1 bg-primary/10 rounded text-xs">
+            <span className="font-medium text-primary">
+              Page {table.getState().pagination.pageIndex + 1} of{" "}
+              {table.getPageCount()}
+            </span>
           </div>
-        </>
-      )}
+          <Button
+            variant="outline"
+            size="sm"
+            className="rounded-lg border border-border hover:border-primary hover:bg-primary/5 transition-all duration-200 font-medium bg-transparent text-xs px-3 py-1"
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+          >
+            Next
+          </Button>
+        </div>
+      </div>
     </div>
   );
 }

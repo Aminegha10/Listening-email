@@ -1,14 +1,8 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useGetLeadStatsQuery } from "@/features/dataApi";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardContent,
-  CardDescription,
-} from "@/components/ui/card";
+import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import {
   Select,
   SelectTrigger,
@@ -27,9 +21,7 @@ import {
 } from "recharts";
 import { ThreeDot } from "react-loading-indicators";
 import { Badge } from "./ui/badge";
-import { ChartNoAxesCombined, Table, Users } from "lucide-react";
-import Link from "next/link";
-import { Button } from "./ui/button";
+import { ArrowUpFromLine as ChartNoAxesCombined } from "lucide-react";
 
 export default function SalesAgentBarChart() {
   const [timeRange, setTimeRange] = useState("last_30");
@@ -45,31 +37,36 @@ export default function SalesAgentBarChart() {
     timeRange,
     type,
   });
-  console.log(stats);
 
   // 📊 Chart data
   const chartData = useMemo(() => {
     if (!stats?.agents) return [];
     return stats.agents.map((agent) => ({
       name: agent.name,
-      value: agent[type === "orders" ? "totalOrders" : "totalSales"], // ✅ normalize key to `value`
+      value: agent[type === "orders" ? "totalOrders" : "totalSales"],
     }));
   }, [stats, type]);
 
   return (
-    <Card>
-      <CardHeader className="px-6 border-b border-slate-200">
-        <div className="flex items-center justify-between flex-wrap gap-3">
+    <Card
+      className="shadow-sm border-0 bg-gradient-to-br from-white to-slate-50/30"
+      style={{
+        boxShadow:
+          "rgba(50, 50, 93, 0.25) 0px 0px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px",
+      }}
+    >
+      <CardHeader className="px-6 pb-4 border-b border-border/50">
+        <div className="flex items-center justify-between flex-wrap gap-4">
           {/* Left section */}
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-indigo-100 rounded-lg">
-              <ChartNoAxesCombined className="h-5 w-5 text-indigo-600" />
+            <div className="p-2.5 bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl border border-primary/10">
+              <ChartNoAxesCombined className="h-5 w-5 text-primary" />
             </div>
             <div>
-              <h3 className="text-xl font-semibold text-slate-900">
+              <h3 className="text-lg font-semibold text-foreground">
                 Agent {type === "orders" ? "Orders" : "Sales"}
               </h3>
-              <p className="text-sm text-slate-500">
+              <p className="text-sm text-muted-foreground">
                 {type === "orders" ? "Orders" : "Sales"}{" "}
                 {timeRange === "last_7"
                   ? "Last 7 Days"
@@ -83,7 +80,7 @@ export default function SalesAgentBarChart() {
           {/* Right section */}
           <div className="flex items-center gap-2 flex-wrap">
             <Select value={type} onValueChange={setType}>
-              <SelectTrigger className="min-w-[120px]">
+              <SelectTrigger className="min-w-[120px] h-9 bg-background border-border/60 hover:border-primary/30 transition-colors">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -93,7 +90,7 @@ export default function SalesAgentBarChart() {
             </Select>
 
             <Select value={timeRange} onValueChange={setTimeRange}>
-              <SelectTrigger className="min-w-[120px]">
+              <SelectTrigger className="min-w-[120px] h-9 bg-background border-border/60 hover:border-primary/30 transition-colors">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -104,7 +101,7 @@ export default function SalesAgentBarChart() {
             </Select>
 
             <Select value={agentFilter} onValueChange={setAgentFilter}>
-              <SelectTrigger className="min-w-[140px]">
+              <SelectTrigger className="min-w-[140px] h-9 bg-background border-border/60 hover:border-primary/30 transition-colors">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -115,50 +112,76 @@ export default function SalesAgentBarChart() {
                 ))}
               </SelectContent>
             </Select>
-
-            {/* <Link href="/dashboard/tables#agents" passHref>
-              <Button className="px-3 py-2 bg-white hover:bg-slate-200 text-slate-700 rounded-lg cursor-pointer transition-all duration-200 flex items-center gap-2 border border-slate-300 hover:border-slate-400">
-                <Table className="h-4 w-4" />
-              </Button>
-            </Link> */}
           </div>
         </div>
       </CardHeader>
 
-      <CardContent>
+      <CardContent className="p-6">
         {isLoading ? (
-          <div className="flex justify-center py-6">
-            <ThreeDot
-              variant="pulsate"
-              color="var(--color-primary)"
-              size="medium"
-            />
+          <div className="flex justify-center py-8">
+            <ThreeDot variant="pulsate" color="#00bca2" size="medium" />
           </div>
         ) : error ? (
-          <div className="flex justify-center py-6 text-red-500">
+          <div className="flex justify-center py-8 text-destructive">
             Error loading data
           </div>
         ) : chartData.length > 0 ? (
           <>
-            <ResponsiveContainer width="100%" height={300}>
+            <ResponsiveContainer width="100%" height={280}>
               <BarChart
                 data={chartData}
                 margin={{ top: 20, right: 30, left: 0, bottom: 5 }}
               >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  stroke="hsl(var(--border))"
+                  opacity={0.3}
+                />
+                <XAxis
+                  dataKey="name"
+                  tick={{ fontSize: 12, fill: "hsl(var(--muted-foreground))" }}
+                  axisLine={{ stroke: "hsl(var(--border))" }}
+                />
+                <YAxis
+                  tick={{ fontSize: 12, fill: "hsl(var(--muted-foreground))" }}
+                  axisLine={{ stroke: "hsl(var(--border))" }}
+                />
+                <Tooltip
+                  cursor={{ fill: "hsl(var(--muted))", opacity: 0.2 }}
+                  contentStyle={{
+                    backgroundColor: "hsl(var(--foreground))",
+                    border: "1px solid hsl(var(--border))",
+                    borderRadius: "0.75rem", // matches --radius-lg
+                    boxShadow:
+                      "0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.05)",
+                    padding: "10px 12px",
+                  }}
+                  labelStyle={{
+                    color: "hsl(var(--primary))",
+                    fontWeight: 600,
+                    fontSize: "14px",
+                    marginBottom: "4px",
+                  }}
+                  itemStyle={{
+                    color: "hsl(var(--chart-1))", // 🔹 pulled directly from your theme
+                    fontSize: "13px",
+                  }}
+                />
+
                 <Bar
-                  dataKey="value" // ✅ now consistent
-                  fill="var(--color-primary)"
-                  radius={[4, 4, 0, 0]}
+                  dataKey="value"
+                  fill="#00bca2"
+                  radius={[6, 6, 0, 0]}
+                  className="hover:opacity-80 transition-opacity"
                 />
               </BarChart>
             </ResponsiveContainer>
 
-            <div className="mt-4 text-center font-medium">
-              <Badge variant="secondary">
+            <div className="mt-6 flex justify-center">
+              <Badge
+                variant="secondary"
+                className="bg-primary/10 text-primary border-primary/20 px-4 py-1.5 font-medium"
+              >
                 {type === "orders"
                   ? `Total Orders: ${stats.totalOrders}`
                   : `Total Sales: ${stats.totalSales}`}
@@ -166,13 +189,11 @@ export default function SalesAgentBarChart() {
             </div>
           </>
         ) : (
-          <>
-            <div className="flex  justify-center pt-12 text-gray-500">
-              {type === "orders"
-                ? "No order data available"
-                : "No sales data available"}
-            </div>
-          </>
+          <div className="flex justify-center py-12 text-muted-foreground">
+            {type === "orders"
+              ? "No order data available"
+              : "No sales data available"}
+          </div>
         )}
       </CardContent>
     </Card>

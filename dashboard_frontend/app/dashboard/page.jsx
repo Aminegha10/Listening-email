@@ -26,7 +26,7 @@ export default function DashboardPage() {
         style={{ gridTemplateRows: "repeat(9, auto)" }}
       >
         <div className="col-span-5 row-span-3">
-          <TopProducts />
+          <SalesCounter />
         </div>
         <div className="col-span-4 row-span-6 col-start-6 overflow-auto">
           <TopClients />
