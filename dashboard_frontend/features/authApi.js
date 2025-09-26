@@ -12,17 +12,17 @@ export const authApi = createApi({
     // baseUrl: `http://217.65.146.240:5000/api/`, // 👈 backend base URL browser to backend container in server
     baseUrl: `${API_URL}/api/auth/`,
     credentials: "include", // ✅ SEND COOKIES
-    prepareHeaders: (headers, { getState }) => {
-      // Get token from Redux store (or any state)
-      const token = getState().auth.accessToken;
-      // If token exists, set Authorization header
-      if (token) {
-        headers.set("Authorization", `Bearer ${token}`);
-      }
+    // prepareHeaders: (headers, { getState }) => {
+    //   // Get token from Redux store (or any state)
+    //   const token = getState().auth.accessToken;
+    //   // If token exists, set Authorization header
+    //   if (token) {
+    //     headers.set("Authorization", `Bearer ${token}`);
+    //   }
 
-      // Always return headers
-      return headers;
-    },
+    //   // Always return headers
+    //   return headers;
+    // },
   }),
 
   endpoints: (builder) => ({

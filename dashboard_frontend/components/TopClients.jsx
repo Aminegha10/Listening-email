@@ -189,7 +189,7 @@ function TopClients() {
     data: topClients,
     isLoading,
     isError,
-  } = useGetClientsQuery({ filter });
+  } = useGetClientsQuery({ filter, goal: 120 });
   console.log(topClients);
 
   // const filteredAndSortedClients = useMemo(() => {
@@ -342,7 +342,8 @@ function TopClients() {
                   Top 10 Clients
                 </h3>
                 <p className="text-sm text-slate-500">
-                  Showing {topClients?.length} of 22 clients
+                  Showing {topClients?.data.length} of{" "}
+                  {topClients?.totalClients} clients
                 </p>
               </div>
             </div>
@@ -409,7 +410,7 @@ function TopClients() {
           ) : isError ? (
             <>error is happening</>
           ) : (
-            topClients.map((client, index) => (
+            topClients.data.map((client, index) => (
               <div
                 key={client.clientName}
                 className="p-6 hover:bg-slate-50 transition-colors group"

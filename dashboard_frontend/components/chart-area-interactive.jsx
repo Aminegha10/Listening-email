@@ -63,16 +63,21 @@ export default function SalesAgentBarChart() {
               <ChartNoAxesCombined className="h-5 w-5 text-primary" />
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-foreground">
-                Agent {type === "orders" ? "Orders" : "Sales"}
+              <h3 className="text-lg font-semibold text-gray-900 tracking-tight">
+                {type === "orders" ? "Orders Analytics" : "Sales Analytics"}
               </h3>
-              <p className="text-sm text-muted-foreground">
-                {type === "orders" ? "Orders" : "Sales"}{" "}
-                {timeRange === "last_7"
-                  ? "Last 7 Days"
+              <p className="text-sm text-gray-500 font-medium">
+                {type === "orders"
+                  ? timeRange === "last_7"
+                    ? "Orders performance in the last 7 days"
+                    : timeRange === "last_30"
+                    ? "Orders performance in the last 30 days"
+                    : "Orders performance for the current year"
+                  : timeRange === "last_7"
+                  ? "Sales performance in the last 7 days"
                   : timeRange === "last_30"
-                  ? "Last 30 Days"
-                  : "Year to Date"}
+                  ? "Sales performance in the last 30 days"
+                  : "Sales performance for the current year"}
               </p>
             </div>
           </div>

@@ -1,20 +1,6 @@
 "use client";
 
-import {
-  ChevronDown,
-  Crown,
-  Download,
-  FileJson,
-  FileText,
-  Funnel,
-  Sheet,
-  ShoppingBasket,
-  Table,
-  TableOfContents,
-  TrendingUp,
-  Trophy,
-  Users,
-} from "lucide-react";
+import { ChevronDown, Crown, Download, FileJson, FileText, Fuel as Funnel, Sheet, ShoppingBasket, Table, Tablets as TableOfContents, TrendingUp, Trophy, Users } from "lucide-react";
 import { Pie, PieChart, Cell } from "recharts";
 import { Badge } from "./ui/badge";
 import {
@@ -96,6 +82,22 @@ export function TopProducts() {
     };
     return acc;
   }, {});
+
+  // Helper function to get filter display info
+  const getFilterInfo = () => {
+    switch (filter) {
+      case "revenue":
+        return { label: "Revenue", icon: "💰", unit: "$" };
+      case "unitsSold":
+        return { label: "Units Sold", icon: "📦", unit: " units" };
+      case "ordersCount":
+        return { label: "Orders", icon: "📋", unit: " orders" };
+      default:
+        return { label: "Value", icon: "📊", unit: "" };
+    }
+  };
+
+  const filterInfo = getFilterInfo();
 
   return (
     <>
@@ -243,75 +245,54 @@ export function TopProducts() {
           )}
         </CardContent>
 
-        {/* Footer with Top Performer */}
-        {/* <CardFooter className="flex-col gap-3 text-sm border-t bg-gradient-to-r from-gray-50 to-gray-100/50 rounded-b-lg">
-          <div className="w-full">
-            <div
-              className="flex items-center justify-center gap-3 p-4 bg-gradient-to-r from-teal-50 to-emerald-50 border-2 rounded-xl shadow-md hover:shadow-lg transition-shadow"
-              style={{ borderColor: "#00bca2" }}
-            >
-              <div className="flex items-center justify-center gap-2">
-                <div
-                  className="p-2 rounded-full shadow-lg"
-                  style={{ backgroundColor: "#00bca2" }}
-                >
-                  <Crown className="w-5 h-5 text-white" />
+        {/* Top Product Performance Section */}
+        {TopProducts && TopProducts.length > 0 && (
+          <CardFooter className="border-t bg-slate-50/50 p-0">
+            <div className="w-full p-6">
+              <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="flex items-center justify-center w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl shadow-lg">
+                      <Trophy className="w-6 h-6 text-white" />
+                    </div>
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <Badge variant="secondary" className="bg-blue-50 text-blue-700 border-blue-200 text-xs font-medium px-2 py-1">
+                          TOP PRODUCT
+                        </Badge>
+                        <span className="text-sm text-slate-500">by {filterInfo.label}</span>
+                      </div>
+                      <h4 className="text-lg font-semibold text-slate-900 max-w-md truncate">
+                        {TopProducts[0].product}
+                      </h4>
+                    </div>
+                  </div>
+                  
+                  <div className="text-right">
+                    <div className="text-2xl font-bold text-slate-900 mb-1">
+                      {filterInfo.unit === "$" 
+                        ? `$${TopProducts[0][filter]}` 
+                        : `${TopProducts[0][filter]}${filterInfo.unit}`
+                      }
+                    </div>
+                    <div className="flex items-center justify-end gap-1 text-sm text-green-600">
+                      <TrendingUp className="w-4 h-4" />
+                      <span>Leading performance</span>
+                    </div>
+                  </div>
                 </div>
-                <div className="text-center">
-                  <div className="flex items-center justify-center gap-2 mb-1">
-                    <Trophy className="w-4 h-4" style={{ color: "#00bca2" }} />
-                    <span
-                      className="text-xs font-semibold uppercase tracking-wider"
-                      style={{ color: "#00bca2" }}
-                    >
-                      Top Performer
-                    </span>
-                  </div>
-                  <div className="text-base font-bold text-gray-800">
-                    {TopProducts?.[0].product}
-                  </div>
-                  <div className="flex items-center justify-center gap-1 text-sm">
-                    <span
-                      className="text-xl font-extrabold"
-                      style={{ color: "#00bca2" }}
-                    >
-                      {TopProducts?.[0][filter]}
-                    </span>
-                    <span className="text-gray-600">{filter}</span>
+                
+                <div className="mt-4 pt-4 border-t border-slate-100">
+                  <div className="flex items-center justify-between text-sm text-slate-600">
+                    <span>Performance metric</span>
+                    <span className="font-medium">{filterInfo.label}</span>
                   </div>
                 </div>
               </div>
             </div>
-
-            <div className="flex items-center justify-center gap-2 mt-3 text-xs text-gray-600">
-              <TrendingUp className="w-4 h-4 text-green-500" />
-              <span>Leading the team with exceptional performance</span>
-            </div>
-          </div>
-        </CardFooter> */}
+          </CardFooter>
+        )}
       </Card>
-      {/* Performance Highlight */}
-      {/* <Card className="mb-8 bg-gradient-to-r from-emerald-50 to-teal-50 border-emerald-200">
-        <CardContent className="p-6">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-emerald-500 rounded-full flex items-center justify-center">
-              <TrendingUp className="w-6 h-6 text-white" />
-            </div>
-            <div>
-              <p className="text-sm text-emerald-600 font-medium">
-                TOP PERFORMER
-              </p>
-              <p className="text-lg font-semibold text-emerald-800">
-                Soudeuse à tapis 900 verticale
-              </p>
-              <p className="text-sm text-emerald-600">4 units sold</p>
-            </div>
-          </div>
-          <p className="text-sm text-emerald-600 mt-2">
-            Leading the team with exceptional performance
-          </p>
-        </CardContent>
-      </Card> */}
     </>
   );
 }

@@ -6,84 +6,108 @@ import OrderModel from "../models/OrderModel.js";
 // get top clients
 const GetClients = async (req, res) => {
   try {
-    const { filter } = req.query;
-    console.log("Filter:", filter);
+    const { filter, goal } = req.query;
+    console.log("req.query:", req.query);
 
+    // const goal = parseInt(req.query.goal);
+    console.log("goal", goal);
+
+    let pipeline = [];
     let group = {};
-    let isRevenue = false;
+    let needsUnwind = false;
+    let sortStage = null;
 
-    if (filter === "all") {
-      // Aggregate everything for all data
-      group = {
-        revenue: {
-          $sum: { $multiply: ["$products.price", "$products.quantity"] },
-        },
-        orders: { $addToSet: "$_id" },
-        productsQuantity: { $sum: "$products.quantity" },
-      };
-      isRevenue = false; // not used for sorting here
-    } else if (filter === "revenue") {
-      isRevenue = true;
-      group = {
-        revenue: {
-          $sum: { $multiply: ["$products.price", "$products.quantity"] },
-        },
-      };
-    } else if (filter === "ordersCount") {
-      group = {
-        orders: { $addToSet: "$_id" },
-      };
-    } else if (filter == "productsQuantity") {
-      group = {
-        productsQuantity: { $sum: "$products.quantity" },
-      };
-    } else {
-      return res
-        .status(400)
-        .json({ success: false, message: "Invalid filter parameter" });
+    switch (filter) {
+      case "all":
+        group = {
+          revenue: {
+            $sum: { $multiply: ["$products.price", "$products.quantity"] },
+          },
+          orders: { $addToSet: "$_id" },
+          productsQuantity: { $sum: "$products.quantity" },
+        };
+        needsUnwind = true;
+        break;
+
+      case "revenue":
+        group = {
+          revenue: {
+            $sum: { $multiply: ["$products.price", "$products.quantity"] },
+          },
+        };
+        needsUnwind = true;
+        sortStage = { revenue: -1 };
+        break;
+
+      case "ordersCount":
+        group = {
+          orders: { $addToSet: "$_id" },
+        };
+        sortStage = { ordersCount: -1 };
+        break;
+
+      case "productsQuantity":
+        group = {
+          productsQuantity: { $sum: "$products.quantity" },
+        };
+        needsUnwind = true;
+        sortStage = { productsQuantity: -1 };
+        break;
+
+      default:
+        return res
+          .status(400)
+          .json({ success: false, message: "Invalid filter parameter" });
     }
 
-    const topClients = await OrderModel.aggregate([
-      // Unwind products only if revenue or productsQuantity is needed
-      ...(filter === "all" ||
-      filter === "revenue" ||
-      filter == "productsQuantity"
-        ? [{ $unwind: "$products" }]
-        : []),
+    // Add unwind stage only if needed
+    if (needsUnwind) {
+      pipeline.push({ $unwind: "$products" });
+    }
 
-      // Group by client
-      {
-        $group: {
-          _id: "$client",
-          ...group,
-        },
+    // Group by client
+    pipeline.push({
+      $group: {
+        _id: "$client",
+        ...group,
       },
+    });
 
-      // Project fields
-      {
-        $project: {
-          clientName: "$_id",
-          revenue: 1,
-          ordersCount: { $size: { $ifNull: ["$orders", []] } },
-          productsQuantity: 1,
-          _id: 0,
-        },
+    pipeline.push({
+      $project: {
+        clientName: "$_id",
+        revenue: 1,
+        ordersCount: { $size: { $ifNull: ["$orders", []] } },
+        productsQuantity: 1,
+        _id: 0,
       },
+    });
 
-      // Sort by revenue if filter === revenue, else ordersCount, else no sort
-      ...(filter === "revenue"
-        ? [{ $sort: { revenue: -1 } }]
-        : filter === "ordersCount"
-        ? [{ $sort: { ordersCount: -1 } }]
-        : filter === "productsQuantity"
-        ? [{ $sort: { productsQuantity: -1 } }]
-        : []),
-      ...(filter !== "all" ? [{ $limit: 10 }] : []), // limit only for specific filters
+    if (sortStage) pipeline.push({ $sort: sortStage });
+    if (filter !== "all") pipeline.push({ $limit: 10 });
+
+    // Run aggregation parallel with each other without executing two time with db
+    const [topClients, totalClientsAgg] = await Promise.all([
+      OrderModel.aggregate(pipeline),
+      OrderModel.distinct("client"), // still needed but now run in parallel
     ]);
 
-    res.status(200).json(topClients);
+    const totalClients = totalClientsAgg.length;
+
+    // Progress percentage
+    let progress = null;
+    if (!isNaN(goal) && goal > 0) {
+      progress = ((totalClients / goal) * 100).toFixed(2);
+    }
+
+    res.status(200).json({
+      success: true,
+      data: topClients,
+      totalClients,
+      progress: progress ? parseFloat(progress) : null,
+    });
   } catch (err) {
-    logger.error(err); // use logger instead of console
+    logger.error(err);
     res.status(500).json({ success: false, message: "Server error" });
   }
 };

@@ -44,7 +44,7 @@ import { Button } from "./ui/button";
 
 export const description = "A simple area chart";
 
-export function SalesCounter() {
+export function OrdersCounter() {
   // Filters
   const [timeRange, setTimeRange] = useState("last_30");
   const [agentFilter, setAgentFilter] = useState("all");
@@ -62,13 +62,13 @@ export function SalesCounter() {
 
   // Map API data to chart format
   const chartData =
-    leadStats?.salesByMonth.map((item) => ({
+    leadStats?.ordersByMonth.map((item) => ({
       month: item.month,
-      sales: item.sales,
+      orders: item.orders,
     })) || [];
 
   const chartConfig = {
-    sales: {
+    orders: {
       label: "Sales",
       color: "hsl(var(--primary))",
     },
@@ -90,10 +90,10 @@ export function SalesCounter() {
             </div>
             <div>
               <h3 className="text-lg font-semibold text-gray-900 tracking-tight">
-                Sales Analytics
+                Orders Analytics
               </h3>
               <p className="text-sm text-gray-500 font-medium">
-                Monthly sales performance overview
+                Monthly orders performance overview
               </p>
             </div>
           </div>
@@ -145,7 +145,7 @@ export function SalesCounter() {
                 color="hsl(var(--primary))"
                 size="medium"
               />
-              <p className="text-sm text-gray-500">Loading sales data...</p>
+              <p className="text-sm text-gray-500">Loading orders data...</p>
             </div>
           </div>
         )}
@@ -157,7 +157,7 @@ export function SalesCounter() {
                 <ChartNoAxesCombined className="h-6 w-6 text-red-500" />
               </div>
               <p className="text-red-600 font-medium">
-                Error loading sales data
+                Error loading Orders data
               </p>
               <p className="text-sm text-gray-500 mt-1">
                 Please try again later
@@ -203,7 +203,7 @@ export function SalesCounter() {
                 />
                 <defs>
                   <linearGradient
-                    id="salesGradient"
+                    id="ordersGradient"
                     x1="0"
                     y1="0"
                     x2="0"
@@ -219,9 +219,9 @@ export function SalesCounter() {
                   </linearGradient>
                 </defs>
                 <Area
-                  dataKey="sales"
+                  dataKey="orders"
                   type="monotone"
-                  fill="url(#salesGradient)"
+                  fill="url(#ordersGradient)"
                   fillOpacity={0.8}
                   stroke="hsl(var(--primary))"
                   strokeWidth={2.5}
@@ -245,7 +245,7 @@ export function SalesCounter() {
                 <ChartNoAxesCombined className="h-6 w-6 text-gray-400" />
               </div>
               <p className="text-gray-600 font-medium">
-                No sales data available
+                No Orders data available
               </p>
               <p className="text-sm text-gray-500 mt-1">
                 Data will appear here once available

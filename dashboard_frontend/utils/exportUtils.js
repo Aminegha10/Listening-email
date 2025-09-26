@@ -1,5 +1,7 @@
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import logo from "../public/SmabLogo.jpg"; // adjust path if needed
+import { logo64Base } from "./logo64Base";
 
 // csv export
 export const exportToCSV = (data, filterDate, dataType) => {
@@ -85,25 +87,45 @@ export const exportToJSON = (data, filterDate, dataType) => {
   window.URL.revokeObjectURL(url);
 };
 
-// pdf export
 export const exportToPDF = (data, filterDate, dataType, filterPieChart) => {
-  if (data.length == 0) return;
-  if (filterDate == null) filterDate = "AllTime";
-  console.log(data);
-  const doc = new jsPDF();
-  // Title and date
-  doc.setFontSize(18);
-  doc.text(`${dataType} Report - ${filterDate}`, 14, 20);
-  doc.setFontSize(12);
-  doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 28);
-  doc.setFontSize(8);
-  doc.text(`Number of ${dataType}: ${data.length}`, 14, 34);
+  if (data.length === 0) return;
+  if (!filterDate) filterDate = "AllTime";
 
-  // Prepare table headers
+  const doc = new jsPDF();
+  // truncated for readability
+  // ====== HEADER BAR ======
+  const headerHeight = 20;
+  doc.setFillColor(239, 83, 80);
+  doc.rect(0, 0, 210, headerHeight, "F");
+
+  // ====== LOGO INSIDE NAV (left, vertically centered) ======
+  const logoHeight = 12;
+  const logoWidth = 24;
+  const logoX = 10;
+  const logoY = (headerHeight - logoHeight) / 2;
+  doc.addImage(logo64Base, "JPEG", logoX, logoY, logoWidth, logoHeight);
+
+  // ====== TITLE (vertically centered in header next to logo) ======
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(14);
+  const titleY = headerHeight / 2 + 4; // approximate vertical centering
+  doc.text(`${dataType} Report`, logoX + logoWidth + 12, titleY);
+
+  // ====== DATE INFO ======
+  doc.setFontSize(10);
+  doc.setTextColor(0);
+  doc.text(`Date Filter: ${filterDate}`, 10, headerHeight + 5);
+  doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 150, headerHeight + 5);
+
+  // ====== DATA COUNT ======
+  doc.setFontSize(8);
+  doc.text(`Total ${dataType}: ${data.length}`, 10, headerHeight + 12);
+
+  // ====== TABLE ======
   const headers =
-    dataType == "Orders"
+    dataType === "Orders"
       ? ["Order #", "Client", "Price", "Sales Agent", "Products Count"]
-      : dataType == "Products"
+      : dataType === "Products"
       ? [
           "Product Name",
           "Quantity Sold",
@@ -111,12 +133,10 @@ export const exportToPDF = (data, filterDate, dataType, filterPieChart) => {
           "Orders Count",
           "Last Order Date",
         ]
-      : ["product", filterPieChart];
+      : ["Product", filterPieChart];
 
-  // Prepare table rows
-  console.log(filterPieChart);
   const rows =
-    dataType == "Orders"
+    dataType === "Orders"
       ? data.map((row) => [
           row.getValue("orderNumber"),
           row.getValue("client"),
@@ -124,8 +144,7 @@ export const exportToPDF = (data, filterDate, dataType, filterPieChart) => {
           row.getValue("salesAgent"),
           (row.getValue("products") || []).length,
         ])
-      : // for productsDetails table
-      dataType == "Products"
+      : dataType === "Products"
       ? data.map((row) => [
           row.getValue("productName"),
           row.getValue("quantitySold"),
@@ -133,17 +152,56 @@ export const exportToPDF = (data, filterDate, dataType, filterPieChart) => {
           row.getValue("ordersCount"),
           row.getValue("lastOrderedDate"),
         ])
-      : // for TopSellingProducts pie chart
-        data.map((row) => [row.product, row[filterPieChart]]);
+      : data.map((row) => [row.product, row[filterPieChart]]);
 
-  // Generate table
   autoTable(doc, {
     head: [headers],
     body: rows,
-    startY: 36, // start below the title
+    startY: headerHeight + 18,
+    styles: {
+      fontSize: 9,
+      cellPadding: 3,
+      textColor: [33, 33, 33],
+    },
+    headStyles: {
+      fillColor: [239, 83, 80],
+      textColor: 255,
+      fontStyle: "bold",
+    },
+    alternateRowStyles: {
+      fillColor: [245, 245, 245],
+    },
   });
 
-  // Save PDF
+  // ====== FOOTER ======
+  const pageCount = doc.getNumberOfPages();
+  for (let i = 1; i <= pageCount; i++) {
+    doc.setPage(i);
+
+    // background rectangle footer
+    doc.setFillColor(239, 83, 80);
+    doc.rect(0, doc.internal.pageSize.getHeight() - 20, 210, 20, "F");
+
+    // footer text (centered)
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(10);
+    doc.text(
+      "+212 123 456 789     contact@smab.com     https://www.smab-co.com",
+      doc.internal.pageSize.getWidth() / 2,
+      doc.internal.pageSize.getHeight() - 8,
+      { align: "center" }
+    );
+
+    // page number
+    doc.setFontSize(8);
+    doc.text(
+      `Page ${i} of ${pageCount}`,
+      doc.internal.pageSize.getWidth() - 20,
+      doc.internal.pageSize.getHeight() - 3
+    );
+  }
+
+  // ====== SAVE PDF ======
   doc.save(
     `${dataType}-${filterDate}-${new Date().toISOString().split("T")[0]}.pdf`
   );

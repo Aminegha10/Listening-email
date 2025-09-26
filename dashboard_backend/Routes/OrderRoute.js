@@ -5,7 +5,9 @@ import {
   GetOrderAndSalesStats,
   GetOrdersByAgents,
   GetOrdersTableStats,
+  GetTopSalesAgent,
 } from "../controllers/OrderController.js";
+import { verifyToken } from "../middleware/auth.js";
 
 const router = express.Router();
 
@@ -13,7 +15,8 @@ const router = express.Router();
 router.post("/Lead", AddOrder);
 
 // Get order stats (total + today, optional filter by salesAgent)
-router.get("/LeadStats", GetOrderAndSalesStats);
-router.get("/OrdersTableStats", GetOrdersTableStats);
-router.get("/OrdersByAgents", GetOrdersByAgents);
+router.get("/LeadStats",verifyToken, GetOrderAndSalesStats);
+router.get("/OrdersTableStats",verifyToken, GetOrdersTableStats);
+router.get("/OrdersByAgents",verifyToken, GetOrdersByAgents);
+router.get("/TopSalesAgent",verifyToken, GetTopSalesAgent);
 export default router;

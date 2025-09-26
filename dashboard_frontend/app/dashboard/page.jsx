@@ -1,6 +1,7 @@
 import SalesAgentBarChart from "@/components/chart-area-interactive.jsx";
 import { SectionCards } from "@/components/section-cards";
 import { SalesCounter } from "@/components/SalesCounter.jsx";
+import { OrdersCounter } from "@/components/OrdersCounter.jsx";
 import { OrdersTable } from "@/components/OrdersTable.jsx";
 // import { ChartPieLabelList } from "@/components/ChartPieLabelList.jsx";
 import { TopClients } from "@/components/TopClients.jsx";
@@ -26,7 +27,7 @@ export default function DashboardPage() {
         style={{ gridTemplateRows: "repeat(9, auto)" }}
       >
         <div className="col-span-5 row-span-3">
-          <SalesCounter />
+          <OrdersCounter />
         </div>
         <div className="col-span-4 row-span-6 col-start-6 overflow-auto">
           <TopClients />

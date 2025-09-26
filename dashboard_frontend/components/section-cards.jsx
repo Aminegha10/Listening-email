@@ -54,10 +54,13 @@ function MetricCard({ title, value, change, isPositive, icon, isLoading }) {
   );
 }
 
-export function SectionCards({ salesAgent }) {
+export function SectionCards() {
   // Call the API with optional salesAgent filter
-  const { data: stats, isLoading } = useGetLeadStatsQuery();
-
+  const { data: stats, isLoading } = useGetLeadStatsQuery({
+    salesAgent: undefined,
+    timeRange: "last_30",
+    type: "orders",
+  });
   const metrics = [
     {
       title: "Total Orders",
@@ -81,8 +84,8 @@ export function SectionCards({ salesAgent }) {
       icon: <Wallet className="w-6 h-6" />,
     },
     {
-      title: "Conversion %",
-      value: 0,
+      title: "Sales Today",
+      value: stats?.totalSalesToday + " dh",
       change: "+2%",
       isPositive: true,
       icon: <FileText className="w-6 h-6" />,

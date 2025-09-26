@@ -112,9 +112,9 @@ const GetOrderAndSalesStats = async (req, res) => {
     const totalOrders = await OrderModel.countDocuments();
 
     // ✅ Completed orders
-    const totalordersCompleted = await OrderModel.countDocuments({
-      isCompleted: true,
-    });
+    // const totalordersCompleted = await OrderModel.countDocuments({
+    //   isCompleted: true,
+    // });
     const result = await OrderModel.aggregate([
       { $match: { price: { $ne: null } } },
       { $group: { _id: null, total: { $sum: "$price" } } },
@@ -172,6 +172,17 @@ const GetOrderAndSalesStats = async (req, res) => {
       ...(salesAgent ? { salesAgent } : {}),
       createdAt: { $gte: startOfToday, $lte: endOfToday },
     });
+    // ✅ Total sales today
+    const todaySalesResult = await OrderModel.aggregate([
+      {
+        $match: {
+          ...(salesAgent ? { salesAgent } : {}),
+          createdAt: { $gte: startOfToday, $lte: endOfToday },
+        },
+      },
+      { $group: { _id: null, todaySales: { $sum: "$price" } } },
+    ]);
+    const todaySales = todaySalesResult[0]?.todaySales || 0;
     // Sales By Month
     const sales = await OrderModel.aggregate([
       {
@@ -203,20 +214,39 @@ const GetOrderAndSalesStats = async (req, res) => {
       sales: sale.totalSales,
     }));
 
+    // Orders By Month
+    const orders = await OrderModel.aggregate([
+      {
+        $group: {
+          _id: { $month: "$createdAt" },
+          totalOrders: { $sum: 1 },
+        },
+      },
+      { $sort: { _id: 1 } },
+    ]);
+
+    const ordersByMonth = orders.map((order) => ({
+      month: monthNames[order._id - 1],
+      orders: order.totalOrders,
+    }));
+
+    console.log("a")
     // ============================
     // 📤 Send response
     // ============================
     res.status(200).json({
+      totalSalesToday: todaySales,
       totalOrders,
-      totalordersCompleted,
+      // totalordersCompleted,
       todayOrders, // ✅ added
       agents: agentsAggregate,
       allAgents,
       totalSales,
       salesByMonth,
+      ordersByMonth
     });
   } catch (error) {
-    logger.error("Failed to fetch order stats:", error.message);
+    logger.error(error.message);
     res.status(500).json({ error: "Failed to fetch order stats" });
   }
 };
@@ -304,9 +334,65 @@ const GetOrdersByAgents = async (req, res) => {
   }
 };
 
+const GetTopSalesAgent = async (req, res) => {
+  try {
+    // Get all agents with their total sales
+    const agentsWithSales = await OrderModel.aggregate([
+      {
+        $group: {
+          _id: "$salesAgent",
+          totalSales: { $sum: "$price" },
+        },
+      },
+      {
+        $project: {
+          name: "$_id",
+          totalSales: 1,
+          _id: 0,
+        },
+      },
+      { $sort: { totalSales: -1 } },
+    ]);
+
+    // Get total number of agents
+    const totalAgents = await OrderModel.distinct("salesAgent");
+    const totalAgentsCount = totalAgents.length;
+
+    // Get total sales across all agents
+    const totalSalesResult = await OrderModel.aggregate([
+      {
+        $group: {
+          _id: null,
+          totalSales: { $sum: "$price" },
+        },
+      },
+    ]);
+    const totalSalesAll = totalSalesResult[0]?.totalSales || 0;
+
+    // Calculate top agent and percentage
+    const topAgent = agentsWithSales[0] || { name: "No Agent", totalSales: 0 };
+    const percentage = totalSalesAll > 0 ? (topAgent.totalSales / totalSalesAll) * 100 : 0;
+
+    const response = {
+      topAgent: {
+        name: topAgent.name,
+        totalSales: topAgent.totalSales,
+        percentage: Math.round(percentage * 10) / 10, // Round to 1 decimal place
+        totalAgents: totalAgentsCount,
+      },
+    };
+
+    res.status(200).json(response);
+  } catch (error) {
+    logger.error("Failed to fetch top sales agent:", error.message);
+    res.status(500).json({ error: "Failed to fetch top sales agent" });
+  }
+};
+
 export {
   AddOrder,
   GetOrderAndSalesStats,
   GetOrdersTableStats,
   GetOrdersByAgents,
+  GetTopSalesAgent,
 };
