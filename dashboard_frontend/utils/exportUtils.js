@@ -2,6 +2,7 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import logo from "../public/SmabLogo.jpg"; // adjust path if needed
 import { logo64Base } from "./logo64Base";
+import html2canvas from "html2canvas";
 
 // csv export
 export const exportToCSV = (data, filterDate, dataType) => {
@@ -87,41 +88,60 @@ export const exportToJSON = (data, filterDate, dataType) => {
   window.URL.revokeObjectURL(url);
 };
 
-export const exportToPDF = (data, filterDate, dataType, filterPieChart) => {
-  if (data.length === 0) return;
+export const exportToPDF = async (
+  data,
+  filterDate,
+  dataType,
+  filterPieChart,
+  chartElement,
+  filterTopClient 
+) => {
+  if (!data || data.length === 0) return;
   if (!filterDate) filterDate = "AllTime";
 
+  console.log(filterTopClient);
+  console.log(data);
   const doc = new jsPDF();
-  // truncated for readability
-  // ====== HEADER BAR ======
+
+  // ===== HEADER =====
   const headerHeight = 20;
-  doc.setFillColor(239, 83, 80);
+
+  // Background
+  doc.setFillColor(239, 83, 80); // red
   doc.rect(0, 0, 210, headerHeight, "F");
 
-  // ====== LOGO INSIDE NAV (left, vertically centered) ======
+  // Logo on the LEFT
   const logoHeight = 12;
   const logoWidth = 24;
-  const logoX = 10;
+  const logoX = 10; // left margin
   const logoY = (headerHeight - logoHeight) / 2;
   doc.addImage(logo64Base, "JPEG", logoX, logoY, logoWidth, logoHeight);
 
-  // ====== TITLE (vertically centered in header next to logo) ======
-  doc.setTextColor(255, 255, 255);
+  // Title on the RIGHT
+  doc.setTextColor(255, 255, 255); // white text
   doc.setFontSize(14);
-  const titleY = headerHeight / 2 + 4; // approximate vertical centering
-  doc.text(`${dataType} Report`, logoX + logoWidth + 12, titleY);
+  const titleText = `${dataType} Report`;
+  const titleWidth = doc.getTextWidth(titleText); // width of text
+  const titleX = 210 - titleWidth - 10; // right margin 10
+  const titleY = headerHeight / 2 + 4;
+  doc.text(titleText, titleX, titleY);
+  // HEADER===================
 
-  // ====== DATE INFO ======
   doc.setFontSize(10);
-  doc.setTextColor(0);
-  doc.text(`Date Filter: ${filterDate}`, 10, headerHeight + 5);
-  doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 150, headerHeight + 5);
-
-  // ====== DATA COUNT ======
+  doc.setTextColor(0); // black
+  doc.text(`Date Filter: ${filterDate}`, 10, headerHeight + 10);
+  doc.text(
+    `Generated on: ${new Date().toLocaleDateString()}`,
+    150,
+    headerHeight + 10
+  );
   doc.setFontSize(8);
-  doc.text(`Total ${dataType}: ${data.length}`, 10, headerHeight + 12);
+  doc.text(`Total Records: ${data.length}`, 10, headerHeight + 17);
 
-  // ====== TABLE ======
+  // ===== TABLE =====
+  // padding top +...
+  const startY = headerHeight + 25;
+
   const headers =
     dataType === "Orders"
       ? ["Order #", "Client", "Price", "Sales Agent", "Products Count"]
@@ -133,6 +153,16 @@ export const exportToPDF = (data, filterDate, dataType, filterPieChart) => {
           "Orders Count",
           "Last Order Date",
         ]
+      : dataType === "Clients"
+      ? [
+          "Client Name",
+          "Orders Count",
+          "Products Ordered",
+          "Order Average",
+          "Revenue",
+        ]
+      : dataType === "TopClients"
+      ? ["Client Name", filterTopClient]
       : ["Product", filterPieChart];
 
   const rows =
@@ -152,37 +182,160 @@ export const exportToPDF = (data, filterDate, dataType, filterPieChart) => {
           row.getValue("ordersCount"),
           row.getValue("lastOrderedDate"),
         ])
+      : dataType === "Clients"
+      ? data.map((row) => [
+          row.getValue("clientName"),
+          row.getValue("ordersCount"),
+          row.getValue("productsQuantity") || "N/A",
+          row.getValue("orderAverage"),
+          row.getValue("revenue"),
+        ])
+      : dataType === "TopClients"
+      ? data.map((row) => [row.clientName, row[filterTopClient]])
       : data.map((row) => [row.product, row[filterPieChart]]);
 
   autoTable(doc, {
     head: [headers],
     body: rows,
-    startY: headerHeight + 18,
+    startY,
     styles: {
-      fontSize: 9,
-      cellPadding: 3,
-      textColor: [33, 33, 33],
+      fontSize: 9, // slightly larger font
+      cellPadding: 4, // more padding for readability
+      textColor: 50, // dark gray text
+      halign: "center", // center horizontally
+      valign: "middle", // center vertically
+      lineColor: [220, 220, 220], // subtle border color
+      lineWidth: 0.3,
     },
     headStyles: {
-      fillColor: [239, 83, 80],
-      textColor: 255,
+      fillColor: [239, 83, 80], // red header
+      textColor: 255, // white text
       fontStyle: "bold",
+      halign: "center",
+      valign: "middle",
     },
     alternateRowStyles: {
-      fillColor: [245, 245, 245],
+      fillColor: [245, 245, 245], // light gray for alternate rows
     },
+    // columnStyles: {
+    //   0: { cellWidth: 25 }, // adjust column width for first column
+    //   1: { cellWidth: 35 }, // adjust for client/product name
+    //   2: { cellWidth: 25 },
+    //   3: { cellWidth: 30 },
+    //   4: { cellWidth: 25 },
+    // },
+    margin: { top: startY, left: 10, right: 10 },
+    tableLineColor: [200, 200, 200], // subtle table border
+    tableLineWidth: 0.3,
   });
 
-  // ====== FOOTER ======
+  // ===== ADD CHART TO SECOND PAGE =====
+  if (chartElement) {
+    try {
+      doc.addPage();
+
+      // Header for second page
+      doc.setFillColor(239, 83, 80);
+      doc.rect(0, 0, 210, headerHeight, "F");
+      doc.addImage(logo64Base, "JPEG", logoX, logoY, logoWidth, logoHeight);
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(14);
+      doc.text(
+        `${dataType} Chart Visualization`,
+        logoX + logoWidth + 12,
+        titleY
+      );
+
+      const tempContainer = document.createElement("div");
+      tempContainer.style.position = "absolute";
+      tempContainer.style.left = "-9999px";
+      tempContainer.style.top = "-9999px";
+      tempContainer.style.backgroundColor = "#ffffff";
+      tempContainer.style.padding = "20px";
+      tempContainer.style.borderRadius = "8px";
+      tempContainer.style.boxShadow = "0 2px 10px rgba(0,0,0,0.1)";
+
+      const chartClone = chartElement.cloneNode(true);
+
+      const style = document.createElement("style");
+      style.textContent = `
+        * { color: #333 !important; background-color: #fff !important; border-color: #ddd !important; }
+        .recharts-pie-label-text { fill: #333 !important; font-size: 10px !important; } /* smaller labels */
+        .recharts-tooltip-wrapper { background-color: #fff !important; border: 1px solid #ddd !important; }
+      `;
+      tempContainer.appendChild(style);
+      tempContainer.appendChild(chartClone);
+      document.body.appendChild(tempContainer);
+
+      const canvas = await html2canvas(tempContainer, {
+        scale: 2,
+        backgroundColor: "#ffffff",
+        useCORS: true,
+      });
+      const imgData = canvas.toDataURL("image/png");
+      const imgProps = doc.getImageProperties(imgData);
+      const pdfWidth = 120; // slightly smaller chart width
+      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+      const chartX = (210 - pdfWidth) / 2;
+      const chartY = headerHeight + 20;
+      doc.addImage(imgData, "PNG", chartX, chartY, pdfWidth, pdfHeight);
+
+      // ===== LEGEND =====
+      const legendX = 20;
+      let legendY = chartY + pdfHeight + 10;
+      const boxSize = 3; // smaller box
+      const spacing = 3;
+      const lineHeight = 4; // smaller line height
+
+      const COLORS = [
+        "#00bca2",
+        "#3b82f6",
+        "#10b981",
+        "#f59e0b",
+        "#8b5cf6",
+        "#ff4d4f",
+        "#ffffff",
+        "#14b8a6",
+        "#f87171",
+        "#f3f4f6",
+        "#0ea5e9",
+        "#818cf8",
+        "#e5e7eb",
+        "#facc15",
+        "#a3e635",
+        "#f472b6",
+        "#6366f1",
+        "#f87171",
+        "#fef3c7",
+        "#f9fafb",
+      ];
+
+      data.forEach((item, i) => {
+        const color = COLORS[i % COLORS.length];
+        const text = item.product;
+
+        doc.setFillColor(color);
+        doc.rect(legendX, legendY, boxSize, boxSize, "F");
+
+        doc.setTextColor(0);
+        doc.setFontSize(7); // smaller font for legend
+        doc.text(text, legendX + boxSize + spacing, legendY + boxSize - 1);
+
+        legendY += lineHeight;
+      });
+
+      document.body.removeChild(tempContainer);
+    } catch (error) {
+      console.warn("Chart capture failed:", error);
+    }
+  }
+
+  // ===== FOOTER =====
   const pageCount = doc.getNumberOfPages();
   for (let i = 1; i <= pageCount; i++) {
     doc.setPage(i);
-
-    // background rectangle footer
     doc.setFillColor(239, 83, 80);
     doc.rect(0, doc.internal.pageSize.getHeight() - 20, 210, 20, "F");
-
-    // footer text (centered)
     doc.setTextColor(255, 255, 255);
     doc.setFontSize(10);
     doc.text(
@@ -191,8 +344,6 @@ export const exportToPDF = (data, filterDate, dataType, filterPieChart) => {
       doc.internal.pageSize.getHeight() - 8,
       { align: "center" }
     );
-
-    // page number
     doc.setFontSize(8);
     doc.text(
       `Page ${i} of ${pageCount}`,
@@ -201,7 +352,6 @@ export const exportToPDF = (data, filterDate, dataType, filterPieChart) => {
     );
   }
 
-  // ====== SAVE PDF ======
   doc.save(
     `${dataType}-${filterDate}-${new Date().toISOString().split("T")[0]}.pdf`
   );

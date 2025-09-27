@@ -29,6 +29,7 @@ import {
 } from "@/components/ui/table";
 import { useGetClientsQuery } from "@/features/dataApi";
 import { Input } from "./ui/input";
+import { exportToCSV, exportToJSON, exportToPDF } from "@/utils/exportUtils";
 
 export const columns = [
   {
@@ -152,7 +153,7 @@ export function ClientsTable() {
   });
 
   const table = useReactTable({
-    data: clients || [],
+    data: clients.data || [],
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -164,6 +165,14 @@ export function ClientsTable() {
     onRowSelectionChange: setRowSelection,
     state: { sorting, columnFilters, columnVisibility, rowSelection },
   });
+
+  // exporting
+  const handleExportCSV = () =>
+    exportToCSV(table.getFilteredRowModel().rows, null, "Clients");
+  const handleExportJSON = () =>
+    exportToJSON(table.getFilteredRowModel().rows, null, "Clients");
+  const handleExportPDF = () =>
+    exportToPDF(table.getFilteredRowModel().rows, null, "Clients");
 
   return (
     <div className="w-full space-y-3 max-w-full overflow-hidden">
@@ -227,13 +236,22 @@ export function ClientsTable() {
               align="end"
               className="rounded-lg shadow-lg border border-border"
             >
-              <DropdownMenuItem className="hover:bg-primary/10 hover:text-primary cursor-pointer text-sm">
+              <DropdownMenuItem
+                onClick={handleExportCSV}
+                className="hover:bg-primary/10 hover:text-primary cursor-pointer text-sm"
+              >
                 Export as CSV
               </DropdownMenuItem>
-              <DropdownMenuItem className="hover:bg-primary/10 hover:text-primary cursor-pointer text-sm">
+              <DropdownMenuItem
+                onClick={handleExportJSON}
+                className="hover:bg-primary/10 hover:text-primary cursor-pointer text-sm"
+              >
                 Export as JSON
               </DropdownMenuItem>
-              <DropdownMenuItem className="hover:bg-primary/10 hover:text-primary cursor-pointer text-sm">
+              <DropdownMenuItem
+                onClick={handleExportPDF}
+                className="hover:bg-primary/10 hover:text-primary cursor-pointer text-sm"
+              >
                 Export as PDF
               </DropdownMenuItem>
             </DropdownMenuContent>

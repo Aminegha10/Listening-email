@@ -14,6 +14,7 @@ import {
   Table,
   ShoppingBasket,
   Wallet,
+  FileText,
 } from "lucide-react";
 import { useGetLeadStatsQuery, useGetClientsQuery } from "@/features/dataApi";
 import {
@@ -29,6 +30,7 @@ import { Riple } from "react-loading-indicators";
 import { Button } from "./ui/button";
 import Link from "next/link";
 import { Avatar, AvatarFallback } from "./ui/avatar";
+import { exportToPDF } from "@/utils/exportUtils";
 
 // const mockClients = [
 //   {
@@ -264,6 +266,14 @@ function TopClients() {
     }
   };
 
+  // exporting
+  const handleExportCSV = () =>
+    exportToCSV(topClients.data, null, "TopClients", null, null, filter);
+  const handleExportJSON = () =>
+    exportToJSON(topClients.data, null, "TopClients", null, null, filter);
+  const handleExportPDF = () =>
+    exportToPDF(topClients.data, null, "TopClients", null, null, filter);
+
   return (
     <div className="max-w-6xl mx-auto">
       {/* Header */}
@@ -328,6 +338,7 @@ function TopClients() {
             </div>
           </div>
         </div> */}
+      {/* Header */}
 
       {/* Clients Card */}
       <div className="bg-white rounded-xl shadow-sm border border-slate-200">
@@ -356,11 +367,12 @@ function TopClients() {
                     className="flex items-center gap-2 bg-transparent cursor-pointer"
                   >
                     <Funnel />
-                    {filter == "revenue"
+                    {filter === "revenue"
                       ? "By Revenue"
-                      : "productsQuantity"
+                      : filter === "productsQuantity"
                       ? "By Products Quantity"
-                      : "By Orders Count"}{" "}
+                      : "By Orders Count"}
+
                     <ChevronDown />
                   </Button>
                 </DropdownMenuTrigger>
@@ -386,13 +398,50 @@ function TopClients() {
                   {/* <DropdownMenuItem>Most Orders Count</DropdownMenuItem> */}
                 </DropdownMenuContent>
               </DropdownMenu>
-              <div>
+              {/* Export Dropdown */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex items-center gap-1 rounded-lg border border-border hover:border-primary hover:bg-primary/5 transition-all duration-200 font-medium bg-transparent text-xs"
+                  >
+                    <Download className="h-3 w-3" />
+                    Export <ChevronDown className="ml-1 h-3 w-3" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                  align="end"
+                  className="rounded-lg shadow-lg border border-border"
+                >
+                  <DropdownMenuItem
+                    onClick={handleExportCSV}
+                    className="hover:bg-primary/10 hover:text-primary cursor-pointer text-sm"
+                  >
+                    Export as CSV
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={handleExportJSON}
+                    className="hover:bg-primary/10 hover:text-primary cursor-pointer text-sm"
+                  >
+                    Export as JSON
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={handleExportPDF}
+                    className="hover:bg-primary/10 hover:text-primary cursor-pointer text-sm"
+                  >
+                    Export as PDF
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              {/* <div>
                 <Link href="/dashboard/tables#clients" passHref>
                   <Button className="px-3 py-2 bg-white hover:bg-slate-200 text-slate-700 rounded-lg cursor-pointer transition-all duration-200 flex items-center gap-2 border border-slate-300 hover:border-slate-400">
                     <Table className="h-4 w-4" />
                   </Button>
                 </Link>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

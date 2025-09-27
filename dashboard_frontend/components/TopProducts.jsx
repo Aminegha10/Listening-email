@@ -1,6 +1,20 @@
 "use client";
 
-import { ChevronDown, Crown, Download, FileJson, FileText, Fuel as Funnel, Sheet, ShoppingBasket, Table, Tablets as TableOfContents, TrendingUp, Trophy, Users } from "lucide-react";
+import {
+  ChevronDown,
+  Crown,
+  Download,
+  FileJson,
+  FileText,
+  Fuel as Funnel,
+  Sheet,
+  ShoppingBasket,
+  Table,
+  Tablets as TableOfContents,
+  TrendingUp,
+  Trophy,
+  Users,
+} from "lucide-react";
 import { Pie, PieChart, Cell } from "recharts";
 import { Badge } from "./ui/badge";
 import {
@@ -29,7 +43,7 @@ import {
 import { useGetTopProductsQuery } from "@/features/dataApi";
 import { Button } from "./ui/button";
 import { exportToPDF } from "@/utils/exportUtils";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Riple } from "react-loading-indicators";
 import Link from "next/link";
 
@@ -37,27 +51,28 @@ export const description = "A pie chart showing top-selling products";
 
 // Up to 20 colors (for dynamic data)
 const COLORS = [
-  "var(--chart-1)",
-  "var(--chart-2)",
-  "var(--chart-3)",
-  "var(--chart-4)",
-  "var(--chart-5)",
-  "var(--primary)",
-  "#ffff00",
-  "var(--accent)",
-  "var(--destructive)",
-  "var(--muted)",
-  "var(--sidebar-primary)",
-  "var(--sidebar-accent)",
-  "var(--sidebar-border)",
-  "var(--primary-foreground)",
-  "var(--secondary-foreground)",
-  "var(--accent-foreground)",
-  "var(--destructive-foreground)",
-  "var(--muted-foreground)",
-  "var(--card)",
-  "var(--popover)",
+  "#00bca2", // chart-1 (teal)
+  "#3b82f6", // chart-2 (blue)
+  "#10b981", // chart-3 (green)
+  "#f59e0b", // chart-4 (orange)
+  "#8b5cf6", // chart-5 (purple)
+  "#00bca2", // primary
+  "#ffff00", // yellow
+  "#00bca2", // accent
+  "#ff4d4f", // destructive (red)
+  "#f5f5f5", // muted
+  "#00bca2", // sidebar-primary
+  "#f0f0f0", // sidebar-accent
+  "#e0e0e0", // sidebar-border
+  "#ffffff", // primary-foreground
+  "#333333", // secondary-foreground
+  "#ffffff", // accent-foreground
+  "#ffffff", // destructive-foreground
+  "#666666", // muted-foreground
+  "#ffffff", // card
+  "#ffffff", // popover
 ];
+
 
 // export functions with date suffix
 // const handleExportCSV = () =>
@@ -66,13 +81,21 @@ const COLORS = [
 //   exportToJSON();
 
 export function TopProducts() {
+  // Select chart
+  const chartRef = useRef(null);
   const [filter, setFilter] = useState("unitsSold"); // default filter
   const { data, isLoading, isError } = useGetTopProductsQuery({ filter });
   console.log(data);
   const TopProducts = data?.topProducts;
 
   const handleExportPDF = () =>
-    exportToPDF(TopProducts, null, "TopSellingProducts", filter);
+    exportToPDF(
+      TopProducts,
+      null,
+      "TopSellingProducts",
+      filter,
+      chartRef.current
+    );
 
   // ✅ Create a chartConfig dynamically (like chartConfig in ChartPieLabel)
   const chartConfig = TopProducts?.reduce((acc, product, index) => {
@@ -101,7 +124,7 @@ export function TopProducts() {
 
   return (
     <>
-      <Card className="flex flex-col py-0">
+      <Card className="flex flex-col py-0" ref={chartRef}>
         {/* Header */}
         <CardHeader className=" ">
           {/* <div> */}
@@ -219,6 +242,7 @@ export function TopProducts() {
             <p className="text-center text-gray-500">No data available</p>
           ) : (
             <ChartContainer
+              ref={chartRef}
               config={chartConfig}
               className="[&_.recharts-pie-label-text]:fill-foreground mx-auto aspect-square max-h-[300px] pb-0"
             >
@@ -257,23 +281,27 @@ export function TopProducts() {
                     </div>
                     <div className="space-y-1">
                       <div className="flex items-center gap-2">
-                        <Badge variant="secondary" className="bg-blue-50 text-blue-700 border-blue-200 text-xs font-medium px-2 py-1">
+                        <Badge
+                          variant="secondary"
+                          className="bg-blue-50 text-blue-700 border-blue-200 text-xs font-medium px-2 py-1"
+                        >
                           TOP PRODUCT
                         </Badge>
-                        <span className="text-sm text-slate-500">by {filterInfo.label}</span>
+                        <span className="text-sm text-slate-500">
+                          by {filterInfo.label}
+                        </span>
                       </div>
                       <h4 className="text-lg font-semibold text-slate-900 max-w-md truncate">
                         {TopProducts[0].product}
                       </h4>
                     </div>
                   </div>
-                  
+
                   <div className="text-right">
                     <div className="text-2xl font-bold text-slate-900 mb-1">
-                      {filterInfo.unit === "$" 
-                        ? `$${TopProducts[0][filter]}` 
-                        : `${TopProducts[0][filter]}${filterInfo.unit}`
-                      }
+                      {filterInfo.unit === "$"
+                        ? `$${TopProducts[0][filter]}`
+                        : `${TopProducts[0][filter]}${filterInfo.unit}`}
                     </div>
                     <div className="flex items-center justify-end gap-1 text-sm text-green-600">
                       <TrendingUp className="w-4 h-4" />
@@ -281,7 +309,7 @@ export function TopProducts() {
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="mt-4 pt-4 border-t border-slate-100">
                   <div className="flex items-center justify-between text-sm text-slate-600">
                     <span>Performance metric</span>

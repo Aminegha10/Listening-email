@@ -22,13 +22,14 @@
   --destructive-foreground: oklch(1 0 0);
   --border: oklch(0.9 0 0); /* Light gray borders */
   --input: oklch(0.98 0 0); /* Very light gray inputs */
-  --ring: oklch(0.7 0.15 180); /* Teal focus ring */
+  --ring: #00bca2; /* Teal focus ring */
   --chart-1: oklch(0.7 0.15 180); /* Teal */
   --chart-2: oklch(0.6 0.12 220); /* Blue */
   --chart-3: oklch(0.65 0.18 140); /* Green */
   --chart-4: oklch(0.7 0.2 60); /* Orange */
   --chart-5: oklch(0.6 0.15 300); /* Purple */
   --radius: 0.75rem;
+
   
   /* Sidebar specific colors */
   --sidebar: oklch(0.98 0 0); /* Very light gray sidebar */
