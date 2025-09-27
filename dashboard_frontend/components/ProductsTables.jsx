@@ -15,6 +15,7 @@ import {
   Download,
   Info,
   Package,
+  ShoppingCart,
   TrendingUp,
 } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -113,7 +114,7 @@ export const columns = [
     cell: ({ row }) => (
       <div className="lowercase justify-center flex items-center gap-2 font-medium">
         {row.getValue("ordersCount")}{" "}
-        <Package className="h-4 w-4 text-primary" />
+        <ShoppingCart className="h-4 w-4 text-primary" />
       </div>
     ),
   },

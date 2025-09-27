@@ -21,7 +21,11 @@ import {
 } from "recharts";
 import { ThreeDot } from "react-loading-indicators";
 import { Badge } from "./ui/badge";
-import { ArrowUpFromLine as ChartNoAxesCombined } from "lucide-react";
+import {
+  ArrowUpFromLine as ChartNoAxesCombined,
+  ShoppingCart,
+  Users,
+} from "lucide-react";
 
 export default function SalesAgentBarChart({ timeRange }) {
   // const [timeRange, setTimeRange] = useState("thisMonth");
@@ -69,16 +73,16 @@ export default function SalesAgentBarChart({ timeRange }) {
               </h3>
               <p className="text-sm text-gray-500 font-medium">
                 {type === "orders"
-                  ? timeRange === "last7days"
-                    ? "Orders in the last 7 days"
+                  ? timeRange === "thisWeek"
+                    ? "Orders performance this Week"
                     : timeRange === "thisMonth"
-                    ? "Orders in the last 30 days"
-                    : "Orders for the current year"
-                  : timeRange === "last7days"
-                  ? "Sales in the last 7 days"
+                    ? "Orders performance this Month"
+                    : "Orders performance this Year"
+                  : timeRange === "thisWeek"
+                  ? "Sales performance this Week"
                   : timeRange === "thisMonth"
-                  ? "Sales in the last 30 days"
-                  : "Sales for the current year"}
+                  ? "Sales performance this Month"
+                  : "Sales performance this Year"}
               </p>
             </div>
           </div>
@@ -86,7 +90,8 @@ export default function SalesAgentBarChart({ timeRange }) {
           {/* Right section */}
           <div className="flex items-center gap-2 flex-wrap">
             <Select value={type} onValueChange={setType}>
-              <SelectTrigger className="min-w-[120px] h-9 bg-background border-border/60 hover:border-primary/30 transition-colors">
+              <SelectTrigger className="min-w-[120px] cursor-pointer h-9 bg-background border-border/60 hover:border-primary/30 transition-colors">
+                <ShoppingCart />
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -107,7 +112,8 @@ export default function SalesAgentBarChart({ timeRange }) {
             </Select> */}
 
             <Select value={agentFilter} onValueChange={setAgentFilter}>
-              <SelectTrigger className="min-w-[140px] h-9 bg-background border-border/60 hover:border-primary/30 transition-colors">
+              <SelectTrigger className="min-w-[140px] cursor-pointer h-9 bg-background border-border/60 hover:border-primary/30 transition-colors">
+                <Users />
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -189,8 +195,8 @@ export default function SalesAgentBarChart({ timeRange }) {
                 className="bg-primary/10 text-primary border-primary/20 px-4 py-1.5 font-medium"
               >
                 {type === "orders"
-                  ? `Total Orders: ${stats.totalOrders}`
-                  : `Total Sales: ${stats.totalSales}`}
+                  ? `Total Orders: ${stats.totalOrdersByTimeRange}`
+                  : `Total Sales: ${stats.totalSalesByTimeRange}`}
               </Badge>
             </div>
           </>

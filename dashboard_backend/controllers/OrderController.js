@@ -460,6 +460,8 @@ const GetOrderAndSalesStats = async (req, res) => {
       todayOrders,
       totalSales,
       allAgents,
+      totalOrdersByTimeRange,
+      totalSalesByTimeRange,
       // agents: agentsAggregate,
       agents: agentsByTimeRange, // ✅ NEW
       salesData,

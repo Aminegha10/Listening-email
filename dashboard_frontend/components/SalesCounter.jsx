@@ -105,7 +105,11 @@ export function SalesCounter({ timeRange }) {
                 Sales Analytics
               </h3>
               <p className="text-sm text-gray-500 font-medium">
-                Monthly sales performance overview
+                {timeRange === "thisWeek"
+                  ? "Sales performance this Week"
+                  : timeRange === "thisMonth"
+                  ? "Sales performance this Month"
+                  : "Sales performance this Year"}
               </p>
             </div>
           </div>

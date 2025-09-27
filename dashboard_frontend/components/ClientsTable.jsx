@@ -8,7 +8,13 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { ArrowUpDown, ChevronDown, Download, Package } from "lucide-react";
+import {
+  ArrowUpDown,
+  ChevronDown,
+  Download,
+  Package,
+  ShoppingCart,
+} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -79,7 +85,7 @@ export const columns = [
     cell: ({ row }) => (
       <div className="justify-center flex items-center gap-2 font-medium">
         {row.getValue("ordersCount")}
-        <Package className="h-4 w-4 text-primary" />
+        <ShoppingCart className="h-4 w-4 text-primary" />
       </div>
     ),
   },

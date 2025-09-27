@@ -88,9 +88,27 @@ const GetTopProducts = async (req, res) => {
     ].filter(Boolean); // remove null if no date filter
     console.log(dateFilter);
 
+    // -------------------------
+    // Total distinct ordered products
+    // -------------------------
+    const distinctProducts = await OrderModel.aggregate(
+      [
+        Object.keys(dateFilter).length > 0 ? { $match: dateFilter } : null,
+        { $unwind: "$products" },
+        { $group: { _id: "$products.name" } },
+        { $count: "totalDistinctProducts" },
+      ].filter(Boolean)
+    );
+
+    const totalOrderedProducts =
+      distinctProducts[0]?.totalDistinctProducts || 0;
+
     const topProducts = await OrderModel.aggregate(pipeline);
 
-    res.status(200).json({ topProducts });
+    res.status(200).json({
+      topProducts,
+      totalOrderedProducts,
+    });
   } catch (err) {
     logger.error(err.message);
     res.status(500).json({ message: "Server error" });

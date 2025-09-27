@@ -7,6 +7,8 @@ import {
   FileJson,
   FileText,
   Fuel as Funnel,
+  Package,
+  Settings2,
   Sheet,
   ShoppingBasket,
   Table,
@@ -140,15 +142,16 @@ export function TopProducts({ timeRange }) {
           <div className="p-6 border-b flex justify-between items-center border-slate-200">
             <div className="flex gap-3">
               <div className="flex items-center justify-between gap-3">
-                <div className="p-2 bg-indigo-100 rounded-lg">
-                  <ShoppingBasket className="h-5 w-5 text-indigo-600" />
+                <div className="p-2.5 bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl border border-primary/10">
+                  <Package className="h-5 w-5 text-primary" />
                 </div>
                 <div>
                   <h3 className="text-xl font-semibold text-slate-900">
                     Top 10 Products
                   </h3>
-                  <p className="text-sm text-slate-500">
-                    Showing 10 of 22 clients
+                  <p className="text-sm text-gray-500 font-medium">
+                    Showing {TopProducts?.length} of{" "}
+                    {data?.totalOrderedProducts} products
                   </p>
                 </div>
               </div>
@@ -160,8 +163,13 @@ export function TopProducts({ timeRange }) {
                     variant="outline"
                     className="flex items-center gap-2 bg-transparent cursor-pointer "
                   >
-                    <Funnel />
-                    Filter Products <ChevronDown />
+                    <Settings2 />
+                    {filter == "unitsSold"
+                      ? "Most Sold"
+                      : filter == "revenue"
+                      ? "Top Revenue"
+                      : "Most Orders Count"}
+                    <ChevronDown />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
@@ -190,7 +198,7 @@ export function TopProducts({ timeRange }) {
                 <DropdownMenuTrigger asChild>
                   <Button
                     variant="outline"
-                    className="flex items-center gap-2 bg-transparent"
+                    className="flex items-center gap-2 bg-transparent cursor-pointer"
                   >
                     <Download className="h-4 w-4" />
                     Export <ChevronDown />
@@ -289,7 +297,7 @@ export function TopProducts({ timeRange }) {
                         >
                           TOP PRODUCT
                         </Badge>
-                        <span className="text-sm text-slate-500">
+                        <span className="text-sm text-gray-500 font-medium">
                           by {filterInfo.label}
                         </span>
                       </div>
@@ -302,7 +310,7 @@ export function TopProducts({ timeRange }) {
                   <div className="text-right">
                     <div className="text-2xl font-bold text-slate-900 mb-1">
                       {filterInfo.unit === "$"
-                        ? `$${TopProducts[0][filter]}`
+                        ? `${TopProducts[0][filter]} DH`
                         : `${TopProducts[0][filter]}${filterInfo.unit}`}
                     </div>
                     <div className="flex items-center justify-end gap-1 text-sm text-green-600">
@@ -314,7 +322,9 @@ export function TopProducts({ timeRange }) {
 
                 <div className="mt-4 pt-4 border-t border-slate-100">
                   <div className="flex items-center justify-between text-sm text-slate-600">
-                    <span>Performance metric</span>
+                    <span className="text-sm text-gray-500 font-medium">
+                      Performance metric
+                    </span>
                     <span className="font-medium">{filterInfo.label}</span>
                   </div>
                 </div>

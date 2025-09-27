@@ -15,6 +15,8 @@ import {
   ShoppingBasket,
   Wallet,
   FileText,
+  Settings2,
+  Package,
 } from "lucide-react";
 import { useGetLeadStatsQuery, useGetClientsQuery } from "@/features/dataApi";
 import {
@@ -345,14 +347,14 @@ function TopClients({ timeRange }) {
         <div className="p-6 border-b border-slate-200">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-indigo-100 rounded-lg">
-                <Users className="h-5 w-5 text-indigo-600" />
+              <div className="p-2.5 bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl border border-primary/10">
+                <Users className="h-5 w-5 text-primary" />
               </div>
               <div>
                 <h3 className="text-xl font-semibold text-slate-900">
                   Top 10 Clients
                 </h3>
-                <p className="text-sm text-slate-500">
+                <p className="text-sm text-gray-500 font-medium">
                   Showing {topClients?.data.length} of{" "}
                   {topClients?.totalClients} clients
                 </p>
@@ -366,12 +368,12 @@ function TopClients({ timeRange }) {
                     variant="outline"
                     className="flex items-center gap-2 bg-transparent cursor-pointer"
                   >
-                    <Funnel />
+                    <Settings2 />
                     {filter === "revenue"
                       ? "Revenue"
                       : filter === "productsQuantity"
-                      ? "Products Quantity"
-                      : "Orders Count"}
+                      ? "Products"
+                      : "Orders"}
 
                     <ChevronDown />
                   </Button>
@@ -403,8 +405,7 @@ function TopClients({ timeRange }) {
                 <DropdownMenuTrigger asChild>
                   <Button
                     variant="outline"
-                    size="sm"
-                    className="flex items-center gap-1 rounded-lg border border-border hover:border-primary hover:bg-primary/5 transition-all duration-200 font-medium bg-transparent text-xs"
+                    className="flex items-center gap-2 bg-transparent cursor-pointer"
                   >
                     <Download className="h-3 w-3" />
                     Export <ChevronDown className="ml-1 h-3 w-3" />
@@ -536,7 +537,7 @@ function TopClients({ timeRange }) {
                         ) : filter == "productsQuantity" ? (
                           <div className="flex gap-2 items-center">
                             {client.productsQuantity}
-                            <ShoppingCartIcon className="text-teal-500" />
+                            <Package className="text-teal-500" />
                           </div>
                         ) : (
                           <div className="flex gap-2 items-center">

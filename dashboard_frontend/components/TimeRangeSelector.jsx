@@ -18,7 +18,7 @@ export function TimeRangeSelector({ value, onChange, className = "" }) {
     <div className={`relative ${className}`}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+        className="flex cursor-pointer items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
       >
         <span>{selectedOption?.label}</span>
         <ChevronDown
@@ -42,7 +42,7 @@ export function TimeRangeSelector({ value, onChange, className = "" }) {
                   onChange(option.value);
                   setIsOpen(false);
                 }}
-                className={`w-full px-4 py-2 text-sm text-left hover:bg-gray-50 first:rounded-t-lg last:rounded-b-lg transition-colors ${
+                className={`w-full cursor-pointer px-4 py-2 text-sm text-left hover:bg-gray-50 first:rounded-t-lg last:rounded-b-lg transition-colors ${
                   value === option.value
                     ? "bg-blue-50 text-blue-700 font-medium"
                     : "text-gray-700"

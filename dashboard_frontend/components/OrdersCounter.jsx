@@ -108,7 +108,11 @@ export function OrdersCounter({ timeRange }) {
                 Orders Analytics
               </h3>
               <p className="text-sm text-gray-500 font-medium">
-                Monthly orders performance overview
+                {timeRange === "thisWeek"
+                  ? "Orders performance this Week"
+                  : timeRange === "thisMonth"
+                  ? "Orders performance this Month"
+                  : "Orders performance this Year"}{" "}
               </p>
             </div>
           </div>
