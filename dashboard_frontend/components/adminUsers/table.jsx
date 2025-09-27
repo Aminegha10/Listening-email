@@ -166,8 +166,7 @@ export default function tableUsers() {
 
   return (
     <div className="w-full">
-      <div className="flex items-center justify-between py-4">
-        <Button onClick={() => setOpenAddUser(true)}>add user</Button>
+      <div className="flex items-center justify-end py-4">
         <div>
           <AddUserForm />
         </div>

@@ -6,16 +6,49 @@ import OrderModel from "../models/OrderModel.js";
 // get top clients
 const GetClients = async (req, res) => {
   try {
-    const { filter, goal } = req.query;
-    console.log("req.query:", req.query);
-
-    // const goal = parseInt(req.query.goal);
-    console.log("goal", goal);
+    const { filter, goal, timeRange } = req.query;
 
     let pipeline = [];
     let group = {};
     let needsUnwind = false;
     let sortStage = null;
+
+    // -------------------------
+    // Time range filter
+    // -------------------------
+    const now = new Date();
+    let dateFilter = {};
+    switch (timeRange) {
+      case "thisWeek":
+        const day = now.getDay(); // Sunday = 0, Monday = 1
+        const diffToMonday = day === 0 ? 6 : day - 1;
+        const startOfWeek = new Date(now);
+        startOfWeek.setDate(now.getDate() - diffToMonday);
+        startOfWeek.setHours(0, 0, 0, 0);
+        const endOfWeek = new Date(startOfWeek);
+        endOfWeek.setDate(startOfWeek.getDate() + 6);
+        endOfWeek.setHours(23, 59, 59, 999);
+        dateFilter = { createdAt: { $gte: startOfWeek, $lte: endOfWeek } };
+        break;
+
+      case "thisMonth":
+        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+        const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+        endOfMonth.setHours(23, 59, 59, 999);
+        dateFilter = { createdAt: { $gte: startOfMonth, $lte: endOfMonth } };
+        break;
+
+      case "currentYear":
+        const startOfYear = new Date(now.getFullYear(), 0, 1);
+        const endOfYear = new Date(now.getFullYear(), 11, 31, 23, 59, 59, 999);
+        dateFilter = { createdAt: { $gte: startOfYear, $lte: endOfYear } };
+        break;
+
+      case "all":
+      default:
+        dateFilter = {};
+        break;
+    }
 
     switch (filter) {
       case "all":
@@ -40,16 +73,12 @@ const GetClients = async (req, res) => {
         break;
 
       case "ordersCount":
-        group = {
-          orders: { $addToSet: "$_id" },
-        };
+        group = { orders: { $addToSet: "$_id" } };
         sortStage = { ordersCount: -1 };
         break;
 
       case "productsQuantity":
-        group = {
-          productsQuantity: { $sum: "$products.quantity" },
-        };
+        group = { productsQuantity: { $sum: "$products.quantity" } };
         needsUnwind = true;
         sortStage = { productsQuantity: -1 };
         break;
@@ -60,12 +89,12 @@ const GetClients = async (req, res) => {
           .json({ success: false, message: "Invalid filter parameter" });
     }
 
-    // Add unwind stage only if needed
-    if (needsUnwind) {
-      pipeline.push({ $unwind: "$products" });
+    // Apply date filter
+    if (Object.keys(dateFilter).length > 0) {
+      pipeline.push({ $match: dateFilter });
     }
+    if (needsUnwind) pipeline.push({ $unwind: "$products" });
 
-    // Group by client
     pipeline.push({
       $group: {
         _id: "$client",
@@ -86,15 +115,13 @@ const GetClients = async (req, res) => {
     if (sortStage) pipeline.push({ $sort: sortStage });
     if (filter !== "all") pipeline.push({ $limit: 10 });
 
-    // Run aggregation parallel with each other without executing two time with db
     const [topClients, totalClientsAgg] = await Promise.all([
       OrderModel.aggregate(pipeline),
-      OrderModel.distinct("client"), // still needed but now run in parallel
+      OrderModel.distinct("client", dateFilter),
     ]);
 
     const totalClients = totalClientsAgg.length;
 
-    // Progress percentage
     let progress = null;
     if (!isNaN(goal) && goal > 0) {
       progress = ((totalClients / goal) * 100).toFixed(2);

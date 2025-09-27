@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+"use client";
+
+import { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -19,7 +21,7 @@ import {
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { Copy, Eye, EyeOff, CheckCircle, Shield, Key, X } from "lucide-react";
+import { Copy, Eye, EyeOff, CheckCircle, Shield, Key } from "lucide-react";
 
 import { UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -33,12 +35,14 @@ const addUserForm = () => {
   const [formData, setFormData] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [emailCopied, setEmailCopied] = useState(false);
 
   const {
     register,
     handleSubmit,
     control,
     formState: { errors },
+    reset,
   } = useForm();
 
   const copyToClipboard = async () => {
@@ -52,13 +56,24 @@ const addUserForm = () => {
     }
   };
 
+  const copyEmailToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(formData.email);
+      setEmailCopied(true);
+      console.log("email copied success");
+      setTimeout(() => setEmailCopied(false), 2000);
+    } catch (err) {
+      console.log("failed to copy email", err);
+    }
+  };
+
   const onSubmit = async (data) => {
     try {
       const response = await registerMutation(data).unwrap();
       console.log("Registration response:", response);
       setFormData({
         name: data.name,
-        email: data.email,
+        email: response.user.email,
         role: data.role,
         tempPassword: response.tempPassword,
       });
@@ -71,9 +86,17 @@ const addUserForm = () => {
   return (
     <>
       <Dialog>
-        <DialogTrigger asChild>
+        <DialogTrigger asChild className="text-right">
           <Button>
-            <UserPlus /> Add user
+            {!formData ? (
+              <>
+                <UserPlus /> Add user
+              </>
+            ) : (
+              <>
+                <CheckCircle /> View User Created
+              </>
+            )}
           </Button>
         </DialogTrigger>
 
@@ -97,8 +120,8 @@ const addUserForm = () => {
                     <span className="text-red-500">{errors.name.message}</span>
                   )}
                 </div>
-
-                <div className="grid gap-3">
+                {/* email */}
+                {/* <div className="grid gap-3">
                   <span htmlFor="email-1">Email</span>
                   <Input
                     className="shadow-[0_1px_3px_0_rgba(0,0,0,0.02),0_0_0_1px_rgba(27,31,35,0.15)]"
@@ -106,7 +129,7 @@ const addUserForm = () => {
                     id="email-1"
                     placeholder="user123@example.com"
                   />
-                </div>
+                </div> */}
 
                 <div className="flex items-center gap-2">
                   <Controller
@@ -229,49 +252,42 @@ const addUserForm = () => {
                             <Eye className="w-3 h-3" />
                           )}
                         </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={copyToClipboard}
-                          className={`h-6 w-6 p-0 ${
-                            copied ? "copy-success" : ""
-                          }`}
-                        >
-                          <Copy
-                            className={`w-3 h-3 ${
-                              copied ? "text-success" : ""
-                            }`}
-                          />
-                        </Button>
                       </div>
-
-                      {/* <div className="text-xs text-muted-foreground space-y-1">
-                        <p>
-                          • This password is temporary and should be changed on
-                          first login
-                        </p>
-                        <p>• Share this password securely with the user</p>
-                        <p>• Password expires in 24 hours if not used</p>
-                      </div> */}
                     </div>
                   </CardContent>
                 </Card>
 
-                <div className="flex gap-3 pt-2">
-                  <Button
-                    variant="outline"
-                    onClick={copyToClipboard}
-                    className="flex-1 gap-2 bg-transparent"
-                  >
-                    <Copy className="w-4 h-4" />
-                    {copied ? "Copied!" : "Copy Password"}
-                  </Button>
-                  <Button
-                    // onClick={handleClose}
-                    className="flex-1 bg-primary hover:bg-primary/90"
-                  >
-                    Done
-                  </Button>
+                <div className="space-y-3 pt-2">
+                  <div className="flex gap-3">
+                    <Button
+                      variant="outline"
+                      onClick={copyEmailToClipboard}
+                      className="flex-1 gap-2 bg-transparent"
+                    >
+                      <Copy className="w-4 h-4" />
+                      {emailCopied ? "Copied!" : "Copy Email"}
+                    </Button>
+                    <Button
+                      variant="outline"
+                      onClick={copyToClipboard}
+                      className="flex-1 gap-2 bg-transparent"
+                    >
+                      <Copy className="w-4 h-4" />
+                      {copied ? "Copied!" : "Copy Password"}
+                    </Button>
+                  </div>
+                  <DialogClose asChild>
+                    <Button
+                      // onClick={handleClose}
+                      onClick={() => {
+                        reset();
+                        setFormData(null); // 👈 clears the success data so the form shows again
+                      }}
+                      className="w-full bg-primary hover:bg-primary/90"
+                    >
+                      Done
+                    </Button>
+                  </DialogClose>
                 </div>
               </div>
             </>

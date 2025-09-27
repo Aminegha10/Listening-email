@@ -94,10 +94,13 @@ export const exportToPDF = async (
   dataType,
   filterPieChart,
   chartElement,
-  filterTopClient 
+  filterTopClient
 ) => {
   if (!data || data.length === 0) return;
   if (!filterDate) filterDate = "AllTime";
+  if (filterDate == "currentYear") filterDate = "Current Year";
+  if (filterDate == "thisMonth") filterDate = "current Month";
+  if (filterDate == "thisWeek") filterDate = "current Week";
 
   console.log(filterTopClient);
   console.log(data);

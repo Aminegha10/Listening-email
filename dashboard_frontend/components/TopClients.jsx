@@ -185,13 +185,13 @@ import { exportToPDF } from "@/utils/exportUtils";
 //   },
 // ];
 
-function TopClients() {
+function TopClients({ timeRange }) {
   const [filter, setFilter] = useState("revenue");
   const {
     data: topClients,
     isLoading,
     isError,
-  } = useGetClientsQuery({ filter, goal: 120 });
+  } = useGetClientsQuery({ filter, goal: 120, timeRange });
   console.log(topClients);
 
   // const filteredAndSortedClients = useMemo(() => {
@@ -272,7 +272,7 @@ function TopClients() {
   const handleExportJSON = () =>
     exportToJSON(topClients.data, null, "TopClients", null, null, filter);
   const handleExportPDF = () =>
-    exportToPDF(topClients.data, null, "TopClients", null, null, filter);
+    exportToPDF(topClients.data, timeRange, "TopClients", null, null, filter);
 
   return (
     <div className="max-w-6xl mx-auto">
@@ -368,10 +368,10 @@ function TopClients() {
                   >
                     <Funnel />
                     {filter === "revenue"
-                      ? "By Revenue"
+                      ? "Revenue"
                       : filter === "productsQuantity"
-                      ? "By Products Quantity"
-                      : "By Orders Count"}
+                      ? "Products Quantity"
+                      : "Orders Count"}
 
                     <ChevronDown />
                   </Button>

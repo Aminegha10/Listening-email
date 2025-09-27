@@ -23,8 +23,8 @@ import { ThreeDot } from "react-loading-indicators";
 import { Badge } from "./ui/badge";
 import { ArrowUpFromLine as ChartNoAxesCombined } from "lucide-react";
 
-export default function SalesAgentBarChart() {
-  const [timeRange, setTimeRange] = useState("last_30");
+export default function SalesAgentBarChart({ timeRange }) {
+  // const [timeRange, setTimeRange] = useState("thisMonth");
   const [agentFilter, setAgentFilter] = useState("all");
   const [type, setType] = useState("orders");
 
@@ -37,6 +37,7 @@ export default function SalesAgentBarChart() {
     timeRange,
     type,
   });
+  console.log(stats);
 
   // 📊 Chart data
   const chartData = useMemo(() => {
@@ -68,16 +69,16 @@ export default function SalesAgentBarChart() {
               </h3>
               <p className="text-sm text-gray-500 font-medium">
                 {type === "orders"
-                  ? timeRange === "last_7"
-                    ? "Orders performance in the last 7 days"
-                    : timeRange === "last_30"
-                    ? "Orders performance in the last 30 days"
-                    : "Orders performance for the current year"
-                  : timeRange === "last_7"
-                  ? "Sales performance in the last 7 days"
-                  : timeRange === "last_30"
-                  ? "Sales performance in the last 30 days"
-                  : "Sales performance for the current year"}
+                  ? timeRange === "last7days"
+                    ? "Orders in the last 7 days"
+                    : timeRange === "thisMonth"
+                    ? "Orders in the last 30 days"
+                    : "Orders for the current year"
+                  : timeRange === "last7days"
+                  ? "Sales in the last 7 days"
+                  : timeRange === "thisMonth"
+                  ? "Sales in the last 30 days"
+                  : "Sales for the current year"}
               </p>
             </div>
           </div>
@@ -94,16 +95,16 @@ export default function SalesAgentBarChart() {
               </SelectContent>
             </Select>
 
-            <Select value={timeRange} onValueChange={setTimeRange}>
+            {/* <Select value={timeRange} onValueChange={setTimeRange}>
               <SelectTrigger className="min-w-[120px] h-9 bg-background border-border/60 hover:border-primary/30 transition-colors">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="last_7">Last 7 Days</SelectItem>
-                <SelectItem value="last_30">Last 30 Days</SelectItem>
+                <SelectItem value="thisWeek">Last 7 Days</SelectItem>
+                <SelectItem value="thisMonth">Last 30 Days</SelectItem>
                 <SelectItem value="ytd">Current Year</SelectItem>
               </SelectContent>
-            </Select>
+            </Select> */}
 
             <Select value={agentFilter} onValueChange={setAgentFilter}>
               <SelectTrigger className="min-w-[140px] h-9 bg-background border-border/60 hover:border-primary/30 transition-colors">

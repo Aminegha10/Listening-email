@@ -44,9 +44,9 @@ import { Button } from "./ui/button";
 
 export const description = "A simple area chart";
 
-export function OrdersCounter() {
+export function OrdersCounter({ timeRange }) {
   // Filters
-  const [timeRange, setTimeRange] = useState("last_30");
+  // const [timeRange, setTimeRange] = useState("thisMonth");
   const [agentFilter, setAgentFilter] = useState("all");
 
   // API request with filters
@@ -61,15 +61,30 @@ export function OrdersCounter() {
   });
 
   // Map API data to chart format
-  const chartData =
-    leadStats?.ordersByMonth.map((item) => ({
-      month: item.month,
-      orders: item.orders,
-    })) || [];
+  let chartData = [];
+  if (timeRange === "currentYear") {
+    chartData =
+      leadStats?.ordersData?.map((item) => ({
+        label: item.month,
+        orders: item.orders,
+      })) || [];
+  } else if (timeRange === "thisMonth") {
+    chartData =
+      leadStats?.ordersData?.map((item) => ({
+        label: item.week,
+        orders: item.orders,
+      })) || [];
+  } else if (timeRange === "thisWeek") {
+    chartData =
+      leadStats?.ordersData?.map((item) => ({
+        label: item.day,
+        orders: item.orders,
+      })) || [];
+  }
 
   const chartConfig = {
     orders: {
-      label: "Sales",
+      label: "Orders",
       color: "hsl(var(--primary))",
     },
   };
@@ -114,8 +129,8 @@ export function OrdersCounter() {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="last_7">Last 7 Days</SelectItem>
-                <SelectItem value="last_30">Last 30 Days</SelectItem>
+                <SelectItem value="thisWeek">Last 7 Days</SelectItem>
+                <SelectItem value="thisMonth">Last 30 Days</SelectItem>
                 <SelectItem value="ytd">Current Year</SelectItem>
               </SelectContent>
             </Select>
@@ -181,7 +196,7 @@ export function OrdersCounter() {
                   opacity={0.3}
                 />
                 <XAxis
-                  dataKey="month"
+                  dataKey="label"
                   tickLine={false}
                   axisLine={false}
                   tickMargin={12}

@@ -24,6 +24,7 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { useState } from "react";
 import { useLoginMutation } from "@/features/authApi";
+import { useSelector } from "react-redux";
 
 // Google Icon Component
 const GoogleIcon = () => (
@@ -57,6 +58,7 @@ const Login = () => {
   const [login, { isLoading, isSuccess }] = useLoginMutation();
   const [newUser, setNewUser] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const { user } = useSelector((state) => state.auth);
 
   const onSubmit = async (data) => {
     try {
@@ -165,7 +167,7 @@ const Login = () => {
                         className="pl-11 h-12 border-2 border-slate-200 dark:border-slate-700 focus:border-blue-600 dark:focus:border-blue-500 rounded-xl bg-slate-50/50 dark:bg-slate-800/50 transition-all duration-200 hover:border-slate-300 dark:hover:border-slate-600"
                         id="email"
                         type="email"
-                        placeholder="you@example.com"
+                        placeholder="username@smab.com"
                         {...register("email", {
                           required: "Email is required",
                         })}
@@ -193,7 +195,7 @@ const Login = () => {
                         className="pl-11 pr-11 h-12 border-2 border-slate-200 dark:border-slate-700 focus:border-blue-600 dark:focus:border-blue-500 rounded-xl bg-slate-50/50 dark:bg-slate-800/50 transition-all duration-200 hover:border-slate-300 dark:hover:border-slate-600"
                         id="password"
                         type={showPassword ? "text" : "password"}
-                        placeholder="Enter your password"
+                        placeholder="••••••••••••"
                         {...register("password", {
                           required: "Password is required",
                         })}
@@ -275,8 +277,9 @@ const Login = () => {
             </div>
             <div className="space-y-4 max-w-md">
               <h2 className="text-4xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400 bg-clip-text text-transparent">
-                Welcome Back, Amine!
+                Welcome Back, {user.name.toUpperCase()}!
               </h2>
+
               <p className="text-lg text-slate-600 dark:text-slate-300 leading-relaxed">
                 You have successfully logged in. Redirecting to your
                 dashboard...

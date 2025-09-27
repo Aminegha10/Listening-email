@@ -3,13 +3,19 @@ import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import UserModel from "../models/UserModel.js";
 import { generateTempPassword } from "../utils/generateTempPassword.js";
+import { generateEmailFromName } from "../utils/generateEmailFromName.js";
 // const JWT_SECRET = process.env.JWT_SECRET;
 // const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET;
 export const register = async (req, res) => {
   try {
-    const { name, email, role, password } = req.body;
+    let { name, email, role, password } = req.body;
 
-    // Check if user already exists
+    // 🧩 If no email provided → generate one from name
+    if (!email && name) {
+      email = generateEmailFromName(name);
+    }
+
+    // 🚫 Check if user already exists
     const existing = await UserModel.findOne({ email });
     if (existing) {
       return res.status(400).json({ message: "User already exists" });
@@ -18,16 +24,15 @@ export const register = async (req, res) => {
     let hashedPassword;
     let tempPassword = null;
 
+    // 🔑 Handle password based on role
     if (role === "admin") {
-      // For admins: use provided password
       hashedPassword = await bcrypt.hash(password, 10);
     } else {
-      // For other roles: generate temporary password
       tempPassword = generateTempPassword();
       hashedPassword = await bcrypt.hash(tempPassword, 10);
     }
 
-    // Create the user
+    // 👤 Create the user
     const newUser = await UserModel.create({
       name,
       email,
@@ -35,17 +40,18 @@ export const register = async (req, res) => {
       role,
     });
 
-    // Log temp password if generated
     if (tempPassword) {
-      console.log("Temporary password:", tempPassword);
+      console.log(`Temporary password for ${email}:`, tempPassword);
     }
 
+    // ✅ Response
     res.status(201).json({
-      message: "User registered",
+      message: "User registered successfully",
       user: newUser,
-      tempPassword: tempPassword || undefined, // only send if it exists
+      tempPassword: tempPassword || undefined,
     });
   } catch (err) {
+    console.error("Registration error:", err);
     res.status(500).json({ message: err.message });
   }
 };
@@ -62,12 +68,12 @@ export const login = async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch)
       return res.status(400).json({ message: "Invalid credentials" });
-    console.log(user);
+    // console.log(user);
     // Short-lived access token for temp-password users
     let accessToken = jwt.sign(
       { id: user._id, mustChangePassword: user.mustChangePassword },
       process.env.JWT_SECRET,
-      { expiresIn: "5m" } // only valid for update-password
+      { expiresIn: "2d" } // only valid for update-password
     );
     console.log(accessToken);
 
@@ -119,7 +125,7 @@ export const refresh = (req, res) => {
     );
 
     // 2. Fetch user from DB
-    console.log(decoded);
+    // console.log(decoded);
     // 3. Return access token and minimal user info
     res.json({ accessToken, user: { name: decoded.name, role: decoded.role } });
   });
@@ -132,7 +138,7 @@ export const logout = (req, res) => {
 
 export const updatePassword = async (req, res) => {
   try {
-    console.log(req.id);
+    // console.log(req.id);
     const { newPassword } = req.body;
     const userId = req.user.id;
     // console("update");

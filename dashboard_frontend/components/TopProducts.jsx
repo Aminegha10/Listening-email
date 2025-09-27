@@ -73,18 +73,20 @@ const COLORS = [
   "#ffffff", // popover
 ];
 
-
 // export functions with date suffix
 // const handleExportCSV = () =>
 //   exportToCSV();
 // const handleExportJSON = () =>
 //   exportToJSON();
 
-export function TopProducts() {
+export function TopProducts({ timeRange }) {
   // Select chart
   const chartRef = useRef(null);
   const [filter, setFilter] = useState("unitsSold"); // default filter
-  const { data, isLoading, isError } = useGetTopProductsQuery({ filter });
+  const { data, isLoading, isError } = useGetTopProductsQuery({
+    filter,
+    timeRange,
+  });
   console.log(data);
   const TopProducts = data?.topProducts;
 

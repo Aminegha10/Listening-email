@@ -3,19 +3,14 @@ import logger from "../utils/Logger.js";
 
 const GetTopProducts = async (req, res) => {
   try {
-    const { filter } = req.query; // 'revenue', 'unitsSold', 'ordersCount'
+    const { filter, timeRange } = req.query;
 
     if (!filter || !["revenue", "unitsSold", "ordersCount"].includes(filter)) {
-      logger.error(
-        `Invalid filter. Use 'revenue', 'unitsSold' or 'ordersCount'.`
-      );
-
       return res.status(400).json({
         message: "Invalid filter. Use 'revenue', 'unitsSold' or 'ordersCount'.",
       });
     }
 
-    // Determine the field to calculate and sort by
     let sortField, projectFields;
     if (filter === "revenue") {
       sortField = "revenue";
@@ -32,7 +27,45 @@ const GetTopProducts = async (req, res) => {
       projectFields = { ordersCount: { $sum: 1 } };
     }
 
+    // -------------------------
+    // Time range filter
+    // -------------------------
+    const now = new Date();
+    let dateFilter = {};
+    switch (timeRange) {
+      case "thisWeek":
+        const day = now.getDay();
+        const diffToMonday = day === 0 ? 6 : day - 1;
+        const startOfWeek = new Date(now);
+        startOfWeek.setDate(now.getDate() - diffToMonday);
+        startOfWeek.setHours(0, 0, 0, 0);
+        const endOfWeek = new Date(startOfWeek);
+        endOfWeek.setDate(startOfWeek.getDate() + 6);
+        endOfWeek.setHours(23, 59, 59, 999);
+        dateFilter = { createdAt: { $gte: startOfWeek, $lte: endOfWeek } };
+        break;
+
+      case "thisMonth":
+        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+        const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+        endOfMonth.setHours(23, 59, 59, 999);
+        dateFilter = { createdAt: { $gte: startOfMonth, $lte: endOfMonth } };
+        break;
+
+      case "currentYear":
+        const startOfYear = new Date(now.getFullYear(), 0, 1);
+        const endOfYear = new Date(now.getFullYear(), 11, 31, 23, 59, 59, 999);
+        dateFilter = { createdAt: { $gte: startOfYear, $lte: endOfYear } };
+        break;
+
+      case "all":
+      default:
+        dateFilter = {};
+        break;
+    }
+
     const pipeline = [
+      Object.keys(dateFilter).length > 0 ? { $match: dateFilter } : null,
       { $unwind: "$products" },
       {
         $group: {
@@ -42,23 +75,24 @@ const GetTopProducts = async (req, res) => {
       },
       {
         $project: {
-          product: "$_id", // rename _id to product
+          product: "$_id",
           ...Object.keys(projectFields).reduce(
             (acc, key) => ({ ...acc, [key]: 1 }),
             {}
           ),
-          _id: 0, // hide original _id
+          _id: 0,
         },
       },
       { $sort: { [sortField]: -1 } },
       { $limit: 10 },
-    ];
+    ].filter(Boolean); // remove null if no date filter
+    console.log(dateFilter);
 
     const topProducts = await OrderModel.aggregate(pipeline);
-    logger.info("Fetched top products successfully");
+
     res.status(200).json({ topProducts });
   } catch (err) {
-    logger.error(`Failed to fetch top products: ${err.message}`);
+    logger.error(err.message);
     res.status(500).json({ message: "Server error" });
   }
 };
