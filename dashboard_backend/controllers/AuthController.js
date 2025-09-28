@@ -149,15 +149,22 @@ export const logout = (req, res) => {
 
 export const updatePassword = async (req, res) => {
   try {
-    // console.log(req.id);
     const { newPassword } = req.body;
     const userId = req.user.id;
-    // console("update");
 
     if (!userId || !newPassword) {
-      return res
-        .status(400)
-        .json({ message: "User ID and new password are required" });
+      return res.status(400).json({
+        success: false,
+        message: "User ID and new password are required",
+      });
+    }
+
+    // Validate password strength
+    if (newPassword.length < 8) {
+      return res.status(400).json({
+        success: false,
+        message: "Password must be at least 8 characters long",
+      });
     }
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);
@@ -168,16 +175,29 @@ export const updatePassword = async (req, res) => {
         password: hashedPassword,
         mustChangePassword: false,
       },
-      { new: true } // return updated doc
+      { new: true }
     );
 
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
     }
 
-    res.status(200).json({ message: "Password updated successfully", user });
+    res.status(200).json({
+      success: true,
+      message: "Password updated successfully! Please login with your new password.",
+      user: {
+        name: user.name,
+        email: user.email,
+      },
+    });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server error" });
+    console.error("Password update error:", error);
+    res.status(500).json({
+      success: false,
+      message: "An error occurred while updating password",
+    });
   }
 };

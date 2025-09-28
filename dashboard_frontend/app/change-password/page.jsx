@@ -5,6 +5,8 @@ import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import { useUpdatePasswordMutation } from "../../features/authApi";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const PasswordStrengthIndicator = ({ password }) => {
   const getPasswordStrength = (password) => {
@@ -143,19 +145,69 @@ const Page = () => {
 
   const onSubmit = async (data) => {
     if (data.newPassword !== data.confirmPassword) {
-      console.log("confirmation failed");
+      toast.error("Passwords don't match!", {
+        position: "bottom-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
       return;
     }
+
     try {
-      await updatePassword(data.newPassword).unwrap();
-      router.replace("/login");
+      const response = await updatePassword(data.newPassword).unwrap();
+
+      if (response.success) {
+        toast.success(response.message, {
+          position: "bottom-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+
+        // Delay redirect to show the success message
+        setTimeout(() => {
+          router.replace("/login");
+        }, 3000);
+      }
     } catch (err) {
-      console.log(err);
+      toast.error(err?.data?.message || "Failed to update password", {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
     }
   };
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      {/* Add ToastContainer */}
+      <ToastContainer
+        position="bottom-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
+
       <div className="w-full max-w-md">
         <div
           className="bg-white rounded-2xl border border-gray-100 p-8 "

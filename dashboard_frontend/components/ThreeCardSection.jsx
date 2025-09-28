@@ -44,6 +44,7 @@ import {
   Crown,
   User,
   ArrowDownRight,
+  UserRoundPlus,
 } from "lucide-react";
 
 import { Label, PolarRadiusAxis } from "recharts";
@@ -285,7 +286,7 @@ const ThreeCardSection = () => {
               Goal Progress
             </CardTitle>
           </div>
-          <Target className="h-4 w-4 text-blue-500" />
+          <Target className="h-4 w-4 text-[var(--chart-5)]" />
         </CardHeader>
         <CardContent className="flex-1 pb-0">
           {isLoading ? (
@@ -403,7 +404,7 @@ const ThreeCardSection = () => {
               Top Sales Agent
             </CardTitle>
           </div>
-          <Crown className="h-4 w-4 text-yellow-500" />
+          <Crown className="h-4 w-4 text-[var(--chart-3)]" />
         </CardHeader>
         <CardContent className="flex-1 pb-0">
           {topAgentLoading ? (
@@ -523,35 +524,39 @@ const ThreeCardSection = () => {
       <Card className="w-full max-w-sm mx-auto p-3">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1">
           <div className="flex items-center gap-2">
-            <div className="w-2 h-2 bg-[var(--chart-4)] rounded-full"></div>
+            <div className="w-2 h-2 bg-[var(--chart-2)] rounded-full"></div>
             <CardTitle className="text-xs font-medium text-muted-foreground">
               New Clients Today
             </CardTitle>
           </div>
-          <Users className="h-4 w-4 text-emerald-500" />
+          <UserRoundPlus className="h-4 w-4 text-[var(--chart-2)]" />
         </CardHeader>
 
         <CardContent className="flex flex-col flex-1 items-center justify-center text-center">
           {/* You can replace this with your API data */}
-          <div className="text-3xl font-extrabold text-emerald-600">
+          <div className="text-6xl font-extrabold text-[var(--chart-2)]">
             {clients?.newClientsToday ?? 0}
           </div>
-          <p className="text-xs text-muted-foreground mt-1">
+          <p className="text-xs text-muted-foreground mt-1 mb-2">
             New clients registered today
           </p>
 
           {/* growth indicator */}
-          <div className="flex items-center gap-1 mt-2">
+          <div className="flex items-center gap-2 px-3 py-2 rounded-full bg-background/50 border border-border/50 backdrop-blur-sm">
             {clients?.growthRate >= 0 ? (
               <>
-                <ArrowUpRight className="h-3 w-3 text-emerald-500" />
+                <div className="p-1 rounded-full bg-rose-500/10">
+                  <ArrowUpRight className="h-3 w-3 text-emerald-500" />
+                </div>
                 <span className="text-xs text-emerald-500">
                   +{clients?.growthRate ?? 0}% vs yesterday
                 </span>
               </>
             ) : (
               <>
-                <ArrowDownRight className="h-3 w-3 text-rose-500" />
+                <div className="p-1 rounded-full bg-rose-500/10">
+                  <ArrowDownRight className="h-4 w-4 text-rose-500" />
+                </div>
                 <span className="text-xs text-rose-500">
                   {clients?.growthRate ?? 0}% vs yesterday
                 </span>

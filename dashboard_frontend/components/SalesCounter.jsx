@@ -82,7 +82,7 @@ export function SalesCounter({ timeRange }) {
   const chartConfig = {
     sales: {
       label: "Sales",
-      color: "hsl(var(--primary))",
+      color: "var(--primary)",
     },
   };
 
@@ -158,7 +158,7 @@ export function SalesCounter({ timeRange }) {
             <div className="flex flex-col items-center gap-3">
               <ThreeDot
                 variant="pulsate"
-                color="hsl(var(--primary))"
+                color="var(--primary)"
                 size="medium"
               />
               <p className="text-sm text-gray-500">Loading sales data...</p>
@@ -193,7 +193,7 @@ export function SalesCounter({ timeRange }) {
                 <CartesianGrid
                   vertical={false}
                   strokeDasharray="3 3"
-                  stroke="hsl(var(--border))"
+                  stroke="var(--border)"
                   opacity={0.3}
                 />
                 <XAxis
@@ -201,12 +201,12 @@ export function SalesCounter({ timeRange }) {
                   tickLine={false}
                   axisLine={false}
                   tickMargin={12}
-                  tick={{ fontSize: 12, fill: "hsl(var(--muted-foreground))" }}
+                  tick={{ fontSize: 12, fill: "var(--muted-foreground)" }}
                   tickFormatter={(value) => value.slice(0, 3)}
                 />
                 <ChartTooltip
                   cursor={{
-                    stroke: "hsl(var(--secondary))",
+                    stroke: "var(--secondary)",
                     strokeWidth: 1,
                     strokeDasharray: "3 3",
                   }}
@@ -239,7 +239,7 @@ export function SalesCounter({ timeRange }) {
                   type="monotone"
                   fill="url(#salesGradient)"
                   fillOpacity={0.8}
-                  stroke="hsl(var(--primary))"
+                  stroke="var(--primary)"
                   strokeWidth={2.5}
                   dot={{ fill: "teal", strokeWidth: 2, r: 4 }}
                   activeDot={{

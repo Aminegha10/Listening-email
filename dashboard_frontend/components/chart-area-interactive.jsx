@@ -179,17 +179,17 @@ export default function SalesAgentBarChart({ timeRange }) {
               >
                 <CartesianGrid
                   strokeDasharray="3 3"
-                  stroke="hsl(var(--border))"
+                  stroke="var(--border)"
                   opacity={0.3}
                 />
                 <XAxis
                   dataKey="name"
-                  tick={{ fontSize: 12, fill: "hsl(var(--muted-foreground))" }}
-                  axisLine={{ stroke: "hsl(var(--border))" }}
+                  tick={{ fontSize: 12, fill: "var(--muted-foreground)" }}
+                  axisLine={{ stroke: "var(--border)" }}
                 />
                 <YAxis
-                  tick={{ fontSize: 12, fill: "hsl(var(--muted-foreground))" }}
-                  axisLine={{ stroke: "hsl(var(--border))" }}
+                  tick={{ fontSize: 12, fill: "var(--muted-foreground)" }}
+                  axisLine={{ stroke: "var(--border)" }}
                 />
                 <Tooltip
                   cursor={{ fill: "var(--muted-foreground)", opacity: 0.2 }}
@@ -202,7 +202,7 @@ export default function SalesAgentBarChart({ timeRange }) {
                     padding: "10px 12px",
                   }}
                   labelStyle={{
-                    color: "hsl(var(--primary))",
+                    color: "hslvar(--primary))",
                     fontWeight: 600,
                     fontSize: "14px",
                     marginBottom: "4px",

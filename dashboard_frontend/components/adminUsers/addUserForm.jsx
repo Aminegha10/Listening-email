@@ -87,7 +87,11 @@ const addUserForm = () => {
     <>
       <Dialog>
         <DialogTrigger asChild className="text-right">
-          <Button>
+          <Button
+            // variant="outline"
+            size="sm"
+            className="flex items-center gap-2  cursor-pointer"
+          >
             {!formData ? (
               <>
                 <UserPlus /> Add user

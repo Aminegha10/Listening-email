@@ -17,19 +17,19 @@ import { useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 
 export function SiteHeader() {
-  const router = useRouter();
-  const { user } = useSelector((state) => state.auth);
-  console.log(user);
-  const [logout, { isLoading }] = useLogoutMutation();
+  // const router = useRouter();
+  // const { user } = useSelector((state) => state.auth);
+  // console.log(user);
+  // const [logout, { isLoading }] = useLogoutMutation();
 
-  const handleLogout = async () => {
-    try {
-      await logout();
-      router.push("/login");
-    } catch (err) {
-      console.error("Logout failed:", err);
-    }
-  };
+  // const handleLogout = async () => {
+  //   try {
+  //     await logout();
+  //     router.push("/login");
+  //   } catch (err) {
+  //     console.error("Logout failed:", err);
+  //   }
+  // };
 
   return (
     <header className="sticky top-0 z-40 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-b border-gray-200/60 dark:border-gray-700/60 px-6 py-4 shadow-sm">
@@ -136,7 +136,7 @@ export function SiteHeader() {
           </Button>
 
           {/* User Avatar */}
-          <DropdownMenu>
+          {/* <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
                 variant="ghost"
@@ -180,7 +180,7 @@ export function SiteHeader() {
                 <span>{isLoading ? "Signing out..." : "Sign out"}</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
-          </DropdownMenu>
+          </DropdownMenu> */}
         </div>
       </div>
     </header>

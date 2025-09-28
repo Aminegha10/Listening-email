@@ -161,7 +161,7 @@ export function OrdersCounter({ timeRange }) {
             <div className="flex flex-col items-center gap-3">
               <ThreeDot
                 variant="pulsate"
-                color="hsl(var(--primary))"
+                color="var(--primary)"
                 size="medium"
               />
               <p className="text-sm text-gray-500">Loading orders data...</p>
@@ -196,7 +196,7 @@ export function OrdersCounter({ timeRange }) {
                 <CartesianGrid
                   vertical={false}
                   strokeDasharray="3 3"
-                  stroke="hsl(var(--border))"
+                  stroke="var(--border)"
                   opacity={0.3}
                 />
                 <XAxis
@@ -204,12 +204,12 @@ export function OrdersCounter({ timeRange }) {
                   tickLine={false}
                   axisLine={false}
                   tickMargin={12}
-                  tick={{ fontSize: 12, fill: "hsl(var(--muted-foreground))" }}
+                  tick={{ fontSize: 12, fill: "var(--muted-foreground)" }}
                   tickFormatter={(value) => value.slice(0, 3)}
                 />
                 <ChartTooltip
                   cursor={{
-                    stroke: "hsl(var(--secondary))",
+                    stroke: "var(--secondary)",
                     strokeWidth: 1,
                     strokeDasharray: "3 3",
                   }}
@@ -242,14 +242,14 @@ export function OrdersCounter({ timeRange }) {
                   type="monotone"
                   fill="url(#ordersGradient)"
                   fillOpacity={0.8}
-                  stroke="hsl(var(--primary))"
+                  stroke="var(--primary)"
                   strokeWidth={2.5}
                   dot={{ fill: "teal", strokeWidth: 2, r: 4 }}
                   activeDot={{
                     r: 6,
-                    stroke: "teal",
+                    stroke: "var(--primary)",
                     strokeWidth: 2,
-                    fill: "teal",
+                    fill: "var(--primary)",
                   }}
                 />
               </AreaChart>

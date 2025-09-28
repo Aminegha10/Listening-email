@@ -85,7 +85,7 @@ export function SectionCards() {
     },
     {
       title: "Sales Today",
-      value: stats?.totalSalesToday + " Dh",
+      value: stats?.totalSalesToday + " DH",
       change: "+2%",
       isPositive: true,
       icon: <FileText className="w-6 h-6" />,

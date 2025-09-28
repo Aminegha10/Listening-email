@@ -1,59 +1,42 @@
-import React, { useState } from "react";
-import { ChevronDown } from "lucide-react";
+"use client";
+import { Clock } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 const timeRangeOptions = [
-  { value: "thisWeek", label: "This Week" },
-  { value: "thisMonth", label: "This Month" },
-  { value: "currentYear", label: "Current Year" },
+  { value: "thisWeek", label: "This Week", shortLabel: "Week" },
+  { value: "thisMonth", label: "This Month", shortLabel: "Month" },
+  { value: "currentYear", label: "Current Year", shortLabel: "Year" },
 ];
 
 export function TimeRangeSelector({ value, onChange, className = "" }) {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const selectedOption = timeRangeOptions.find(
-    (option) => option.value === value
-  );
-
   return (
-    <div className={`relative ${className}`}>
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="flex cursor-pointer items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
-      >
-        <span>{selectedOption?.label}</span>
-        <ChevronDown
-          className={`w-4 h-4 transition-transform ${
-            isOpen ? "rotate-180" : ""
-          }`}
-        />
-      </button>
-
-      {isOpen && (
-        <>
-          <div
-            className="fixed inset-0 z-10"
-            onClick={() => setIsOpen(false)}
-          />
-          <div className="absolute top-full left-0 mt-1 w-full min-w-[140px] bg-white border border-gray-200 rounded-lg shadow-lg z-20">
-            {timeRangeOptions.map((option) => (
-              <button
-                key={option.value}
-                onClick={() => {
-                  onChange(option.value);
-                  setIsOpen(false);
-                }}
-                className={`w-full cursor-pointer px-4 py-2 text-sm text-left hover:bg-gray-50 first:rounded-t-lg last:rounded-b-lg transition-colors ${
-                  value === option.value
-                    ? "bg-blue-50 text-blue-700 font-medium"
-                    : "text-gray-700"
-                }`}
-              >
-                {option.label}
-              </button>
-            ))}
-          </div>
-        </>
-      )}
+    <div className=" p-1 bg-muted rounded-lg w-[266px]">
+      <div className="flex items-center">
+        {timeRangeOptions.map((option, index) => (
+          <Button
+            key={option.value}
+            variant={value === option.value ? "default" : "ghost"}
+            size="sm"
+            onClick={() => onChange(option.value)}
+            className={cn(
+              "h-8 px-3 cursor-pointer text-xs font-medium transition-all duration-200 relative",
+              index === 0 && "rounded-r-none",
+              index === timeRangeOptions.length - 1 && "rounded-l-none",
+              index > 0 &&
+                index < timeRangeOptions.length - 1 &&
+                "rounded-none",
+              value === option.value
+                ? "bg-background text-foreground shadow-sm border border-border z-10"
+                : "hover:bg-accent/50 hover:text-accent-foreground border-transparent",
+              index > 0 && value !== option.value && "border-l border-border/30"
+            )}
+          >
+            <span className="sm:hidden">{option.shortLabel}</span>
+            <span className="hidden sm:inline">{option.label}</span>
+          </Button>
+        ))}
+      </div>
     </div>
   );
 }
