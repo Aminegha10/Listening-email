@@ -117,47 +117,57 @@ const GetTopProducts = async (req, res) => {
 
 const GetProductsDetails = async (req, res) => {
   try {
-    const { productsDate, search } = req.query; // default values
-    let dateFilter;
-
+    const { timeRange, search } = req.query;
     const now = new Date();
+    let dateFilter = {};
 
-    if (productsDate === "today") {
-      const startOfDay = new Date();
-      startOfDay.setHours(0, 0, 0, 0);
-      dateFilter = { $gte: startOfDay };
-    } else if (productsDate === "last7Days") {
-      const sevenDaysAgo = new Date();
-      sevenDaysAgo.setDate(now.getDate() - 7);
-      dateFilter = { $gte: sevenDaysAgo };
-    } else if (productsDate === "thisMonth") {
-      const startOfThisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-      const endOfThisMonth = new Date(
-        now.getFullYear(),
-        now.getMonth() + 1,
-        0,
-        23,
-        59,
-        59,
-        999
-      );
-      dateFilter = { $gte: startOfThisMonth, $lte: endOfThisMonth };
+    // Time range filter
+    switch (timeRange) {
+      case "today":
+        const startOfToday = new Date();
+        startOfToday.setHours(0, 0, 0, 0);
+        const endOfToday = new Date();
+        endOfToday.setHours(23, 59, 59, 999);
+        dateFilter = { createdAt: { $gte: startOfToday, $lte: endOfToday } };
+        break;
+
+      case "thisWeek":
+        const day = now.getDay();
+        const diffToMonday = day === 0 ? 6 : day - 1;
+        const startOfWeek = new Date(now);
+        startOfWeek.setDate(now.getDate() - diffToMonday);
+        startOfWeek.setHours(0, 0, 0, 0);
+        const endOfWeek = new Date(startOfWeek);
+        endOfWeek.setDate(startOfWeek.getDate() + 6);
+        endOfWeek.setHours(23, 59, 59, 999);
+        dateFilter = { createdAt: { $gte: startOfWeek, $lte: endOfWeek } };
+        break;
+
+      case "thisMonth":
+        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+        const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+        endOfMonth.setHours(23, 59, 59, 999);
+        dateFilter = { createdAt: { $gte: startOfMonth, $lte: endOfMonth } };
+        break;
+
+      case "all":
+      default:
+        dateFilter = {};
+        break;
     }
-    const products = await OrderModel.aggregate([
-      { $match: { createdAt: dateFilter } },
-      // it give you each product with the other details from the document
+
+    const pipeline = [
+      Object.keys(dateFilter).length > 0 ? { $match: dateFilter } : null,
       { $unwind: "$products" },
       ...(search
         ? [
             {
-              // it gives you the whole document if one product match the search
               $match: {
                 $or: [{ "products.name": { $regex: search, $options: "i" } }],
               },
             },
           ]
         : []),
-      //
       {
         $group: {
           _id: "$products.name",
@@ -167,8 +177,8 @@ const GetProductsDetails = async (req, res) => {
           },
           barcode: { $first: "$products.barcode" },
           warehouse: { $first: "$products.warehouse" },
-          ordersCount: { $sum: 1 }, // each order containing the product counts as 1
-          lastOrderedDate: { $max: "$orderDate" }, // assuming you have an orderDate field
+          ordersCount: { $sum: 1 },
+          lastOrderedDate: { $max: "$orderDate" },
         },
       },
       {
@@ -184,7 +194,10 @@ const GetProductsDetails = async (req, res) => {
         },
       },
       { $sort: { quantitySold: -1 } },
-    ]);
+    ].filter(Boolean); // Remove null stages
+
+    const products = await OrderModel.aggregate(pipeline);
+
     logger.info("Fetched product details successfully");
     res.status(200).json(products);
   } catch (error) {

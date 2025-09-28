@@ -33,6 +33,7 @@ import { useGetOrdersTableQuery } from "@/features/dataApi";
 import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog";
 import { Badge } from "./ui/badge";
 import { exportToCSV, exportToJSON, exportToPDF } from "@/utils/exportUtils";
+import { Calendar } from "lucide-react";
 
 export const columns = [
   {
@@ -210,6 +211,23 @@ export const columns = [
       </div>
     ),
   },
+  {
+    accessorKey: "createdAt",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        className="hover:bg-primary/5 hover:text-primary font-semibold"
+      >
+        Order Date <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
+    cell: ({ row }) => (
+      <div className="capitalize text-center font-medium text-muted-foreground">
+        {row.getValue("createdAt")}
+      </div>
+    ),
+  },
 ];
 
 export function OrdersTable({ id }) {
@@ -217,7 +235,7 @@ export function OrdersTable({ id }) {
   const [columnFilters, setColumnFilters] = React.useState([]);
   const [columnVisibility, setColumnVisibility] = React.useState({});
   const [rowSelection, setRowSelection] = React.useState({});
-  const [ordersDate, setOrdersDate] = React.useState("last7Days");
+  const [timeRange, setTimeRange] = React.useState("all");
   const [search, setSearch] = React.useState("");
 
   const {
@@ -225,7 +243,7 @@ export function OrdersTable({ id }) {
     isLoading,
     error,
   } = useGetOrdersTableQuery({
-    ordersDate,
+    timeRange,
     search,
   });
 
@@ -244,11 +262,11 @@ export function OrdersTable({ id }) {
   });
 
   const handleExportCSV = () =>
-    exportToCSV(table.getFilteredRowModel().rows, ordersDate, "Orders");
+    exportToCSV(table.getFilteredRowModel().rows, timeRange, "Orders");
   const handleExportJSON = () =>
-    exportToJSON(table.getFilteredRowModel().rows, ordersDate, "Orders");
+    exportToJSON(table.getFilteredRowModel().rows, timeRange, "Orders");
   const handleExportPDF = () =>
-    exportToPDF(table.getFilteredRowModel().rows, ordersDate, "Orders");
+    exportToPDF(table.getFilteredRowModel().rows, timeRange, "Orders");
 
   return (
     <div className="w-full space-y-3 max-w-full overflow-hidden">
@@ -270,9 +288,13 @@ export function OrdersTable({ id }) {
               <Button
                 variant="outline"
                 size="sm"
-                className="rounded-lg border border-border hover:border-primary hover:bg-primary/5 transition-all duration-200 font-medium bg-transparent text-xs"
+                className="flex items-center gap-1 rounded-lg border border-border hover:border-primary hover:bg-primary/5 transition-all duration-200 font-medium bg-transparent text-xs"
               >
-                Filter <ChevronDown className="ml-1 h-3 w-3" />
+                <Calendar className="h-3 w-3" />
+                {timeRange === "today" ? "Today" : 
+                 timeRange === "thisWeek" ? "This Week" :
+                 timeRange === "thisMonth" ? "This Month" : "All Time"}
+                <ChevronDown className="ml-1 h-3 w-3" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
@@ -280,19 +302,25 @@ export function OrdersTable({ id }) {
               className="rounded-lg shadow-lg border border-border"
             >
               <DropdownMenuItem
-                onClick={() => setOrdersDate("today")}
+                onClick={() => setTimeRange("all")}
                 className="hover:bg-primary/10 hover:text-primary cursor-pointer text-sm"
               >
-                Today's Orders
+                All Time
               </DropdownMenuItem>
               <DropdownMenuItem
-                onClick={() => setOrdersDate("last7Days")}
+                onClick={() => setTimeRange("today")}
                 className="hover:bg-primary/10 hover:text-primary cursor-pointer text-sm"
               >
-                Last 7 Days
+                Today
               </DropdownMenuItem>
               <DropdownMenuItem
-                onClick={() => setOrdersDate("thisMonth")}
+                onClick={() => setTimeRange("thisWeek")}
+                className="hover:bg-primary/10 hover:text-primary cursor-pointer text-sm"
+              >
+                This Week
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => setTimeRange("thisMonth")}
                 className="hover:bg-primary/10 hover:text-primary cursor-pointer text-sm"
               >
                 This Month

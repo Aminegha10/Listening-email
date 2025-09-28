@@ -4,12 +4,11 @@ import { useMemo, useState } from "react";
 import { useGetLeadStatsQuery } from "@/features/dataApi";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from "@/components/ui/select";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   ResponsiveContainer,
   BarChart,
@@ -23,9 +22,11 @@ import { ThreeDot } from "react-loading-indicators";
 import { Badge } from "./ui/badge";
 import {
   ArrowUpFromLine as ChartNoAxesCombined,
+  ChevronDown,
   ShoppingCart,
   Users,
 } from "lucide-react";
+import { Button } from "./ui/button";
 
 export default function SalesAgentBarChart({ timeRange }) {
   // const [timeRange, setTimeRange] = useState("thisMonth");
@@ -89,53 +90,85 @@ export default function SalesAgentBarChart({ timeRange }) {
 
           {/* Right section */}
           <div className="flex items-center gap-2 flex-wrap">
-            <Select value={type} onValueChange={setType}>
-              <SelectTrigger className="min-w-[120px] cursor-pointer h-9 bg-background border-border/60 hover:border-primary/30 transition-colors">
-                <ShoppingCart />
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="orders">Orders</SelectItem>
-                <SelectItem value="sales">Sales</SelectItem>
-              </SelectContent>
-            </Select>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="flex items-center gap-2 bg-transparent cursor-pointer"
+                >
+                  <ShoppingCart className="h-4 w-4" />
+                  {type === "orders" ? "Orders" : "Sales"}
+                  <ChevronDown className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem
+                  className="cursor-pointer"
+                  onClick={() => setType("orders")}
+                >
+                  Orders
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  className="cursor-pointer"
+                  onClick={() => setType("sales")}
+                >
+                  Sales
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
 
-            {/* <Select value={timeRange} onValueChange={setTimeRange}>
-              <SelectTrigger className="min-w-[120px] h-9 bg-background border-border/60 hover:border-primary/30 transition-colors">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="thisWeek">Last 7 Days</SelectItem>
-                <SelectItem value="thisMonth">Last 30 Days</SelectItem>
-                <SelectItem value="ytd">Current Year</SelectItem>
-              </SelectContent>
-            </Select> */}
-
-            <Select value={agentFilter} onValueChange={setAgentFilter}>
-              <SelectTrigger className="min-w-[140px] cursor-pointer h-9 bg-background border-border/60 hover:border-primary/30 transition-colors">
-                <Users />
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {["all", ...(stats?.allAgents || [])].map((a) => (
-                  <SelectItem key={a} value={a}>
-                    {a === "all" ? "All Agents" : a}
-                  </SelectItem>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="flex items-center gap-2 bg-transparent cursor-pointer"
+                >
+                  <Users className="h-4 w-4" />
+                  {agentFilter === "all" ? "All Agents" : agentFilter}
+                  <ChevronDown className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                {["all", ...(stats?.allAgents || [])].map((agent) => (
+                  <DropdownMenuItem
+                    key={agent}
+                    className="cursor-pointer"
+                    onClick={() => setAgentFilter(agent)}
+                  >
+                    {agent === "all" ? "All Agents" : agent}
+                  </DropdownMenuItem>
                 ))}
-              </SelectContent>
-            </Select>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       </CardHeader>
 
       <CardContent className="p-6">
         {isLoading ? (
-          <div className="flex justify-center py-8">
-            <ThreeDot variant="pulsate" color="#00bca2" size="medium" />
+          <div className="flex justify-center items-center py-12">
+            <div className="flex flex-col items-center gap-3">
+              <ThreeDot
+                variant="pulsate"
+                color="hsl(var(--primary))"
+                size="medium"
+              />
+              <p className="text-sm text-gray-500">Loading sales data...</p>
+            </div>
           </div>
         ) : error ? (
-          <div className="flex justify-center py-8 text-destructive">
-            Error loading data
+          <div className="flex justify-center items-center py-12">
+            <div className="text-center">
+              <div className="w-12 h-12 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-3">
+                <ChartNoAxesCombined className="h-6 w-6 text-red-500" />
+              </div>
+              <p className="text-red-600 font-medium">
+                Error loading sales data
+              </p>
+              <p className="text-sm text-gray-500 mt-1">
+                Please try again later
+              </p>
+            </div>
           </div>
         ) : chartData.length > 0 ? (
           <>
@@ -159,10 +192,10 @@ export default function SalesAgentBarChart({ timeRange }) {
                   axisLine={{ stroke: "hsl(var(--border))" }}
                 />
                 <Tooltip
-                  cursor={{ fill: "hsl(var(--muted))", opacity: 0.2 }}
+                  cursor={{ fill: "var(--muted-foreground)", opacity: 0.2 }}
                   contentStyle={{
-                    backgroundColor: "hsl(var(--foreground))",
-                    border: "1px solid hsl(var(--border))",
+                    backgroundColor: "var(--background)",
+                    border: "1px solid var(--border)",
                     borderRadius: "0.75rem", // matches --radius-lg
                     boxShadow:
                       "0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.05)",
@@ -195,16 +228,36 @@ export default function SalesAgentBarChart({ timeRange }) {
                 className="bg-primary/10 text-primary border-primary/20 px-4 py-1.5 font-medium"
               >
                 {type === "orders"
-                  ? `Total Orders: ${stats.totalOrdersByTimeRange}`
-                  : `Total Sales: ${stats.totalSalesByTimeRange}`}
+                  ? `Total Orders ${
+                      timeRange === "thisWeek"
+                        ? "This Week :"
+                        : timeRange === "thisMonth"
+                        ? "This Month :"
+                        : "This Year :"
+                    } ${stats.totalOrdersByTimeRange}`
+                  : `Total Sales ${
+                      timeRange === "thisWeek"
+                        ? "This Week :"
+                        : timeRange === "thisMonth"
+                        ? "This Month :"
+                        : "This Year :"
+                    } ${stats.totalSalesByTimeRange} DH`}
               </Badge>
             </div>
           </>
         ) : (
-          <div className="flex justify-center py-12 text-muted-foreground">
-            {type === "orders"
-              ? "No order data available"
-              : "No sales data available"}
+          <div className="flex justify-center items-center py-12">
+            <div className="text-center">
+              <div className="w-12 h-12 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-3">
+                <ChartNoAxesCombined className="h-6 w-6 text-gray-400" />
+              </div>
+              <p className="text-gray-600 font-medium">
+                No sales data available
+              </p>
+              <p className="text-sm text-gray-500 mt-1">
+                Data will appear here once available
+              </p>
+            </div>
           </div>
         )}
       </CardContent>

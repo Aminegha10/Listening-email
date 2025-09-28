@@ -476,37 +476,47 @@ const GetOrderAndSalesStats = async (req, res) => {
 
 const GetOrdersTableStats = async (req, res) => {
   try {
-    const { ordersDate, search = "" } = req.query; // default values
-    let dateFilter;
-
+    const { timeRange, search = "" } = req.query;
     const now = new Date();
+    let dateFilter = {};
 
-    if (ordersDate === "today") {
-      const startOfDay = new Date();
-      startOfDay.setHours(0, 0, 0, 0);
-      dateFilter = { $gte: startOfDay };
-    } else if (ordersDate === "last7Days") {
-      const sevenDaysAgo = new Date();
-      sevenDaysAgo.setDate(now.getDate() - 7);
-      dateFilter = { $gte: sevenDaysAgo };
-    } else if (ordersDate === "thisMonth") {
-      const startOfThisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-      const endOfThisMonth = new Date(
-        now.getFullYear(),
-        now.getMonth() + 1,
-        0,
-        23,
-        59,
-        59,
-        999
-      );
-      dateFilter = { $gte: startOfThisMonth, $lte: endOfThisMonth };
+    switch (timeRange) {
+      case "today":
+        const startOfToday = new Date();
+        startOfToday.setHours(0, 0, 0, 0);
+        const endOfToday = new Date();
+        endOfToday.setHours(23, 59, 59, 999);
+        dateFilter = { createdAt: { $gte: startOfToday, $lte: endOfToday } };
+        break;
+
+      case "thisWeek":
+        const day = now.getDay();
+        const diffToMonday = day === 0 ? 6 : day - 1;
+        const startOfWeek = new Date(now);
+        startOfWeek.setDate(now.getDate() - diffToMonday);
+        startOfWeek.setHours(0, 0, 0, 0);
+        const endOfWeek = new Date(startOfWeek);
+        endOfWeek.setDate(startOfWeek.getDate() + 6);
+        endOfWeek.setHours(23, 59, 59, 999);
+        dateFilter = { createdAt: { $gte: startOfWeek, $lte: endOfWeek } };
+        break;
+
+      case "thisMonth":
+        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+        const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+        endOfMonth.setHours(23, 59, 59, 999);
+        dateFilter = { createdAt: { $gte: startOfMonth, $lte: endOfMonth } };
+        break;
+
+      case "all":
+      default:
+        dateFilter = {};
+        break;
     }
-    // logger.info(dateFilter);
 
     // Build the final query
     const query = {
-      ...(dateFilter && { createdAt: dateFilter }),
+      ...dateFilter,
       $or: [
         { orderNumber: { $regex: search, $options: "i" } },
         { salesAgent: { $regex: search, $options: "i" } },
@@ -514,18 +524,28 @@ const GetOrdersTableStats = async (req, res) => {
       ],
     };
 
-    // const numericLimit = parseInt(limit);
-
     const Orders = await OrderModel.find(
       query,
       "orderNumber salesAgent products client createdAt price typedepaiement"
-    );
-    // .limit(numericLimit);
+    ).sort({ createdAt: -1 });
 
-    return res.json(Orders);
+    // Format the orders with proper date
+    const formattedOrders = Orders.map(order => ({
+      ...order.toObject(),
+      createdAt: order.createdAt ? new Date(order.createdAt).toLocaleString('en-GB', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+      }) : null
+    }));
+
+    return res.json(formattedOrders);
   } catch (error) {
-    // logger.error(error);
-    res.status(500).json(error.message);
+    logger.error(`Failed to fetch orders: ${error.message}`);
+    res.status(500).json({ error: "Failed to fetch orders" });
   }
 };
 

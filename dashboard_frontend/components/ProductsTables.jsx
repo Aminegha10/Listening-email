@@ -10,6 +10,7 @@ import {
 } from "@tanstack/react-table";
 import {
   ArrowUpDown,
+  Calendar,
   CarIcon as ChartColumn,
   ChevronDown,
   Download,
@@ -176,10 +177,10 @@ export function ProductsTables({ id }) {
   const [columnVisibility, setColumnVisibility] = React.useState({});
   const [rowSelection, setRowSelection] = React.useState({});
   const [search, setSearch] = React.useState("");
-  const [productsDate, setProductsDate] = React.useState("last7Days");
+  const [timeRange, setTimeRange] = React.useState("all");
 
   const { data, isLoading, isError, error } = useGetProductsDetailsQuery({
-    productsDate,
+    timeRange,
     search,
   });
 
@@ -199,13 +200,13 @@ export function ProductsTables({ id }) {
   const dataType = "products";
 
   const handleExportCSV = () =>
-    exportToCSV(table.getFilteredRowModel().rows, productsDate, "Products");
+    exportToCSV(table.getFilteredRowModel().rows, timeRange, "Products");
   const handleExportJSON = () =>
-    exportToJSON(table.getFilteredRowModel().rows, productsDate, "Products");
+    exportToJSON(table.getFilteredRowModel().rows, timeRange, "Products");
   const handleExportPDF = () =>
     exportToPDF(
       table.getFilteredRowModel().rows,
-      productsDate,
+      timeRange,
       "Products",
       null
     );
@@ -229,9 +230,13 @@ export function ProductsTables({ id }) {
               <Button
                 variant="outline"
                 size="sm"
-                className="rounded-lg border border-border hover:border-primary hover:bg-primary/5 transition-all duration-200 font-medium bg-transparent text-xs"
+                className="flex items-center gap-1 rounded-lg border border-border hover:border-primary hover:bg-primary/5 transition-all duration-200 font-medium bg-transparent text-xs"
               >
-                Filter <ChevronDown className="ml-1 h-3 w-3" />
+                <Calendar className="h-3 w-3" />
+                {timeRange === "today" ? "Today" : 
+                 timeRange === "thisWeek" ? "This Week" :
+                 timeRange === "thisMonth" ? "This Month" : "All Time"}
+                <ChevronDown className="ml-1 h-3 w-3" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
@@ -239,19 +244,25 @@ export function ProductsTables({ id }) {
               className="rounded-lg shadow-lg border border-border"
             >
               <DropdownMenuItem
-                onClick={() => setProductsDate("today")}
+                onClick={() => setTimeRange("all")}
                 className="hover:bg-primary/10 hover:text-primary cursor-pointer text-sm"
               >
-                Today's Orders
+                All Time
               </DropdownMenuItem>
               <DropdownMenuItem
-                onClick={() => setProductsDate("last7Days")}
+                onClick={() => setTimeRange("today")}
                 className="hover:bg-primary/10 hover:text-primary cursor-pointer text-sm"
               >
-                Last 7 Days
+                Today
               </DropdownMenuItem>
               <DropdownMenuItem
-                onClick={() => setProductsDate("thisMonth")}
+                onClick={() => setTimeRange("thisWeek")}
+                className="hover:bg-primary/10 hover:text-primary cursor-pointer text-sm"
+              >
+                This Week
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => setTimeRange("thisMonth")}
                 className="hover:bg-primary/10 hover:text-primary cursor-pointer text-sm"
               >
                 This Month

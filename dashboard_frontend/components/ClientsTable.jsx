@@ -10,6 +10,7 @@ import {
 } from "@tanstack/react-table";
 import {
   ArrowUpDown,
+  Calendar,
   ChevronDown,
   Download,
   Package,
@@ -142,6 +143,30 @@ export const columns = [
       );
     },
   },
+  {
+    accessorKey: "firstOrderDate",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        className="hover:bg-primary/5 hover:text-primary font-semibold"
+      >
+        First Order Date <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
+    cell: ({ row }) => {
+      // const amount = parseFloat(row.getValue("revenue"));
+      // const formatted = new Intl.NumberFormat("en-US", {
+      //   style: "currency",
+      //   currency: "USD",
+      // }).format(amount);
+      return (
+        <div className="capitalize text-center font-medium text-muted-foreground">
+          {row.getValue("firstOrderDate")}
+        </div>
+      );
+    },
+  },
 ];
 
 export function ClientsTable() {
@@ -149,6 +174,7 @@ export function ClientsTable() {
   const [columnFilters, setColumnFilters] = React.useState([]);
   const [columnVisibility, setColumnVisibility] = React.useState({});
   const [rowSelection, setRowSelection] = React.useState({});
+  const [timeRange, setTimeRange] = React.useState("all");
 
   const {
     data: clients = [],
@@ -156,6 +182,7 @@ export function ClientsTable() {
     isError,
   } = useGetClientsQuery({
     filter: "all",
+    timeRange,
   });
 
   const table = useReactTable({
@@ -184,14 +211,67 @@ export function ClientsTable() {
     <div className="w-full space-y-3 max-w-full overflow-hidden">
       {/* Top bar with Export + Columns */}
       <div className="flex flex-col sm:flex-row justify-between items-center gap-2 ">
-        <div className="relative w-full sm:max-w-xs">
-          <Input
-            // value={search}
-            // onChange={(e) => setSearch(e.target.value)}
-            placeholder="🔍 Search orders..."
-            className="pl-8 border border-border focus:border-primary transition-colors bg-background text-sm h-8"
-          />
+        <div className="flex items-center gap-2">
+          <div className="relative w-full sm:max-w-xs">
+            <Input
+              // value={search}
+              // onChange={(e) => setSearch(e.target.value)}
+              placeholder="🔍 Search orders..."
+              className="pl-8 border border-border focus:border-primary transition-colors bg-background text-sm h-8"
+            />
+          </div>
+
+          {/* Add the new time range dropdown */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="outline"
+                size="sm"
+                className="flex items-center gap-1 rounded-lg border border-border hover:border-primary hover:bg-primary/5 transition-all duration-200 font-medium bg-transparent text-xs"
+              >
+                <Calendar className="h-3 w-3" />
+                {timeRange === "today"
+                  ? "Today"
+                  : timeRange === "thisWeek"
+                  ? "This Week"
+                  : timeRange === "thisMonth"
+                  ? "This Month"
+                  : "All Time"}
+                <ChevronDown className="ml-1 h-3 w-3" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              align="end"
+              className="rounded-lg shadow-lg border border-border"
+            >
+              <DropdownMenuItem
+                onClick={() => setTimeRange("all")}
+                className="hover:bg-primary/10 hover:text-primary cursor-pointer text-sm"
+              >
+                All Time
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => setTimeRange("today")}
+                className="hover:bg-primary/10 hover:text-primary cursor-pointer text-sm"
+              >
+                Today
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => setTimeRange("thisWeek")}
+                className="hover:bg-primary/10 hover:text-primary cursor-pointer text-sm"
+              >
+                This Week
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => setTimeRange("thisMonth")}
+                className="hover:bg-primary/10 hover:text-primary cursor-pointer text-sm"
+              >
+                This Month
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
+
         <div className="flex items-center gap-2 flex-wrap">
           {/* Columns Dropdown */}
           <DropdownMenu>

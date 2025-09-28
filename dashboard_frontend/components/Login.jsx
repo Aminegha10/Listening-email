@@ -25,6 +25,8 @@ import { Separator } from "@/components/ui/separator";
 import { useState } from "react";
 import { useLoginMutation } from "@/features/authApi";
 import { useSelector } from "react-redux";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 // Google Icon Component
 const GoogleIcon = () => (
@@ -70,7 +72,17 @@ const Login = () => {
         router.push("/dashboard");
       }
     } catch (err) {
-      console.log(err);
+      // Handle specific error messages
+      toast.error(err?.data?.message || "Login failed", {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
     }
   };
 
@@ -84,6 +96,20 @@ const Login = () => {
 
   return (
     <>
+      {/* Add ToastContainer at the root level */}
+      <ToastContainer
+        position="bottom-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
+
       <>
         {!isSuccess ? (
           // Enhanced Login form

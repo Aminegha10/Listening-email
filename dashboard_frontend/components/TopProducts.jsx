@@ -53,25 +53,25 @@ export const description = "A pie chart showing top-selling products";
 
 // Up to 20 colors (for dynamic data)
 const COLORS = [
-  "#00bca2", // chart-1 (teal)
-  "#3b82f6", // chart-2 (blue)
-  "#10b981", // chart-3 (green)
-  "#f59e0b", // chart-4 (orange)
-  "#8b5cf6", // chart-5 (purple)
-  "#00bca2", // primary
-  "#ffff00", // yellow
-  "#00bca2", // accent
-  "#ff4d4f", // destructive (red)
-  "#f5f5f5", // muted
-  "#00bca2", // sidebar-primary
-  "#f0f0f0", // sidebar-accent
-  "#e0e0e0", // sidebar-border
+  "#14b8a6", // chart-1 (teal-500)
+  "#0f766e", // chart-2 (teal-700)
+  "#2dd4bf", // chart-3 (teal-400)
+  "#64748b", // chart-4 (slate-500)
+  "#334155", // chart-5 (slate-700)
+  "#0d9488", // primary (teal-600)
+  "#0891b2", // accent (cyan-600, complementary)
+  "#10b981", // success / green (fits teal family)
+  "#dc2626", // destructive (red-600)
+  "#f1f5f9", // muted (slate-100)
+  "#0f766e", // sidebar-primary (teal-700)
+  "#1e293b", // sidebar-accent (slate-800)
+  "#334155", // sidebar-border (slate-700)
   "#ffffff", // primary-foreground
-  "#333333", // secondary-foreground
+  "#e2e8f0", // secondary-foreground (slate-200)
   "#ffffff", // accent-foreground
   "#ffffff", // destructive-foreground
-  "#666666", // muted-foreground
-  "#ffffff", // card
+  "#94a3b8", // muted-foreground (slate-400)
+  "#f8fafc", // card (slate-50)
   "#ffffff", // popover
 ];
 
@@ -95,7 +95,7 @@ export function TopProducts({ timeRange }) {
   const handleExportPDF = () =>
     exportToPDF(
       TopProducts,
-      null,
+      timeRange,
       "TopSellingProducts",
       filter,
       chartRef.current

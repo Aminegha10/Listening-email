@@ -57,18 +57,25 @@ export const register = async (req, res) => {
 };
 
 export const login = async (req, res) => {
-  // console.log(JWT_SECRET);
   try {
     const { email, password } = req.body;
-    console.log(req.body);
 
+    // Check if email exists
     const user = await UserModel.findOne({ email });
-    if (!user) return res.status(400).json({ message: "Invalid credentials" });
+    if (!user) {
+      return res.status(401).json({
+        message: "Email not found. Please check your email address.",
+      });
+    }
 
+    // Check password
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch)
-      return res.status(400).json({ message: "Invalid credentials" });
-    // console.log(user);
+    if (!isMatch) {
+      return res.status(401).json({
+        message: "Incorrect password. Please try again.",
+      });
+    }
+
     // Short-lived access token for temp-password users
     let accessToken = jwt.sign(
       { id: user._id, mustChangePassword: user.mustChangePassword },
@@ -103,10 +110,14 @@ export const login = async (req, res) => {
         name: user.name,
         role: user.role,
         newUser: user.mustChangePassword,
+        email: user.email,
       },
     });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    console.error("Login error:", err);
+    res.status(500).json({
+      message: "An error occurred during login. Please try again later.",
+    });
   }
 };
 

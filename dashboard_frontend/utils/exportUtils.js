@@ -165,7 +165,14 @@ export const exportToPDF = async (
           "Revenue",
         ]
       : dataType === "TopClients"
-      ? ["Client Name", filterTopClient]
+      ? [
+          "Client Name",
+          filterTopClient === "revenue"
+            ? "Revenue DH"
+            : filterTopClient === "ordersCount"
+            ? "Orders Count"
+            : "Products Ordered",
+        ]
       : ["Product", filterPieChart];
 
   const rows =
@@ -291,26 +298,26 @@ export const exportToPDF = async (
       const lineHeight = 4; // smaller line height
 
       const COLORS = [
-        "#00bca2",
-        "#3b82f6",
-        "#10b981",
-        "#f59e0b",
-        "#8b5cf6",
-        "#ff4d4f",
-        "#ffffff",
-        "#14b8a6",
-        "#f87171",
-        "#f3f4f6",
-        "#0ea5e9",
-        "#818cf8",
-        "#e5e7eb",
-        "#facc15",
-        "#a3e635",
-        "#f472b6",
-        "#6366f1",
-        "#f87171",
-        "#fef3c7",
-        "#f9fafb",
+        "#14b8a6", // chart-1 (teal-500)
+        "#0f766e", // chart-2 (teal-700)
+        "#2dd4bf", // chart-3 (teal-400)
+        "#64748b", // chart-4 (slate-500)
+        "#334155", // chart-5 (slate-700)
+        "#0d9488", // primary (teal-600)
+        "#0891b2", // accent (cyan-600, complementary)
+        "#10b981", // success / green (fits teal family)
+        "#dc2626", // destructive (red-600)
+        "#f1f5f9", // muted (slate-100)
+        "#0f766e", // sidebar-primary (teal-700)
+        "#1e293b", // sidebar-accent (slate-800)
+        "#334155", // sidebar-border (slate-700)
+        "#ffffff", // primary-foreground
+        "#e2e8f0", // secondary-foreground (slate-200)
+        "#ffffff", // accent-foreground
+        "#ffffff", // destructive-foreground
+        "#94a3b8", // muted-foreground (slate-400)
+        "#f8fafc", // card (slate-50)
+        "#ffffff", // popover
       ];
 
       data.forEach((item, i) => {

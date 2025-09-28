@@ -19,6 +19,14 @@ const GetClients = async (req, res) => {
     const now = new Date();
     let dateFilter = {};
     switch (timeRange) {
+      case "today":
+        const startOfToday = new Date();
+        startOfToday.setHours(0, 0, 0, 0);
+        const endOfToday = new Date();
+        endOfToday.setHours(23, 59, 59, 999);
+        dateFilter = { createdAt: { $gte: startOfToday, $lte: endOfToday } };
+        break;
+
       case "thisWeek":
         const day = now.getDay(); // Sunday = 0, Monday = 1
         const diffToMonday = day === 0 ? 6 : day - 1;
@@ -98,6 +106,7 @@ const GetClients = async (req, res) => {
     pipeline.push({
       $group: {
         _id: "$client",
+        firstOrderDate: { $min: "$createdAt" }, // Get earliest order date
         ...group,
       },
     });
@@ -105,6 +114,7 @@ const GetClients = async (req, res) => {
     pipeline.push({
       $project: {
         clientName: "$_id",
+        firstOrderDate: 1, // Include in projection
         revenue: 1,
         ordersCount: { $size: { $ifNull: ["$orders", []] } },
         productsQuantity: 1,
@@ -120,8 +130,87 @@ const GetClients = async (req, res) => {
       OrderModel.distinct("client", dateFilter),
     ]);
 
+    // Format dates and ensure progress values are correct
+    const formattedClients = topClients.map((client) => ({
+      ...client,
+      firstOrderDate: client.firstOrderDate
+        ? new Date(client.firstOrderDate).toLocaleString("en-GB", {
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: false,
+          })
+        : null,
+    }));
+
     const totalClients = totalClientsAgg.length;
 
+    // -------------------------
+    // jjnj Truly New Clients Today
+    // -------------------------
+    const startOfToday = new Date();
+    startOfToday.setHours(0, 0, 0, 0);
+    const endOfToday = new Date();
+    endOfToday.setHours(23, 59, 59, 999);
+
+    // Get clients whose first order is today
+    const trulyNewClientsToday = await OrderModel.aggregate([
+      // Group by client and get the date of their first order
+      {
+        $group: {
+          _id: "$client",
+          firstOrderDate: { $min: "$createdAt" },
+        },
+      },
+      // Keep only clients whose first order is today
+      {
+        $match: {
+          firstOrderDate: { $gte: startOfToday, $lte: endOfToday },
+        },
+      },
+      // Count them
+      { $count: "newClientsToday" },
+    ]);
+
+    const newClientsCount = trulyNewClientsToday[0]?.newClientsToday || 0;
+
+    // -------------------------
+    // 📈 Growth rate vs yesterday
+    // -------------------------
+    const startOfYesterday = new Date(startOfToday);
+    startOfYesterday.setDate(startOfToday.getDate() - 1);
+    const endOfYesterday = new Date(startOfYesterday);
+    endOfYesterday.setHours(23, 59, 59, 999);
+
+    // Get clients whose first order was yesterday
+    const trulyNewClientsYesterday = await OrderModel.aggregate([
+      {
+        $group: {
+          _id: "$client",
+          firstOrderDate: { $min: "$createdAt" },
+        },
+      },
+      {
+        $match: {
+          firstOrderDate: { $gte: startOfYesterday, $lte: endOfYesterday },
+        },
+      },
+      { $count: "newClientsYesterday" },
+    ]);
+
+    const yesterdayClientsCount =
+      trulyNewClientsYesterday[0]?.newClientsYesterday || 0;
+
+    const growthRate =
+      yesterdayClientsCount > 0
+        ? (
+            ((newClientsCount - yesterdayClientsCount) /
+              yesterdayClientsCount) *
+            100
+          ).toFixed(2)
+        : 0;
     let progress = null;
     if (!isNaN(goal) && goal > 0) {
       progress = ((totalClients / goal) * 100).toFixed(2);
@@ -129,7 +218,9 @@ const GetClients = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      data: topClients,
+      data: formattedClients,
+      newClientsToday: newClientsCount,
+      growthRate: parseFloat(growthRate),
       totalClients,
       progress: progress ? parseFloat(progress) : null,
     });

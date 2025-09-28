@@ -58,7 +58,7 @@ export default function DashboardPage() {
       </div>
 
       <OrdersTable />
-      <ShareButton />
+      {/* <ShareButton /> */}
     </div>
   );
 }

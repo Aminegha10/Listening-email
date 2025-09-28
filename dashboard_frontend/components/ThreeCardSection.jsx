@@ -43,6 +43,7 @@ import {
   Target,
   Crown,
   User,
+  ArrowDownRight,
 } from "lucide-react";
 
 import { Label, PolarRadiusAxis } from "recharts";
@@ -54,6 +55,7 @@ import { Label, PolarRadiusAxis } from "recharts";
 // } from "./ui/tooltip";
 import { useGetClientsQuery } from "@/features/dataApi";
 import { useGetTopSalesAgentQuery } from "@/features/dataApi";
+import { Riple } from "react-loading-indicators";
 
 export const description = "A radial chart with text";
 
@@ -287,7 +289,14 @@ const ThreeCardSection = () => {
         </CardHeader>
         <CardContent className="flex-1 pb-0">
           {isLoading ? (
-            <>.....loading</>
+            <div className="flex justify-center items-center py-12">
+              <Riple
+                color="var(--color-primary)"
+                size="medium"
+                text=""
+                textColor=""
+              />
+            </div>
           ) : isError ? (
             <>errors</>
           ) : (
@@ -398,11 +407,13 @@ const ThreeCardSection = () => {
         </CardHeader>
         <CardContent className="flex-1 pb-0">
           {topAgentLoading ? (
-            <div className="flex items-center justify-center h-[180px]">
-              <div className="text-center">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-2"></div>
-                <p className="text-sm text-muted-foreground">Loading...</p>
-              </div>
+            <div className="flex justify-center items-center py-12">
+              <Riple
+                color="var(--color-primary)"
+                size="medium"
+                text=""
+                textColor=""
+              />
             </div>
           ) : topAgentError ? (
             <div className="flex items-center justify-center h-[180px]">
@@ -506,6 +517,47 @@ const ThreeCardSection = () => {
               </div>
             </>
           )}
+        </CardContent>
+      </Card>
+
+      <Card className="w-full max-w-sm mx-auto p-3">
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1">
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 bg-[var(--chart-4)] rounded-full"></div>
+            <CardTitle className="text-xs font-medium text-muted-foreground">
+              New Clients Today
+            </CardTitle>
+          </div>
+          <Users className="h-4 w-4 text-emerald-500" />
+        </CardHeader>
+
+        <CardContent className="flex flex-col flex-1 items-center justify-center text-center">
+          {/* You can replace this with your API data */}
+          <div className="text-3xl font-extrabold text-emerald-600">
+            {clients?.newClientsToday ?? 0}
+          </div>
+          <p className="text-xs text-muted-foreground mt-1">
+            New clients registered today
+          </p>
+
+          {/* growth indicator */}
+          <div className="flex items-center gap-1 mt-2">
+            {clients?.growthRate >= 0 ? (
+              <>
+                <ArrowUpRight className="h-3 w-3 text-emerald-500" />
+                <span className="text-xs text-emerald-500">
+                  +{clients?.growthRate ?? 0}% vs yesterday
+                </span>
+              </>
+            ) : (
+              <>
+                <ArrowDownRight className="h-3 w-3 text-rose-500" />
+                <span className="text-xs text-rose-500">
+                  {clients?.growthRate ?? 0}% vs yesterday
+                </span>
+              </>
+            )}
+          </div>
         </CardContent>
       </Card>
     </>
