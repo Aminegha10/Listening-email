@@ -193,7 +193,7 @@ export function SalesCounter({ timeRange }) {
                 <CartesianGrid
                   vertical={false}
                   strokeDasharray="3 3"
-                  stroke="var(--border)"
+                  stroke="var(--foreground)"
                   opacity={0.3}
                 />
                 <XAxis
