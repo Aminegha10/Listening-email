@@ -35,7 +35,7 @@ import { Riple } from "react-loading-indicators";
 import { Button } from "./ui/button";
 import Link from "next/link";
 import { Avatar, AvatarFallback } from "./ui/avatar";
-import { exportToPDF } from "@/utils/exportUtils";
+import { exportToCSV, exportToJSON, exportToPDF } from "@/utils/exportUtils";
 
 // const mockClients = [
 //   {
@@ -270,12 +270,13 @@ function TopClients({ timeRange }) {
         return "bg-gray-100 text-gray-800";
     }
   };
+  console.log(topClients);
 
   // exporting
   const handleExportCSV = () =>
-    exportToCSV(topClients.data, null, "TopClients", null, null, filter);
+    exportToCSV(topClients.data, timeRange, "TopClients", null, null, filter);
   const handleExportJSON = () =>
-    exportToJSON(topClients.data, null, "TopClients", null, null, filter);
+    exportToJSON(topClients.data, timeRange, "TopClients", null, null, filter);
   const handleExportPDF = () =>
     exportToPDF(topClients.data, timeRange, "TopClients", null, null, filter);
 
@@ -288,111 +289,82 @@ function TopClients({ timeRange }) {
       }}
     >
       {/* Clients Card */}
-      <div className="p-6 border-b border-slate-200">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl border border-primary/10">
-              <Users className="h-5 w-5 text-primary" />
-            </div>
-            <div>
-              <h3 className="text-xl font-semibold text-slate-900">
-                Top 10 Clients
-              </h3>
-              <p className="text-sm text-gray-500 font-medium">
-                Showing {topClients?.data.length} of {topClients?.totalClients}{" "}
-                clients
-              </p>
-            </div>
+      <div className="p-6 border-b border-slate-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        {/* Left: Title + Icon */}
+        <div className="flex items-center gap-3 w-full sm:w-auto">
+          <div className="p-2.5 bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl border border-primary/10">
+            <Users className="h-5 w-5 text-primary" />
           </div>
-          {/* by existing in order or by revenue */}
-          <div className="flex items-center gap-2">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="outline"
-                  className="flex items-center gap-2 bg-transparent cursor-pointer"
-                >
-                  <Settings2 />
-                  {filter === "revenue"
-                    ? "Revenue"
-                    : filter === "productsQuantity"
-                    ? "Products"
-                    : "Orders"}
-
-                  <ChevronDown />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuItem
-                  className="cursor-pointer"
-                  onClick={() => setFilter("revenue")}
-                >
-                  Top Revenue
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  className="cursor-pointer"
-                  onClick={() => setFilter("ordersCount")}
-                >
-                  Total Orders
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  className="cursor-pointer"
-                  onClick={() => setFilter("productsQuantity")}
-                >
-                  Products Quantity
-                </DropdownMenuItem>
-                {/* <DropdownMenuItem>Most Orders Count</DropdownMenuItem> */}
-              </DropdownMenuContent>
-            </DropdownMenu>
-            {/* Export Dropdown */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="outline"
-                  className="flex items-center gap-2 bg-transparent cursor-pointer"
-                >
-                  <Download className="h-3 w-3" />
-                  Export <ChevronDown className="ml-1 h-3 w-3" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                align="end"
-                className="rounded-lg shadow-lg border border-border"
-              >
-                <DropdownMenuItem
-                  onClick={handleExportCSV}
-                  className="hover:bg-primary/10 hover:text-primary cursor-pointer text-sm"
-                >
-                  Export as CSV{" "}
-                  <Sheet className="text-green-500 stroke-[2px]" />
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={handleExportJSON}
-                  className="hover:bg-primary/10 hover:text-primary cursor-pointer text-sm"
-                >
-                  Export as JSON{" "}
-                  <FileJson className="text-yellow-500 stroke-[2px]" />
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={handleExportPDF}
-                  className="hover:bg-primary/10 hover:text-primary cursor-pointer text-sm"
-                >
-                  Export as PDF{" "}
-                  <FileText className="text-[#f32b2b] stroke-[2px]" />
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-
-            {/* <div>
-                <Link href="/dashboard/tables#clients" passHref>
-                  <Button className="px-3 py-2 bg-white hover:bg-slate-200 text-slate-700 rounded-lg cursor-pointer transition-all duration-200 flex items-center gap-2 border border-slate-300 hover:border-slate-400">
-                    <Table className="h-4 w-4" />
-                  </Button>
-                </Link>
-              </div> */}
+          <div>
+            <h3 className="text-lg sm:text-xl font-semibold text-slate-900 ">
+              Top 10 Clients
+            </h3>
+            <p className="text-sm text-gray-500 font-medium">
+              Showing {topClients?.data.length} of {topClients?.totalClients}{" "}
+              clients
+            </p>
           </div>
         </div>
+
+        {/* Right: Filters & Export */}
+        <div className="flex flex-wrap gap-2 w-full sm:w-auto justify-start sm:justify-end">
+          {/* Filter Dropdown */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="outline"
+                className="flex items-center gap-1 rounded-lg border border-border hover:border-primary hover:text-primary hover:bg-primary/5 transition-all duration-200 font-medium bg-transparent text-xs"
+              >
+                <Settings2 className="h-4 w-4" />
+                {filter === "revenue"
+                  ? "Revenue"
+                  : filter === "productsQuantity"
+                  ? "Products"
+                  : "Orders"}
+                <ChevronDown className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem onClick={() => setFilter("revenue")}>
+                Top Revenue
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setFilter("ordersCount")}>
+                Total Orders
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setFilter("productsQuantity")}>
+                Products Quantity
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          {/* Export Dropdown */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="outline"
+                className="flex items-center gap-1 rounded-lg border border-border hover:border-primary hover:text-primary hover:bg-primary/5 transition-all duration-200 font-medium bg-transparent text-xs"
+              >
+                <Download className="h-4 w-4" />
+                Export <ChevronDown className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={handleExportCSV}>
+                Export as CSV <Sheet className="text-green-500 stroke-[2px]" />
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={handleExportJSON}>
+                Export as JSON{" "}
+                <FileJson className="text-yellow-500 stroke-[2px]" />
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={handleExportPDF}>
+                Export as PDF{" "}
+                <FileText className="text-[#f32b2b] stroke-[2px]" />
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
+
       {/* Chart Container */}
       <div className="divide-y divide-slate-100">
         {isLoading ? (
@@ -558,20 +530,6 @@ function TopClients({ timeRange }) {
           ))
         )}
       </div>
-      {/* Chart Container */}
-      {/* {filteredAndSortedClients.length === 0 && (
-          <div className="p-12 text-center">
-            <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Users className="h-8 w-8 text-slate-400" />
-            </div>
-            <h3 className="text-lg font-medium text-slate-900 mb-2">
-              No clients found
-            </h3>
-            <p className="text-slate-500">
-              Try adjusting your filters to see more results.
-            </p>
-          </div>
-        )} */}
     </div>
   );
 }

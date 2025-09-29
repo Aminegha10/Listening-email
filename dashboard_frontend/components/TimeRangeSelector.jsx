@@ -25,7 +25,7 @@ export function TimeRangeSelector({ value, onChange, className = "" }) {
 								index === timeRangeOptions.length - 1 && "rounded-l-none",
 								index > 0 && index < timeRangeOptions.length - 1 && "rounded-none",
 								value === option.value
-									? "bg-background text-foreground shadow-sm border border-border z-10"
+									? "bg-background text-foreground shadow-sm border border-border z-0"
 									: "hover:bg-accent/50 hover:text-accent-foreground border-transparent",
 								index > 0 && value !== option.value && "border-l border-border/30"
 							)}

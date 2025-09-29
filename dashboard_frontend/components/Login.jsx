@@ -69,7 +69,10 @@ const Login = () => {
         setNewUser(true);
         router.push("/change-password");
       } else {
-        router.push("/dashboard");
+        setTimeout(() => {
+          router.push("/dashboard");
+        }, 2000); // 3 seconds delay
+        // router.push("/dashboard");
       }
     } catch (err) {
       // Handle specific error messages
@@ -87,11 +90,29 @@ const Login = () => {
   };
 
   const handleGoogleLogin = async () => {
-    console.log("Google login clicked");
+    toast.warning("Google login is not implemented yet", {
+      position: "bottom-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
   };
 
   const handleGithubLogin = async () => {
-    console.log("GitHub login clicked");
+    toast.warning("GitHub login is not implemented yet", {
+      position: "bottom-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
   };
 
   return (
@@ -193,6 +214,7 @@ const Login = () => {
                         className="pl-11 h-12 border-2 border-slate-200 dark:border-slate-700 focus:border-blue-600 dark:focus:border-blue-500 rounded-xl bg-slate-50/50 dark:bg-slate-800/50 transition-all duration-200 hover:border-slate-300 dark:hover:border-slate-600"
                         id="email"
                         type="email"
+                        defaultValue={"amine32@smab.com"}
                         placeholder="username@smab.com"
                         {...register("email", {
                           required: "Email is required",
@@ -220,6 +242,7 @@ const Login = () => {
                       <Input
                         className="pl-11 pr-11 h-12 border-2 border-slate-200 dark:border-slate-700 focus:border-blue-600 dark:focus:border-blue-500 rounded-xl bg-slate-50/50 dark:bg-slate-800/50 transition-all duration-200 hover:border-slate-300 dark:hover:border-slate-600"
                         id="password"
+                        defaultValue={"azAZ@2002"}
                         type={showPassword ? "text" : "password"}
                         placeholder="••••••••••••"
                         {...register("password", {

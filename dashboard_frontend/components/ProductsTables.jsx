@@ -14,8 +14,11 @@ import {
   CarIcon as ChartColumn,
   ChevronDown,
   Download,
+  FileJson,
+  FileText,
   Info,
   Package,
+  Sheet,
   ShoppingCart,
   TrendingUp,
 } from "lucide-react";
@@ -200,25 +203,41 @@ export function ProductsTables({ id }) {
   const dataType = "products";
 
   const handleExportCSV = () =>
-    exportToCSV(table.getFilteredRowModel().rows, timeRange, "Products");
+    exportToCSV(
+      table.getFilteredRowModel().rows,
+      timeRange,
+      "Products",
+      null,
+      null,
+      data.length
+    );
   const handleExportJSON = () =>
-    exportToJSON(table.getFilteredRowModel().rows, timeRange, "Products");
+    exportToJSON(
+      table.getFilteredRowModel().rows,
+      timeRange,
+      "Products",
+      null,
+      null,
+      data.length
+    );
   const handleExportPDF = () =>
     exportToPDF(
       table.getFilteredRowModel().rows,
       timeRange,
       "Products",
-      null
+      null,
+      null,
+      data.length
     );
 
   return (
     <div className="w-full space-y-3 max-w-full overflow-hidden">
-      <div className="flex flex-col sm:flex-row justify-between items-center gap-2 ">
+      <div className="flex flex-col sm:flex-row justify-between items-center gap-2 p-3 bg-card rounded-lg border border-border shadow-sm">
         <div className="relative w-full sm:max-w-xs">
           <Input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="🔍 Search products..."
+            placeholder="Search products..."
             className="pl-8 border border-border focus:border-primary transition-colors bg-background text-sm h-8"
           />
         </div>
@@ -230,12 +249,16 @@ export function ProductsTables({ id }) {
               <Button
                 variant="outline"
                 size="sm"
-                className="flex items-center gap-1 rounded-lg border border-border hover:border-primary hover:bg-primary/5 transition-all duration-200 font-medium bg-transparent text-xs"
+                className="flex items-center gap-1 rounded-lg border border-border hover:border-primary hover:text-primary hover:bg-primary/5 transition-all duration-200 font-medium bg-transparent text-xs"
               >
                 <Calendar className="h-3 w-3" />
-                {timeRange === "today" ? "Today" : 
-                 timeRange === "thisWeek" ? "This Week" :
-                 timeRange === "thisMonth" ? "This Month" : "All Time"}
+                {timeRange === "today"
+                  ? "Today"
+                  : timeRange === "thisWeek"
+                  ? "This Week"
+                  : timeRange === "thisMonth"
+                  ? "This Month"
+                  : "All Time"}
                 <ChevronDown className="ml-1 h-3 w-3" />
               </Button>
             </DropdownMenuTrigger>
@@ -276,7 +299,7 @@ export function ProductsTables({ id }) {
               <Button
                 variant="outline"
                 size="sm"
-                className="rounded-lg border border-border hover:border-primary hover:bg-primary/5 transition-all duration-200 font-medium bg-transparent text-xs"
+                className="flex items-center gap-1 rounded-lg border border-border hover:border-primary hover:text-primary hover:bg-primary/5 transition-all duration-200 font-medium bg-transparent text-xs"
               >
                 Columns <ChevronDown className="ml-1 h-3 w-3" />
               </Button>
@@ -309,7 +332,7 @@ export function ProductsTables({ id }) {
               <Button
                 variant="outline"
                 size="sm"
-                className="flex items-center gap-1 rounded-lg border border-border hover:border-primary hover:bg-primary/5 transition-all duration-200 font-medium bg-transparent text-xs"
+                className="flex items-center gap-1 rounded-lg border border-border hover:border-primary hover:text-primary hover:bg-primary/5 transition-all duration-200 font-medium bg-transparent text-xs"
               >
                 <Download className="h-3 w-3" />
                 Export <ChevronDown className="ml-1 h-3 w-3" />
@@ -323,19 +346,21 @@ export function ProductsTables({ id }) {
                 onClick={handleExportCSV}
                 className="hover:bg-primary/10 hover:text-primary cursor-pointer text-sm"
               >
-                Export as CSV
+                Export as CSV <Sheet className="text-green-500 stroke-[2px]" />
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={handleExportJSON}
                 className="hover:bg-primary/10 hover:text-primary cursor-pointer text-sm"
               >
-                Export as JSON
+                Export as JSON{" "}
+                <FileJson className="text-yellow-500 stroke-[2px]" />
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={handleExportPDF}
                 className="hover:bg-primary/10 hover:text-primary cursor-pointer text-sm"
               >
                 Export as PDF
+                <FileText className="text-[#f32b2b] stroke-[2px]" />
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -429,7 +454,7 @@ export function ProductsTables({ id }) {
           <Button
             variant="outline"
             size="sm"
-            className="rounded-lg border border-border hover:border-primary hover:bg-primary/5 transition-all duration-200 font-medium bg-transparent text-xs px-3 py-1"
+            className="flex items-center gap-1 rounded-lg border border-border hover:border-primary hover:text-primary hover:bg-primary/5 transition-all duration-200 font-medium bg-transparent text-xs"
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
           >
@@ -444,7 +469,7 @@ export function ProductsTables({ id }) {
           <Button
             variant="outline"
             size="sm"
-            className="rounded-lg border border-border hover:border-primary hover:bg-primary/5 transition-all duration-200 font-medium bg-transparent text-xs px-3 py-1"
+            className="flex items-center gap-1 rounded-lg border border-border hover:border-primary hover:text-primary hover:bg-primary/5 transition-all duration-200 font-medium bg-transparent text-xs"
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
           >

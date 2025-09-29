@@ -88,7 +88,7 @@ export const login = async (req, res) => {
     let refreshToken = null;
     if (!user.mustChangePassword) {
       refreshToken = jwt.sign(
-        { id: user._id, role: user.role, name: user.name },
+        { id: user._id, role: user.role, name: user.name, email: user.email },
         process.env.JWT_REFRESH_SECRET,
         { expiresIn: "7d" }
       );
@@ -138,7 +138,10 @@ export const refresh = (req, res) => {
     // 2. Fetch user from DB
     // console.log(decoded);
     // 3. Return access token and minimal user info
-    res.json({ accessToken, user: { name: decoded.name, role: decoded.role } });
+    res.json({
+      accessToken,
+      user: { name: decoded.name, role: decoded.role, email: decoded.email },
+    });
   });
 };
 
@@ -187,7 +190,8 @@ export const updatePassword = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: "Password updated successfully! Please login with your new password.",
+      message:
+        "Password updated successfully! Please login with your new password.",
       user: {
         name: user.name,
         email: user.email,

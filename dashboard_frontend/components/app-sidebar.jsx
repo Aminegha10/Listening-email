@@ -101,6 +101,7 @@ export function AppSidebar({ ...props }) {
   const [logout, { isLoading }] = useLogoutMutation();
   const [adminCollapsed, setAdminCollapsed] = useState(false);
   const [settingsCollapsed, setSettingsCollapsed] = useState(false);
+  console.log(user);
 
   const handleLogout = async () => {
     try {
@@ -121,7 +122,7 @@ export function AppSidebar({ ...props }) {
     <Sidebar
       collapsible="offcanvas"
       {...props}
-      className="p-0 border-sidebar-border bg-sidebar shadow-xl"
+      className="p-0 border-sidebar-border bg-sidebar shadow-xl z-20"
     >
       <SidebarHeader className=" border-sidebar-border bg-gradient-to-br from-primary/5 via-primary/3 to-transparent py-6 px-4">
         <SidebarMenu>

@@ -153,7 +153,7 @@ const Page = () => {
         pauseOnHover: true,
         draggable: true,
         progress: undefined,
-        theme: "colored",
+        theme: "light",
       });
       return;
     }

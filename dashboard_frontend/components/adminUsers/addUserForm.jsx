@@ -88,9 +88,9 @@ const addUserForm = () => {
       <Dialog>
         <DialogTrigger asChild className="text-right">
           <Button
-            // variant="outline"
+            variant="outline"
             size="sm"
-            className="flex items-center gap-2  cursor-pointer"
+            className="flex items-center gap-1 rounded-lg border border-border hover:border-primary hover:text-primary hover:bg-primary/5 transition-all duration-200 font-medium bg-transparent text-xs"
           >
             {!formData ? (
               <>

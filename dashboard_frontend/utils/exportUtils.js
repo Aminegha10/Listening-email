@@ -2,47 +2,110 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import html2canvas from "html2canvas";
 
-// csv export
-export const exportToCSV = (data, filterDate, dataType) => {
+export const exportToCSV = (data, filterDate, dataType, _, __, filter) => {
+  console.log(data);
   if (!data?.length) return;
 
-  const headers =
-    dataType === "Orders"
-      ? ["Order #", "Client", "Price", "Sales Agent", "Products Count"]
-      : [
-          "Product Name",
-          "Quantity Sold",
-          "Revenue",
-          "Orders Count",
-          "Last Order Date",
-        ];
+  let headers = [];
+  let rows = [];
+  if (dataType === "Clients") {
+    headers = [
+      "Client Name",
+      "First Order Date",
+      "___",
+      "Orders Count",
+      "Products Ordered",
+      "Revenue (DH)",
+    ];
 
-  const rows =
-    dataType === "Orders"
-      ? data.map((row) => [
-          row.getValue?.("orderNumber") || "N/A",
-          row.getValue?.("client") || "N/A",
-          row.getValue?.("price") || "N/A",
-          row.getValue?.("salesAgent") || "N/A",
-          (row.getValue?.("products") || []).length,
-        ])
-      : data.map((row) => [
-          row.getValue?.("productName") || "N/A",
-          row.getValue?.("quantitySold") || "N/A",
-          row.getValue?.("revenue") || "N/A",
-          row.getValue?.("ordersCount") || "N/A",
-          row.getValue?.("lastOrderedDate") || "N/A",
-        ]);
+    rows = data.map((row) => [
+      row.getValue?.("clientName"),
+      row.getValue?.("firstOrderDate"),
+      row.getValue?.("ordersCount") || "N/A",
+      row.getValue?.("productsQuantity") || "N/A",
+      row.getValue?.("revenue") || "N/A",
+    ]);
+  } else if (dataType === "Products") {
+    headers = [
+      "Product Name",
+      "Quantity Sold",
+      "Revenue (DH)",
+      "Orders Count",
+      "Last Order Date",
+    ];
+    rows = data.map((row) => [
+      row.original?.productName || row.productName || "N/A",
+      row.original?.quantitySold || row.quantitySold || "0",
+      row.original?.revenue || row.revenue || "0",
+      row.original?.ordersCount || row.ordersCount || "0",
+      row.original?.lastOrderedDate || row.lastOrderedDate || "N/A",
+    ]);
+  } else if (dataType === "Orders") {
+    headers = ["Order #", "Client", "Price", "Sales Agent", "Products Count"];
+    rows = data.map((row) => [
+      row.getValue?.("orderNumber") || row.orderNumber || "N/A",
+      row.getValue?.("client") || row.client || "N/A",
+      row.getValue?.("price") || row.price || "N/A",
+      row.getValue?.("salesAgent") || row.salesAgent || "N/A",
+      (row.getValue?.("products") || row.products || []).length,
+    ]);
+  } else if (dataType === "TopClients") {
+    headers = ["Client Name", "First Order Date", "__"];
+    if (filter === "revenue") {
+      headers.push("Revenue (DH)");
+      rows = data.map((client) => [
+        client.clientName || "N/A",
+        client.firstOrderDate || "N/A",
+        client.revenue ?? "N/A",
+      ]);
+    } else if (filter === "ordersCount") {
+      headers.push("Orders Count");
+      rows = data.map((client) => [
+        client.clientName || "N/A",
+        client.firstOrderDate || "N/A",
+        client.ordersCount ?? "N/A",
+      ]);
+    } else if (filter === "productsQuantity") {
+      headers.push("Products Quantity");
+      rows = data.map((client) => [
+        client.clientName || "N/A",
+        client.firstOrderDate || "N/A",
+        client.productsQuantity ?? "N/A",
+      ]);
+    }
+  } else {
+    if (filter === "revenue") {
+      headers = ["Product Name", "Revenue (DH)"];
+      rows = data.map((row) => [
+        row.getValue?.("product") || row.product || "N/A",
+        row.getValue?.("revenue") || row.revenue || "N/A",
+      ]);
+    } else if (filter === "unitsSold") {
+      headers = ["Product Name", "Quantity Sold"];
+      rows = data.map((row) => [
+        row.getValue?.("product") || row.product || "N/A",
+        row.getValue?.("unitsSold") || row.unitsSold || "N/A",
+      ]);
+    } else if (filter === "ordersCount") {
+      headers = ["Product Name", "Orders Count"];
+      rows = data.map((row) => [
+        row.getValue?.("product") || row.product || "N/A",
+        row.getValue?.("ordersCount") || row.ordersCount || "N/A",
+      ]);
+    }
+  }
 
+  // Convert to CSV
   const csvContent = [headers.join(","), ...rows.map((r) => r.join(","))].join(
     "\n"
   );
 
+  // Create downloadable file
   const blob = new Blob([csvContent], { type: "text/csv" });
   const url = window.URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = `${dataType}-${filterDate}-${
+  a.download = `${dataType}-${filter}-${filterDate || "all"}-${
     new Date().toISOString().split("T")[0]
   }.csv`;
   document.body.appendChild(a);
@@ -52,32 +115,89 @@ export const exportToCSV = (data, filterDate, dataType) => {
 };
 
 // json export
-export const exportToJSON = (data, filterDate, dataType) => {
+export const exportToJSON = (data, filterDate, dataType, _, __, filter) => {
   if (!data?.length) return;
 
-  const exportData =
-    dataType === "Orders"
-      ? data.map((row) => ({
-          orderNumber: row.getValue?.("orderNumber") || "N/A",
-          client: row.getValue?.("client") || "N/A",
-          price: row.getValue?.("price") || "N/A",
-          salesAgent: row.getValue?.("salesAgent") || "N/A",
-          products: row.getValue?.("products") || [],
-        }))
-      : data.map((row) => ({
-          productName: row.getValue?.("productName") || "N/A",
-          quantitySold: row.getValue?.("quantitySold") || "N/A",
-          revenue: row.getValue?.("revenue") || "N/A",
-          ordersCount: row.getValue?.("ordersCount") || "N/A",
-          lastOrderedDate: row.getValue?.("lastOrderedDate") || "N/A",
-        }));
+  let exportData = [];
+
+  if (dataType === "Orders") {
+    exportData = data.map((row) => ({
+      orderNumber: row.getValue?.("orderNumber") || row.orderNumber || "N/A",
+      client: row.getValue?.("client") || row.client || "N/A",
+      price: row.getValue?.("price") || row.price || "N/A",
+      salesAgent: row.getValue?.("salesAgent") || row.salesAgent || "N/A",
+      products: row.getValue?.("products") || row.products || [],
+    }));
+  } else if (dataType === "TopClients") {
+    if (filter === "revenue") {
+      exportData = data.map((client) => ({
+        clientName: client.clientName || "N/A",
+        firstOrderDate: client.firstOrderDate || "N/A",
+        revenue: client.revenue ?? "N/A",
+      }));
+    } else if (filter === "ordersCount") {
+      exportData = data.map((client) => ({
+        clientName: client.clientName || "N/A",
+        firstOrderDate: client.firstOrderDate || "N/A",
+        ordersCount: client.ordersCount ?? "N/A",
+      }));
+    } else if (filter === "productsQuantity") {
+      exportData = data.map((client) => ({
+        clientName: client.clientName || "N/A",
+        firstOrderDate: client.firstOrderDate || "N/A",
+        productsQuantity: client.productsQuantity ?? "N/A",
+      }));
+    }
+  } else if (dataType === "Clients") {
+    // NEW: Separate Clients JSON export
+    exportData = data.map((row) => ({
+      orderNumber: row.getValue?.("clientName") || row.clientName || "N/A",
+      client: row.getValue?.("firstOrderDate") || row.firstOrderDate || "N/A",
+      ordersCount: row.getValue?.("ordersCount") || row.ordersCount || "N/A",
+      productsQuantity:
+        row.getValue?.("productsQuantity") || row.productsQuantity,
+      revenue: row.getValue?.("revenue") || row.revenue || "N/A",
+    }));
+  } else if (dataType === "Products") {
+    exportData = data.map((product) => ({
+      productName:
+        product.getValue?.("productName") || product.productName || "N/A",
+      quantitySold:
+        product.getValue?.("quantitySold") || product.quantitySold || 0,
+      revenue: product.getValue?.("revenue") || product.revenue || 0,
+      ordersCount:
+        product.getValue?.("ordersCount") || product.ordersCount || 0,
+      lastOrderedDate:
+        product.getValue?.("lastOrderedDate") ||
+        product.lastOrderedDate ||
+        "N/A",
+    }));
+  } else {
+    // Top Products
+    if (filter === "revenue") {
+      exportData = data.map((row) => ({
+        productName: row.getValue?.("product") || row.product || "N/A",
+        revenue: row.getValue?.("revenue") || row.revenue || "N/A",
+      }));
+    } else if (filter === "unitsSold") {
+      exportData = data.map((row) => ({
+        productName: row.getValue?.("product") || row.product || "N/A",
+        quantitySold: row.getValue?.("unitsSold") || row.unitsSold || "N/A",
+      }));
+    } else if (filter === "ordersCount") {
+      exportData = data.map((row) => ({
+        productName: row.getValue?.("product") || row.product || "N/A",
+        ordersCount: row.getValue?.("ordersCount") || row.ordersCount || "N/A",
+      }));
+    }
+  }
 
   const jsonContent = JSON.stringify(exportData, null, 2);
   const blob = new Blob([jsonContent], { type: "application/json" });
   const url = window.URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = `${dataType}-${filterDate}-${
+  a.download = `${dataType}-${filter}-${filterDate || "all"}-${
     new Date().toISOString().split("T")[0]
   }.json`;
   document.body.appendChild(a);
@@ -92,15 +212,16 @@ export const exportToPDF = async (
   dataType,
   filterPieChart,
   chartElement,
-  filterTopClient
+  filter
 ) => {
+  console.log(filter);
   if (!data || data.length === 0) return;
   if (!filterDate) filterDate = "AllTime";
   if (filterDate == "currentYear") filterDate = "Current Year";
   if (filterDate == "thisMonth") filterDate = "current Month";
   if (filterDate == "thisWeek") filterDate = "current Week";
 
-  console.log(filterTopClient);
+  console.log(filter);
   console.log(data);
   const doc = new jsPDF();
 
@@ -112,8 +233,8 @@ export const exportToPDF = async (
   doc.rect(0, 0, 210, headerHeight, "F");
 
   // Logo on the LEFT
-  const logoHeight = 25;
-  const logoWidth = logoHeight * 2; // 2 × height = width
+  const logoHeight = 28;
+  const logoWidth = 45; // 2 × height = width
   const logoX = 10; // left margin
   const logoY = (headerHeight - logoHeight) / 2;
   const logo64Base =
@@ -167,9 +288,9 @@ export const exportToPDF = async (
       : dataType === "TopClients"
       ? [
           "Client Name",
-          filterTopClient === "revenue"
+          filter === "revenue"
             ? "Revenue DH"
-            : filterTopClient === "ordersCount"
+            : filter === "ordersCount"
             ? "Orders Count"
             : "Products Ordered",
         ]
@@ -201,7 +322,7 @@ export const exportToPDF = async (
           row.getValue("revenue"),
         ])
       : dataType === "TopClients"
-      ? data.map((row) => [row.clientName, row[filterTopClient]])
+      ? data.map((row) => [row.clientName, row[filter]])
       : data.map((row) => [row.product, row[filterPieChart]]);
 
   autoTable(doc, {
@@ -363,6 +484,8 @@ export const exportToPDF = async (
   }
 
   doc.save(
-    `${dataType}-${filterDate}-${new Date().toISOString().split("T")[0]}.pdf`
+    `${dataType}-${filter}-${filterDate}-${
+      new Date().toISOString().split("T")[0]
+    }.pdf`
   );
 };

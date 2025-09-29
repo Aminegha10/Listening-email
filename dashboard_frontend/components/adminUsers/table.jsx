@@ -16,6 +16,7 @@ import {
   UserPlus,
   Users,
   Download,
+  Sheet,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -114,6 +115,15 @@ export const columns = [
         >
           {row.getValue("role")}
         </Badge>
+      </div>
+    ),
+  },
+  {
+    accessorKey: "createdAt",
+    header: "Created Date",
+    cell: ({ row }) => (
+      <div className="capitalize text-center font-medium text-muted-foreground">
+        {row.getValue("createdAt")}
       </div>
     ),
   },
@@ -234,7 +244,7 @@ export default function tableUsers() {
               <Button
                 variant="outline"
                 size="sm"
-                className="flex items-center gap-2 bg-transparent cursor-pointer"
+                className="flex items-center gap-1 rounded-lg border border-border hover:border-primary hover:text-primary hover:bg-primary/5 transition-all duration-200 font-medium bg-transparent text-xs"
               >
                 <Users className="h-3 w-3" />
                 {roleFilter === "admin"
@@ -311,7 +321,7 @@ export default function tableUsers() {
               <Button
                 variant="outline"
                 size="sm"
-                className="flex items-center gap-2 bg-transparent cursor-pointer"
+                className="flex items-center gap-1 rounded-lg border border-border hover:border-primary hover:text-primary hover:bg-primary/5 transition-all duration-200 font-medium bg-transparent text-xs"
               >
                 <Download className="h-3 w-3" />
                 Export <ChevronDown className="ml-1 h-3 w-3" />
@@ -325,7 +335,7 @@ export default function tableUsers() {
                 onClick={handleExportCSV}
                 className="hover:bg-primary/10 hover:text-primary cursor-pointer text-sm"
               >
-                Export as CSV
+                Export as CSV <Sheet className="text-green-500 stroke-[2px]" />
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -412,7 +422,7 @@ export default function tableUsers() {
           <Button
             variant="outline"
             size="sm"
-            className="px-3 py-1 rounded-lg bg-transparent"
+            className="flex items-center gap-1 rounded-lg border border-border hover:border-primary hover:text-primary hover:bg-primary/5 transition-all duration-200 font-medium bg-transparent text-xs"
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
           >
@@ -427,7 +437,7 @@ export default function tableUsers() {
           <Button
             variant="outline"
             size="sm"
-            className="px-3 py-1 rounded-lg bg-transparent"
+            className="flex items-center gap-1 rounded-lg border border-border hover:border-primary hover:text-primary hover:bg-primary/5 transition-all duration-200 font-medium bg-transparent text-xs"
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
           >

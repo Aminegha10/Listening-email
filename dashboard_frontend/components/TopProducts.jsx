@@ -44,7 +44,7 @@ import {
 
 import { useGetTopProductsQuery } from "@/features/dataApi";
 import { Button } from "./ui/button";
-import { exportToPDF } from "@/utils/exportUtils";
+import { exportToPDF, exportToCSV, exportToJSON } from "@/utils/exportUtils";
 import { useRef, useState } from "react";
 import { Riple } from "react-loading-indicators";
 import Link from "next/link";
@@ -99,7 +99,8 @@ export function TopProducts({ timeRange }) {
       timeRange,
       "TopSellingProducts",
       filter,
-      chartRef.current
+      chartRef.current,
+      filter
     );
 
   // ✅ Create a chartConfig dynamically (like chartConfig in ChartPieLabel)
@@ -127,6 +128,13 @@ export function TopProducts({ timeRange }) {
 
   const filterInfo = getFilterInfo();
 
+  // Add these handlers before the return statement
+  const handleExportCSV = () =>
+    exportToCSV(TopProducts, timeRange, "TopProducts", null, null, filter);
+
+  const handleExportJSON = () =>
+    exportToJSON(TopProducts, timeRange, "TopProducts", null, null, filter);
+
   return (
     <>
       <Card
@@ -139,101 +147,90 @@ export function TopProducts({ timeRange }) {
       >
         {/* Header */}
         <CardHeader>
-          <div className="p-6 border-b flex justify-between items-center border-slate-200">
-            <div className="flex gap-3">
-              <div className="flex items-center justify-between gap-3">
-                <div className="p-2.5 bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl border border-primary/10">
-                  <Package className="h-5 w-5 text-primary" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-semibold text-slate-900">
-                    Top 10 Products
-                  </h3>
-                  <p className="text-sm text-gray-500 font-medium">
-                    Showing {TopProducts?.length} of{" "}
-                    {data?.totalOrderedProducts} products
-                  </p>
-                </div>
+          <div className="p-4 sm:p-6 border-b border-slate-200 flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+            {/* Left side — Title */}
+            <div className="flex items-start sm:items-center gap-3">
+              <div className="p-2.5 bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl border border-primary/10">
+                <Package className="h-5 w-5 text-primary" />
+              </div>
+              <div>
+                <h3 className="text-lg sm:text-xl font-semibold text-slate-900">
+                  Top 10 Products
+                </h3>
+                <p className="text-xs sm:text-sm text-gray-500 font-medium">
+                  Showing {TopProducts?.length} of {data?.totalOrderedProducts}{" "}
+                  products
+                </p>
               </div>
             </div>
-            <div className="flex gap-2 items-center">
+
+            {/* Right side — Controls */}
+            <div className="flex flex-wrap justify-start md:justify-end gap-2 sm:gap-3">
+              {/* Filter dropdown */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
                     variant="outline"
-                    className="flex items-center gap-2 bg-transparent cursor-pointer "
+                    className="flex items-center gap-1 rounded-lg border border-border hover:border-primary hover:text-primary hover:bg-primary/5 transition-all duration-200 font-medium bg-transparent text-xs"
                   >
-                    <Settings2 />
-                    {filter == "unitsSold"
+                    <Settings2 className="h-4 w-4" />
+                    {filter === "unitsSold"
                       ? "Most Sold"
-                      : filter == "revenue"
+                      : filter === "revenue"
                       ? "Top Revenue"
                       : "Most Orders Count"}
-                    <ChevronDown />
+                    <ChevronDown className="h-4 w-4" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
-                  <DropdownMenuItem
-                    className="cursor-pointer"
-                    onClick={() => setFilter("revenue")}
-                  >
+                  <DropdownMenuItem onClick={() => setFilter("revenue")}>
                     Top Revenue
                   </DropdownMenuItem>
-                  <DropdownMenuItem
-                    className="cursor-pointer"
-                    onClick={() => setFilter("unitsSold")}
-                  >
+                  <DropdownMenuItem onClick={() => setFilter("unitsSold")}>
                     Most Sold
                   </DropdownMenuItem>
-                  <DropdownMenuItem
-                    className="cursor-pointer"
-                    onClick={() => setFilter("ordersCount")}
-                  >
+                  <DropdownMenuItem onClick={() => setFilter("ordersCount")}>
                     Most Orders Count
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
 
+              {/* Export dropdown */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
                     variant="outline"
-                    className="flex items-center gap-2 bg-transparent cursor-pointer"
+                    className="flex items-center gap-1 rounded-lg border border-border hover:border-primary hover:text-primary hover:bg-primary/5 transition-all duration-200 font-medium bg-transparent text-xs"
                   >
                     <Download className="h-4 w-4" />
-                    Export <ChevronDown />
+                    Export
+                    <ChevronDown className="h-4 w-4" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
-                  <DropdownMenuItem className="cursor-pointer">
+                  <DropdownMenuItem onClick={handleExportCSV}>
                     Export as CSV{" "}
                     <Sheet className="text-green-500 stroke-[2px]" />
                   </DropdownMenuItem>
-                  <DropdownMenuItem className="cursor-pointer">
+                  <DropdownMenuItem onClick={handleExportJSON}>
                     Export as JSON{" "}
                     <FileJson className="text-yellow-500 stroke-[2px]" />
                   </DropdownMenuItem>
-                  <DropdownMenuItem
-                    className="cursor-pointer"
-                    onClick={handleExportPDF}
-                  >
+                  <DropdownMenuItem onClick={handleExportPDF}>
                     Export as PDF{" "}
                     <FileText className="text-[#f32b2b] stroke-[2px]" />
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
-              <div>
-                <Link href="/dashboard/tables#products" passHref>
-                  <Button className="px-3 py-2 bg-white hover:bg-slate-200 text-slate-700 rounded-lg cursor-pointer transition-all duration-200 flex items-center gap-2 border border-slate-300 hover:border-slate-400">
-                    <Table className="h-4 w-4" />
-                  </Button>
-                </Link>
-              </div>
+
+              {/* Table link button */}
+              <Link href="/dashboard/tables#products" passHref>
+                <Button className="px-3 py-2 bg-white hover:bg-slate-200 text-slate-700 rounded-lg border border-slate-300 hover:border-slate-400 flex items-center gap-2 text-sm sm:text-base">
+                  <Table className="h-4 w-4" />
+                </Button>
+              </Link>
             </div>
           </div>
-          {/* <div className="flex items-center gap-2"> */}
-          {/* by existing in order or by revenue */}
-          {/* </div> */}
         </CardHeader>
 
         {/* Chart */}
@@ -313,52 +310,51 @@ export function TopProducts({ timeRange }) {
         {/* Top Product Performance Section */}
         {TopProducts && TopProducts.length > 0 && (
           <CardFooter className="border-t bg-slate-50/50 p-0">
-            <div className="w-full p-6">
-              <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <div className="flex items-center justify-center w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl shadow-lg">
+            <div className="w-full p-4 sm:p-6">
+              <div className="bg-white border border-slate-200 rounded-xl p-4 sm:p-5 shadow-sm">
+                {/* Responsive layout */}
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6">
+                  {/* Left: Icon + Info */}
+                  <div className="flex items-start sm:items-center gap-3 sm:gap-4 w-full sm:w-auto">
+                    <div className="flex items-center justify-center w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl shadow-lg flex-shrink-0">
                       <Trophy className="w-6 h-6 text-white" />
                     </div>
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2">
+
+                    <div className="space-y-1 w-full">
+                      <div className="flex flex-wrap items-center gap-2">
                         <Badge
                           variant="secondary"
                           className="bg-blue-50 text-blue-700 border-blue-200 text-xs font-medium px-2 py-1"
                         >
                           TOP PRODUCT
                         </Badge>
-                        <span className="text-sm text-gray-500 font-medium">
+                        <span className="text-sm text-gray-500 font-medium whitespace-nowrap">
                           by {filterInfo.label}
                         </span>
                       </div>
-                      <h4 className="text-lg font-semibold text-slate-900 max-w-md truncate">
+
+                      <h4 className="text-base sm:text-lg font-semibold text-slate-900 truncate max-w-[200px] sm:max-w-md">
                         {TopProducts[0].product}
                       </h4>
                     </div>
                   </div>
 
-                  <div className="text-right">
-                    <div className="text-2xl font-bold text-slate-900 mb-1">
+                  {/* Right: Value + Trend */}
+                  <div className="w-full sm:w-auto text-left sm:text-right">
+                    <div className="text-xl sm:text-2xl font-bold text-slate-900 mb-1">
                       {filterInfo.unit === "$"
                         ? `${TopProducts[0][filter]} DH`
                         : `${TopProducts[0][filter]}${filterInfo.unit}`}
                     </div>
-                    <div className="flex items-center justify-end gap-1 text-sm text-green-600">
-                      <TrendingUp className="w-4 h-4" />
-                      <span>Leading performance</span>
+
+                    <div className="flex sm:justify-end items-center gap-1 text-sm text-green-600">
+                      <TrendingUp className="w-4 h-4 flex-shrink-0" />
+                      <span className="text-xs sm:text-sm">
+                        Leading performance
+                      </span>
                     </div>
                   </div>
                 </div>
-
-                {/* <div className="mt-4 pt-4 border-t border-slate-100">
-                  <div className="flex items-center justify-between text-sm text-slate-600">
-                    <span className="text-sm text-gray-500 font-medium">
-                      Performance metric
-                    </span>
-                    <span className="font-medium">{filterInfo.label}</span>
-                  </div>
-                </div> */}
               </div>
             </div>
           </CardFooter>

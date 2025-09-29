@@ -94,7 +94,7 @@ export default function SalesAgentBarChart({ timeRange }) {
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="outline"
-                  className="flex items-center gap-2 bg-transparent cursor-pointer"
+                  className="flex items-center gap-1 rounded-lg border border-border hover:border-primary hover:text-primary hover:bg-primary/5 transition-all duration-200 font-medium bg-transparent text-xs"
                 >
                   <ShoppingCart className="h-4 w-4" />
                   {type === "orders" ? "Orders" : "Sales"}
@@ -121,7 +121,7 @@ export default function SalesAgentBarChart({ timeRange }) {
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="outline"
-                  className="flex items-center gap-2 bg-transparent cursor-pointer"
+                  className="flex items-center gap-1 rounded-lg border border-border hover:border-primary hover:text-primary hover:bg-primary/5 transition-all duration-200 font-medium bg-transparent text-xs"
                 >
                   <Users className="h-4 w-4" />
                   {agentFilter === "all" ? "All Agents" : agentFilter}

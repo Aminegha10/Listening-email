@@ -28,7 +28,7 @@ export default function DashboardPage() {
         />
       </div>
       {/* order and sales Charts and Stats Grid */}
-      <div className="grid md:grid-cols-2 gap-3 md:gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
         <SalesAgentBarChart timeRange={timeRange} className="col-span-2" />
         <SalesCounter timeRange={timeRange} />
       </div>
