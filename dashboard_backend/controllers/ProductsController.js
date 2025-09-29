@@ -197,6 +197,7 @@ const GetProductsDetails = async (req, res) => {
     ].filter(Boolean); // Remove null stages
 
     const products = await OrderModel.aggregate(pipeline);
+    
 
     logger.info("Fetched product details successfully");
     res.status(200).json(products);

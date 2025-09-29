@@ -48,6 +48,7 @@ import { exportToPDF } from "@/utils/exportUtils";
 import { useRef, useState } from "react";
 import { Riple } from "react-loading-indicators";
 import Link from "next/link";
+import { AreaChart, Area, CartesianGrid, XAxis } from "recharts";
 
 export const description = "A pie chart showing top-selling products";
 
@@ -128,17 +129,16 @@ export function TopProducts({ timeRange }) {
 
   return (
     <>
-      <Card className="flex flex-col py-0" ref={chartRef}>
+      <Card
+        className="flex flex-col py-0"
+        style={{
+          boxShadow:
+            "rgba(50, 50, 93, 0.25) 0px 0px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px",
+        }}
+        ref={chartRef}
+      >
         {/* Header */}
-        <CardHeader className=" ">
-          {/* <div> */}
-          {/* <CardTitle>
-            <span className="py-1 px-2.5 border-none rounded bg-green-100 text-xl text-green-800 font-medium">
-              Top 10-Selling Products
-            </span>
-          </CardTitle> */}
-          {/* <CardDescription>January - June 2024</CardDescription> */}
-          {/* </div> */}
+        <CardHeader>
           <div className="p-6 border-b flex justify-between items-center border-slate-200">
             <div className="flex gap-3">
               <div className="flex items-center justify-between gap-3">
@@ -206,16 +206,19 @@ export function TopProducts({ timeRange }) {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
                   <DropdownMenuItem className="cursor-pointer">
-                    Export as CSV <Sheet />
+                    Export as CSV{" "}
+                    <Sheet className="text-green-500 stroke-[2px]" />
                   </DropdownMenuItem>
                   <DropdownMenuItem className="cursor-pointer">
-                    Export as JSON <FileJson />
+                    Export as JSON{" "}
+                    <FileJson className="text-yellow-500 stroke-[2px]" />
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     className="cursor-pointer"
                     onClick={handleExportPDF}
                   >
-                    Export as PDF <FileText />
+                    Export as PDF{" "}
+                    <FileText className="text-[#f32b2b] stroke-[2px]" />
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -234,7 +237,7 @@ export function TopProducts({ timeRange }) {
         </CardHeader>
 
         {/* Chart */}
-        <CardContent className=" flex-1 pb-0">
+        <CardContent className="flex-1 pb-4">
           {isLoading ? (
             <div className=" h-full w-full flex justify-center items-center">
               <Riple
@@ -245,16 +248,38 @@ export function TopProducts({ timeRange }) {
               />
             </div>
           ) : isError ? (
-            <div className="text-center text-red-500">
-              Error loading chart data
+            <div className="flex justify-center items-center py-12">
+              <div className="text-center">
+                <div className="w-12 h-12 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <Package className="h-6 w-6 text-red-500" />
+                </div>
+                <p className="text-red-600 font-medium">
+                  Error loading products data
+                </p>
+                <p className="text-sm text-gray-500 mt-1">
+                  Please try again later
+                </p>
+              </div>
             </div>
           ) : !TopProducts || TopProducts.length === 0 ? (
-            <p className="text-center text-gray-500">No data available</p>
+            <div className="flex justify-center items-center py-12">
+              <div className="text-center">
+                <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <Package className="h-6 w-6 text-gray-400" />
+                </div>
+                <p className="text-gray-600 font-medium">
+                  No products data available
+                </p>
+                <p className="text-sm text-gray-500 mt-1">
+                  Data will appear here once available
+                </p>
+              </div>
+            </div>
           ) : (
             <ChartContainer
               ref={chartRef}
               config={chartConfig}
-              className="[&_.recharts-pie-label-text]:fill-foreground mx-auto aspect-square max-h-[300px] pb-0"
+              className="[&_.recharts-pie-label-text]:fill-foreground mx-auto aspect-square  max-h-[300px] pb-6 w-[350px]"
             >
               <PieChart>
                 <ChartTooltip content={<ChartTooltipContent hideLabel />} />
@@ -270,11 +295,17 @@ export function TopProducts({ timeRange }) {
                   ))}
                 </Pie>
               </PieChart>
-              {/* <div className="mt-4 text-center font-medium">
-              <Badge variant="secondary">
-                Total Products: {data?.productTotals[0].totalProducts}
-              </Badge>
-            </div> */}
+              <div className="mt-4 text-center font-medium">
+                <Badge variant="secondary">
+                  Total Products{" "}
+                  {timeRange === "thisWeek"
+                    ? "This Week : "
+                    : timeRange === "thisMonth"
+                    ? "This Month : "
+                    : "This Year : "}
+                  {data?.totalOrderedProducts}
+                </Badge>
+              </div>
             </ChartContainer>
           )}
         </CardContent>
@@ -320,14 +351,14 @@ export function TopProducts({ timeRange }) {
                   </div>
                 </div>
 
-                <div className="mt-4 pt-4 border-t border-slate-100">
+                {/* <div className="mt-4 pt-4 border-t border-slate-100">
                   <div className="flex items-center justify-between text-sm text-slate-600">
                     <span className="text-sm text-gray-500 font-medium">
                       Performance metric
                     </span>
                     <span className="font-medium">{filterInfo.label}</span>
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
           </CardFooter>

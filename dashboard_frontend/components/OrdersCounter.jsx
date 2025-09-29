@@ -172,7 +172,7 @@ export function OrdersCounter({ timeRange }) {
         {error && (
           <div className="flex justify-center items-center py-12">
             <div className="text-center">
-              <div className="w-12 h-12 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-3">
+              <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
                 <ChartNoAxesCombined className="h-6 w-6 text-red-500" />
               </div>
               <p className="text-red-600 font-medium">
@@ -205,7 +205,7 @@ export function OrdersCounter({ timeRange }) {
                   axisLine={false}
                   tickMargin={12}
                   tick={{ fontSize: 12, fill: "var(--muted-foreground)" }}
-                  tickFormatter={(value) => value.slice(0, 3)}
+                  tickFormatter={(value) => value}
                 />
                 <ChartTooltip
                   cursor={{

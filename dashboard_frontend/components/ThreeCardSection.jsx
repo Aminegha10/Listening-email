@@ -278,7 +278,14 @@ const ThreeCardSection = () => {
       </Card> */}
 
       {/* Performance Metrics */}
-      <Card className="w-full max-w-sm mx-auto p-3">
+
+      <Card
+        className="w-full max-w-sm mx-auto p-3"
+        style={{
+          boxShadow:
+            "rgba(50, 50, 93, 0.25) 0px 0px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px",
+        }}
+      >
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1">
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 bg-[var(--chart-5)] rounded-full"></div>
@@ -396,7 +403,13 @@ const ThreeCardSection = () => {
         </CardContent>
       </Card>
 
-      <Card className="w-full max-w-sm mx-auto p-3">
+      <Card
+        className="w-full max-w-sm mx-auto p-3"
+        style={{
+          boxShadow:
+            "rgba(50, 50, 93, 0.25) 0px 0px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px",
+        }}
+      >
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1">
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 bg-[var(--chart-3)] rounded-full"></div>
@@ -521,7 +534,13 @@ const ThreeCardSection = () => {
         </CardContent>
       </Card>
 
-      <Card className="w-full max-w-sm mx-auto p-3">
+      <Card
+        className="w-full max-w-sm mx-auto p-3"
+        style={{
+          boxShadow:
+            "rgba(50, 50, 93, 0.25) 0px 0px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px",
+        }}
+      >
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1">
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 bg-[var(--chart-2)] rounded-full"></div>

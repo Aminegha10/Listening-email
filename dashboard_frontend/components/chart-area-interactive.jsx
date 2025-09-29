@@ -150,7 +150,7 @@ export default function SalesAgentBarChart({ timeRange }) {
             <div className="flex flex-col items-center gap-3">
               <ThreeDot
                 variant="pulsate"
-                color="hsl(var(--primary))"
+                color="var(--primary)"
                 size="medium"
               />
               <p className="text-sm text-gray-500">Loading sales data...</p>
@@ -248,7 +248,7 @@ export default function SalesAgentBarChart({ timeRange }) {
         ) : (
           <div className="flex justify-center items-center py-12">
             <div className="text-center">
-              <div className="w-12 h-12 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-3">
+              <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
                 <ChartNoAxesCombined className="h-6 w-6 text-gray-400" />
               </div>
               <p className="text-gray-600 font-medium">

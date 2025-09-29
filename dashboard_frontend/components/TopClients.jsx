@@ -17,6 +17,9 @@ import {
   FileText,
   Settings2,
   Package,
+  ChartNoAxesCombined,
+  Sheet,
+  FileJson,
 } from "lucide-react";
 import { useGetLeadStatsQuery, useGetClientsQuery } from "@/features/dataApi";
 import {
@@ -277,238 +280,210 @@ function TopClients({ timeRange }) {
     exportToPDF(topClients.data, timeRange, "TopClients", null, null, filter);
 
   return (
-    <div className="max-w-6xl mx-auto">
-      {/* Header */}
-      {/* <div className="mb-8">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 bg-indigo-100 rounded-lg">
-              <Star className="h-6 w-6 text-indigo-600" />
-            </div>
-            <h1 className="text-3xl font-bold text-slate-900">Top Valuable Clients</h1>
-          </div>
-          <p className="text-slate-600">Track and analyze your most valuable client relationships</p>
-        </div> */}
-
-      {/* Filters */}
-      {/* <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 mb-6">
-          <div className="flex items-center gap-2 mb-4">
-            <Filter className="h-5 w-5 text-slate-500" />
-            <h2 className="text-lg font-semibold text-slate-900">Filters</h2>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">Revenue Range</label>
-              <select 
-                value={revenueFilter}
-                onChange={(e) => setRevenueFilter(e.target.value)}
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
-              >
-                <option value="all">All Revenue</option>
-                <option value="low">Under $100K</option>
-                <option value="medium">$100K - $200K</option>
-                <option value="high">$200K+</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">Order Frequency</label>
-              <select 
-                value={frequencyFilter}
-                onChange={(e) => setFrequencyFilter(e.target.value)}
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
-              >
-                <option value="all">All Frequencies</option>
-                <option value="Daily">Daily</option>
-                <option value="Weekly">Weekly</option>
-                <option value="Monthly">Monthly</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">Avg Order Value</label>
-              <select 
-                value={avgOrderFilter}
-                onChange={(e) => setAvgOrderFilter(e.target.value)}
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
-              >
-                <option value="all">All Values</option>
-                <option value="low">Under $2K</option>
-                <option value="medium">$2K - $4K</option>
-                <option value="high">$4K+</option>
-              </select>
-            </div>
-          </div>
-        </div> */}
-      {/* Header */}
-
+    <div
+      className="max-w-6xl mx-auto"
+      style={{
+        boxShadow:
+          "rgba(50, 50, 93, 0.25) 0px 0px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px",
+      }}
+    >
       {/* Clients Card */}
-      <div className="bg-white rounded-xl shadow-sm border border-slate-200">
-        <div className="p-6 border-b border-slate-200">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="p-2.5 bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl border border-primary/10">
-                <Users className="h-5 w-5 text-primary" />
-              </div>
-              <div>
-                <h3 className="text-xl font-semibold text-slate-900">
-                  Top 10 Clients
-                </h3>
-                <p className="text-sm text-gray-500 font-medium">
-                  Showing {topClients?.data.length} of{" "}
-                  {topClients?.totalClients} clients
-                </p>
-              </div>
+      <div className="p-6 border-b border-slate-200">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl border border-primary/10">
+              <Users className="h-5 w-5 text-primary" />
             </div>
-            {/* by existing in order or by revenue */}
-            <div className="flex items-center gap-2">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className="flex items-center gap-2 bg-transparent cursor-pointer"
-                  >
-                    <Settings2 />
-                    {filter === "revenue"
-                      ? "Revenue"
-                      : filter === "productsQuantity"
-                      ? "Products"
-                      : "Orders"}
-
-                    <ChevronDown />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  <DropdownMenuItem
-                    className="cursor-pointer"
-                    onClick={() => setFilter("revenue")}
-                  >
-                    Top Revenue
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    className="cursor-pointer"
-                    onClick={() => setFilter("ordersCount")}
-                  >
-                    Total Orders
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    className="cursor-pointer"
-                    onClick={() => setFilter("productsQuantity")}
-                  >
-                    Products Quantity
-                  </DropdownMenuItem>
-                  {/* <DropdownMenuItem>Most Orders Count</DropdownMenuItem> */}
-                </DropdownMenuContent>
-              </DropdownMenu>
-              {/* Export Dropdown */}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className="flex items-center gap-2 bg-transparent cursor-pointer"
-                  >
-                    <Download className="h-3 w-3" />
-                    Export <ChevronDown className="ml-1 h-3 w-3" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent
-                  align="end"
-                  className="rounded-lg shadow-lg border border-border"
+            <div>
+              <h3 className="text-xl font-semibold text-slate-900">
+                Top 10 Clients
+              </h3>
+              <p className="text-sm text-gray-500 font-medium">
+                Showing {topClients?.data.length} of {topClients?.totalClients}{" "}
+                clients
+              </p>
+            </div>
+          </div>
+          {/* by existing in order or by revenue */}
+          <div className="flex items-center gap-2">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="flex items-center gap-2 bg-transparent cursor-pointer"
                 >
-                  <DropdownMenuItem
-                    onClick={handleExportCSV}
-                    className="hover:bg-primary/10 hover:text-primary cursor-pointer text-sm"
-                  >
-                    Export as CSV
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={handleExportJSON}
-                    className="hover:bg-primary/10 hover:text-primary cursor-pointer text-sm"
-                  >
-                    Export as JSON
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={handleExportPDF}
-                    className="hover:bg-primary/10 hover:text-primary cursor-pointer text-sm"
-                  >
-                    Export as PDF
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+                  <Settings2 />
+                  {filter === "revenue"
+                    ? "Revenue"
+                    : filter === "productsQuantity"
+                    ? "Products"
+                    : "Orders"}
 
-              {/* <div>
+                  <ChevronDown />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem
+                  className="cursor-pointer"
+                  onClick={() => setFilter("revenue")}
+                >
+                  Top Revenue
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  className="cursor-pointer"
+                  onClick={() => setFilter("ordersCount")}
+                >
+                  Total Orders
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  className="cursor-pointer"
+                  onClick={() => setFilter("productsQuantity")}
+                >
+                  Products Quantity
+                </DropdownMenuItem>
+                {/* <DropdownMenuItem>Most Orders Count</DropdownMenuItem> */}
+              </DropdownMenuContent>
+            </DropdownMenu>
+            {/* Export Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="flex items-center gap-2 bg-transparent cursor-pointer"
+                >
+                  <Download className="h-3 w-3" />
+                  Export <ChevronDown className="ml-1 h-3 w-3" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                align="end"
+                className="rounded-lg shadow-lg border border-border"
+              >
+                <DropdownMenuItem
+                  onClick={handleExportCSV}
+                  className="hover:bg-primary/10 hover:text-primary cursor-pointer text-sm"
+                >
+                  Export as CSV{" "}
+                  <Sheet className="text-green-500 stroke-[2px]" />
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={handleExportJSON}
+                  className="hover:bg-primary/10 hover:text-primary cursor-pointer text-sm"
+                >
+                  Export as JSON{" "}
+                  <FileJson className="text-yellow-500 stroke-[2px]" />
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={handleExportPDF}
+                  className="hover:bg-primary/10 hover:text-primary cursor-pointer text-sm"
+                >
+                  Export as PDF{" "}
+                  <FileText className="text-[#f32b2b] stroke-[2px]" />
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            {/* <div>
                 <Link href="/dashboard/tables#clients" passHref>
                   <Button className="px-3 py-2 bg-white hover:bg-slate-200 text-slate-700 rounded-lg cursor-pointer transition-all duration-200 flex items-center gap-2 border border-slate-300 hover:border-slate-400">
                     <Table className="h-4 w-4" />
                   </Button>
                 </Link>
               </div> */}
-            </div>
           </div>
         </div>
-
-        <div className="divide-y divide-slate-100">
-          {isLoading ? (
-            <div className=" h-full w-full flex justify-center items-center">
-              <Riple
-                color="var(--color-primary)"
-                size="medium"
-                text=""
-                textColor=""
-              />
+      </div>
+      {/* Chart Container */}
+      <div className="divide-y divide-slate-100">
+        {isLoading ? (
+          <div className=" h-full w-full flex justify-center items-center">
+            <Riple
+              color="var(--color-primary)"
+              size="medium"
+              text=""
+              textColor=""
+            />
+          </div>
+        ) : isError ? (
+          <div className="flex justify-center items-center min-h-[300px]">
+            <div className="text-center">
+              <div className="w-12 h-12 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-3">
+                <Users className="h-6 w-6 text-red-500" />
+              </div>
+              <p className="text-red-600 font-medium">
+                Error loading clients data
+              </p>
+              <p className="text-sm text-gray-500 mt-1">
+                Please try again later
+              </p>
             </div>
-          ) : isError ? (
-            <>error is happening</>
-          ) : (
-            topClients.data.map((client, index) => (
-              <div
-                key={client.clientName}
-                className="p-6 hover:bg-slate-50 transition-colors group"
-              >
-                <div className="flex items-center gap-4">
-                  <div className="flex-shrink-0">
-                    <div
-                      className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
-                        index === 0
-                          ? "bg-yellow-100 text-yellow-800"
-                          : index === 1
-                          ? "bg-slate-200 text-slate-600"
-                          : index === 2
-                          ? "bg-orange-100 text-orange-800"
-                          : "bg-slate-50 text-slate-500"
-                      }`}
-                    >
-                      {index + 1}
-                    </div>
+          </div>
+        ) : !topClients.data || topClients.data.length === 0 ? (
+          <>
+            <div className="flex justify-center items-center py-12">
+              <div className="text-center">
+                <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <Users className="h-6 w-6 text-gray-400" />
+                </div>
+                <p className="text-gray-600 font-medium">
+                  No Clients data available
+                </p>
+                <p className="text-sm text-gray-500 mt-1">
+                  Data will appear here once available
+                </p>
+              </div>
+            </div>
+          </>
+        ) : (
+          topClients.data.map((client, index) => (
+            <div
+              key={client.clientName}
+              className="p-6 hover:bg-slate-50 transition-colors group"
+            >
+              <div className="flex items-center gap-4">
+                <div className="flex-shrink-0">
+                  <div
+                    className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
+                      index === 0
+                        ? "bg-yellow-100 text-yellow-800"
+                        : index === 1
+                        ? "bg-slate-200 text-slate-600"
+                        : index === 2
+                        ? "bg-orange-100 text-orange-800"
+                        : "bg-slate-50 text-slate-500"
+                    }`}
+                  >
+                    {index + 1}
                   </div>
+                </div>
 
-                  <Avatar className="w-12 h-12">
-                    <AvatarFallback className="bg-emerald-100 text-emerald-700 text-xs">
-                      KA
-                    </AvatarFallback>
-                  </Avatar>
+                <Avatar className="w-12 h-12">
+                  <AvatarFallback className="bg-emerald-100 text-emerald-700 text-xs">
+                    KA
+                  </AvatarFallback>
+                </Avatar>
 
-                  <div className="flex-grow min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
-                      <h4 className="text-lg font-semibold text-slate-900 truncate">
-                        {client.clientName}
-                      </h4>
-                      <span
-                        className={`px-2 py-1 text-xs font-medium rounded-full ${getFrequencyColor(
-                          "Daily"
-                        )}`}
-                      >
-                        Daily
-                      </span>
-                    </div>
-                    {/* <p className="text-slate-600 text-sm truncate">
+                <div className="flex-grow min-w-0">
+                  <div className="flex items-center gap-2 mb-1">
+                    <h4 className="text-lg font-semibold text-slate-900 truncate">
+                      {client.clientName}
+                    </h4>
+                    <span
+                      className={`px-2 py-1 text-xs font-medium rounded-full ${getFrequencyColor(
+                        "Daily"
+                      )}`}
+                    >
+                      Daily
+                    </span>
+                  </div>
+                  {/* <p className="text-slate-600 text-sm truncate">
                     {client.company}
                   </p> */}
-                  </div>
+                </div>
 
-                  <div className="flex items-center gap-8 text-right">
-                    <div className="min-w-0 flex gap-3 items-center">
-                      {/* <div className="flex items-center gap-1 text-slate-500 mb-1">
+                <div className="flex items-center gap-8 text-right">
+                  <div className="min-w-0 flex gap-3 items-center">
+                    {/* <div className="flex items-center gap-1 text-slate-500 mb-1">
                         {filter == "revenue" ? (
                           <>
                             <DollarSign className="h-3 w-3" />
@@ -528,27 +503,27 @@ function TopClients({ timeRange }) {
                           </>
                         )}
                       </div> */}
-                      <div className="text-lg font-bold text-slate-900">
-                        {filter == "revenue" ? (
-                          <div className="flex gap-2 items-center">
-                            {formatCurrency(client.revenue)}{" "}
-                            <Wallet className="text-teal-500" />
-                          </div>
-                        ) : filter == "productsQuantity" ? (
-                          <div className="flex gap-2 items-center">
-                            {client.productsQuantity}
-                            <Package className="text-teal-500" />
-                          </div>
-                        ) : (
-                          <div className="flex gap-2 items-center">
-                            {client.ordersCount}
-                            <ShoppingCartIcon className="text-teal-500" />
-                          </div>
-                        )}
-                      </div>
+                    <div className="text-lg font-bold text-slate-900">
+                      {filter == "revenue" ? (
+                        <div className="flex gap-2 items-center">
+                          {formatCurrency(client.revenue)}{" "}
+                          <Wallet className="text-teal-500" />
+                        </div>
+                      ) : filter == "productsQuantity" ? (
+                        <div className="flex gap-2 items-center">
+                          {client.productsQuantity}
+                          <Package className="text-teal-500" />
+                        </div>
+                      ) : (
+                        <div className="flex gap-2 items-center">
+                          {client.ordersCount}
+                          <ShoppingCartIcon className="text-teal-500" />
+                        </div>
+                      )}
                     </div>
+                  </div>
 
-                    {/* <div className="min-w-0">
+                  {/* <div className="min-w-0">
                       <div className="flex items-center gap-1 text-slate-500 mb-1">
                         <ShoppingCart className="h-3 w-3" />
                         <span className="text-xs font-medium">Avg Order</span>
@@ -556,17 +531,17 @@ function TopClients({ timeRange }) {
                       <p className="text-lg font-bold text-slate-700">{formatCurrency(client.averageOrderValue)}</p>
                     </div> */}
 
-                    {/* <div className="min-w-0">
+                  {/* <div className="min-w-0">
                       <div className="flex items-center gap-1 text-slate-500 mb-1">
                         <TrendingUp className="h-3 w-3" />
                         <span className="text-xs font-medium">Orders</span>
                       </div>
                       <p className="text-lg font-bold text-slate-700">{client.totalOrders}</p>
                     </div> */}
-                  </div>
                 </div>
+              </div>
 
-                {/* <div className="mt-4 ml-24">
+              {/* <div className="mt-4 ml-24">
                 <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
                   <div
                     className="h-full bg-gradient-to-r from-indigo-500 to-indigo-600 rounded-full transition-all duration-500 group-hover:from-indigo-600 group-hover:to-indigo-700"
@@ -579,12 +554,12 @@ function TopClients({ timeRange }) {
                   ></div>
                 </div>
               </div> */}
-              </div>
-            ))
-          )}
-        </div>
-
-        {/* {filteredAndSortedClients.length === 0 && (
+            </div>
+          ))
+        )}
+      </div>
+      {/* Chart Container */}
+      {/* {filteredAndSortedClients.length === 0 && (
           <div className="p-12 text-center">
             <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <Users className="h-8 w-8 text-slate-400" />
@@ -597,7 +572,6 @@ function TopClients({ timeRange }) {
             </p>
           </div>
         )} */}
-      </div>
     </div>
   );
 }

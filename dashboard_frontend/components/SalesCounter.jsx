@@ -78,7 +78,7 @@ export function SalesCounter({ timeRange }) {
         sales: item.sales,
       })) || [];
   }
-
+  console.log(chartData);
   const chartConfig = {
     sales: {
       label: "Sales",
@@ -113,42 +113,6 @@ export function SalesCounter({ timeRange }) {
               </p>
             </div>
           </div>
-          {/* Right section */}
-          {/* <div className="flex items-center gap-2 flex-wrap">
-            <Select value={type} onValueChange={setType}>
-              <SelectTrigger className="min-w-[120px] h-9 bg-background border-border/60 hover:border-primary/30 transition-colors">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="orders">Orders</SelectItem>
-                <SelectItem value="sales">Sales</SelectItem>
-              </SelectContent>
-            </Select>
-
-            <Select value={timeRange} onValueChange={setTimeRange}>
-              <SelectTrigger className="min-w-[120px] h-9 bg-background border-border/60 hover:border-primary/30 transition-colors">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="thisWeek">Last 7 Days</SelectItem>
-                <SelectItem value="thisMonth">Last 30 Days</SelectItem>
-                <SelectItem value="ytd">Current Year</SelectItem>
-              </SelectContent>
-            </Select>
-
-            <Select value={agentFilter} onValueChange={setAgentFilter}>
-              <SelectTrigger className="min-w-[140px] h-9 bg-background border-border/60 hover:border-primary/30 transition-colors">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {["all", ...(stats?.allAgents || [])].map((a) => (
-                  <SelectItem key={a} value={a}>
-                    {a === "all" ? "All Agents" : a}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div> */}
         </div>
       </CardHeader>
 
@@ -201,8 +165,9 @@ export function SalesCounter({ timeRange }) {
                   tickLine={false}
                   axisLine={false}
                   tickMargin={12}
+                    interval={0} // <--- show all labels (forces Week 1 to render)
                   tick={{ fontSize: 12, fill: "var(--muted-foreground)" }}
-                  tickFormatter={(value) => value.slice(0, 3)}
+                  tickFormatter={(value) => value}
                 />
                 <ChartTooltip
                   cursor={{
@@ -257,7 +222,7 @@ export function SalesCounter({ timeRange }) {
         {!isLoading && !error && chartData.length === 0 && (
           <div className="flex justify-center items-center py-12">
             <div className="text-center">
-              <div className="w-12 h-12 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-3">
+              <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
                 <ChartNoAxesCombined className="h-6 w-6 text-gray-400" />
               </div>
               <p className="text-gray-600 font-medium">

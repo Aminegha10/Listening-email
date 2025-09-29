@@ -4,7 +4,7 @@ import { TrendingUp } from "lucide-react";
 
 const TopPerformerProduct = () => {
   return (
-    <Card className="mb-5 bg-gradient-to-r from-emerald-50 to-teal-50 border-emerald-200  mt-4">
+    <Card className=" bg-gradient-to-r from-emerald-50 to-teal-50 border-emerald-200">
       <CardContent className="px-6">
         <div className="flex items-center gap-4">
           <div className="w-12 h-12 bg-emerald-500 rounded-full flex items-center justify-center">
