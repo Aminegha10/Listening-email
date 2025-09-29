@@ -3,7 +3,7 @@
 import SalesOrdersBarchart from "@/components/Charts/SalesOrdersBarchart.jsx";
 import { SectionCards } from "@/components/TopCards";
 import { SaleAreaChart } from "@/components/Charts/SaleAreaChart.jsx";
-import { OrdersAreaChart } from "@/components./Charts/OrdersAreaChart.jsx";
+import { OrdersAreaChart } from "@/components/Charts/OrdersAreaChart.jsx";
 import { OrdersTable } from "@/components/Tables/OrdersTable.jsx";
 import { TopClients } from "@/components/TopClients.jsx";
 import { ThreeMidlleCards } from "@/components/ThreeMidlleCards.jsx";

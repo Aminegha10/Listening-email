@@ -103,7 +103,7 @@ export function TopProductsPieChart({ timeRange }) {
       filter
     );
 
-  // ✅ Create a chartConfig dynamically (like chartConfig in ChartPieLabel)
+  // Create a chartConfig dynamically (like chartConfig in ChartPieLabel)
   const chartConfig = TopProducts?.reduce((acc, product, index) => {
     acc[product.product] = {
       label: product.product,
