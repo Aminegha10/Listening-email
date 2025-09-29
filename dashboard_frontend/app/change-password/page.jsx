@@ -4,7 +4,7 @@ import { Eye, EyeOff, KeyRound, Check, X, Lock } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
-import { useUpdatePasswordMutation } from "../../features/authApi";
+import { useUpdatePasswordMutation } from "@/features/authApi";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
