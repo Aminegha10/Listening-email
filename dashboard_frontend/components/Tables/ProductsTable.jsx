@@ -1,5 +1,4 @@
 "use client";
-
 import * as React from "react";
 import {
   flexRender,
@@ -11,26 +10,29 @@ import {
 } from "@tanstack/react-table";
 import {
   ArrowUpDown,
+  Calendar,
+  CarIcon as ChartColumn,
   ChevronDown,
-  MoreHorizontal,
-  UserPlus,
-  Users,
   Download,
+  FileJson,
+  FileText,
+  Info,
+  Package,
   Sheet,
+  ShoppingCart,
+  TrendingUp,
 } from "lucide-react";
-
-import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { exportToCSV, exportToJSON, exportToPDF } from "@/utils/exportUtils";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -39,13 +41,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Badge } from "../ui/badge";
+import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
 
-import { useRegisterMutation } from "../../features/authApi";
-import { useGetAllUsersQuery } from "../../features/dataApi";
-import AddUserForm from "./addUserForm";
+import { useGetProductsDetailsQuery } from "@/features/dataApi";
+import ProductInfoCard from "../ui/productCardInfo";
 
-// Update the columns array - modify the header and cell styles
 export const columns = [
   {
     id: "select",
@@ -57,6 +57,7 @@ export const columns = [
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
         aria-label="Select all"
+        className="border-2 border-primary/20 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
       />
     ),
     cell: ({ row }) => (
@@ -71,109 +72,123 @@ export const columns = [
     enableHiding: false,
   },
   {
-    accessorKey: "name",
+    accessorKey: "productName",
+    header: "Product Name",
+    cell: ({ row }) => (
+      <div className="capitalize text-center font-medium text-foreground">
+        {row.getValue("productName")}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "quantitySold",
     header: ({ column }) => (
       <Button
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         className="hover:bg-primary/5 hover:text-primary font-semibold"
       >
-        Name <ArrowUpDown className="ml-2 h-4 w-4" />
+        Quantity Sold <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
     cell: ({ row }) => (
-      <div className="capitalize text-center font-medium">
-        {row.getValue("name")}
+      <div className="lowercase justify-center flex items-center gap-2 font-medium">
+        {row.getValue("quantitySold")}{" "}
+        <ChartColumn className="h-4 w-4 text-primary" />
       </div>
     ),
   },
-
   {
-    accessorKey: "email",
-    header: ({ column }) => {
+    accessorKey: "revenue",
+    header: () => <div className="text-right font-semibold">Revenue</div>,
+    cell: ({ row }) => {
+      const revenue = Number.parseFloat(row.getValue("revenue"));
+      const formatted = new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD",
+      }).format(revenue);
       return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Email
-          <ArrowUpDown />
-        </Button>
+        <div className="text-right font-semibold text-primary">{formatted}</div>
       );
     },
-    cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
   },
   {
-    accessorKey: "role",
-    header: "Role",
+    accessorKey: "ordersCount",
+    header: "Orders Count",
     cell: ({ row }) => (
-      <div className="capitalize">
-        <Badge
-          className={`text-xs ${
-            row.getValue("role") === "user" ? "bg-gray-500" : "bg-blue-500"
-          }`}
-        >
-          {row.getValue("role")}
-        </Badge>
+      <div className="lowercase justify-center flex items-center gap-2 font-medium">
+        {row.getValue("ordersCount")}{" "}
+        <ShoppingCart className="h-4 w-4 text-primary" />
       </div>
     ),
   },
   {
-    accessorKey: "createdAt",
-    header: "Created Date",
+    accessorKey: "lastOrderedDate",
+    header: () => <div className="text-center font-semibold">Last Ordered</div>,
+    cell: ({ row }) => {
+      const dateValue = row.getValue("lastOrderedDate");
+      const formattedDate = dateValue
+        ? new Date(dateValue).toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+          })
+        : "-";
+
+      return (
+        <div className="capitalize text-center font-medium text-muted-foreground">
+          {formattedDate}
+        </div>
+      );
+    },
+  },
+
+  {
+    accessorKey: "productDetails",
+    header: "Product Details",
     cell: ({ row }) => (
-      <div className="capitalize text-center font-medium text-muted-foreground">
-        {row.getValue("createdAt")}
+      <div className="capitalize flex items-center justify-center">
+        <Dialog>
+          <DialogTrigger asChild>
+            <button className="cursor-pointer p-2 rounded-lg hover:bg-primary/10 transition-colors">
+              <Info className="h-4 w-4 text-primary" />
+            </button>
+          </DialogTrigger>
+          <DialogContent className="bg-transparent p-0 shadow-none">
+            <ProductInfoCard data={row.original} />
+          </DialogContent>
+        </Dialog>
       </div>
     ),
   },
-  // {
-  //   id: "actions",
-  //   enableHiding: false,
-  //   header: "Action",
-
-  //   cell: ({ row }) => {
-  //     const payment = row.original;
-
-  //     return (
-  //       <DropdownMenu>
-  //         <DropdownMenuTrigger asChild>
-  //           <Button variant="ghost" className="h-8 w-8 p-0">
-  //             <span className="sr-only">Open menu</span>
-  //             <MoreHorizontal />
-  //           </Button>
-  //         </DropdownMenuTrigger>
-  //         <DropdownMenuContent align="end">
-  //           <DropdownMenuLabel>Actions</DropdownMenuLabel>
-  //           <DropdownMenuItem
-  //             onClick={() => navigator.clipboard.writeText(payment.id)}
-  //           >
-  //             Copy payment ID
-  //           </DropdownMenuItem>
-  //           <DropdownMenuSeparator />
-  //           <DropdownMenuItem>View customer</DropdownMenuItem>
-  //           <DropdownMenuItem>View payment details</DropdownMenuItem>
-  //         </DropdownMenuContent>
-  //       </DropdownMenu>
-  //     );
-  //   },
-  // },
+  {
+    accessorKey: "trend",
+    header: "Trend",
+    cell: () => (
+      <div className="capitalize text-center">
+        <div className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-green-50">
+          <TrendingUp className="text-green-600 h-4 w-4" />
+        </div>
+      </div>
+    ),
+  },
 ];
 
-export default function tableUsers() {
+export function ProductsTable({ id }) {
   const [sorting, setSorting] = React.useState([]);
   const [columnFilters, setColumnFilters] = React.useState([]);
   const [columnVisibility, setColumnVisibility] = React.useState({});
   const [rowSelection, setRowSelection] = React.useState({});
   const [search, setSearch] = React.useState("");
-  const [roleFilter, setRoleFilter] = React.useState("all");
-  const [addUser] = useRegisterMutation();
-  const [openAddUser, setOpenAddUser] = React.useState(false);
-  const { data = [], isLoading, isError } = useGetAllUsersQuery();
-  console.log(data);
+  const [timeRange, setTimeRange] = React.useState("all");
+
+  const { data, isLoading, isError, error } = useGetProductsDetailsQuery({
+    timeRange,
+    search,
+  });
 
   const table = useReactTable({
-    data: data || [], // Provide fallback empty array
+    data: data || [],
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -183,47 +198,37 @@ export default function tableUsers() {
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
-    state: {
-      sorting,
-      columnFilters,
-      columnVisibility,
-      rowSelection,
-    },
+    state: { sorting, columnFilters, columnVisibility, rowSelection },
   });
+  const dataType = "products";
 
-  const handleExportCSV = () => {
-    const csvContent = [
-      ["Name", "Email", "Role"],
-      ...table
-        .getFilteredRowModel()
-        .rows.map((row) => [
-          row.getValue("name"),
-          row.getValue("email"),
-          row.getValue("role"),
-        ]),
-    ]
-      .map((row) => row.join(","))
-      .join("\n");
-
-    const blob = new Blob([csvContent], { type: "text/csv" });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "users.csv";
-    a.click();
-  };
-
-  if (isLoading) {
-    return <div className="w-full p-4 text-center">Loading...</div>;
-  }
-
-  if (isError) {
-    return (
-      <div className="w-full p-4 text-center text-red-500">
-        Error loading users
-      </div>
+  const handleExportCSV = () =>
+    exportToCSV(
+      table.getFilteredRowModel().rows,
+      timeRange,
+      "Products",
+      null,
+      null,
+      data.length
     );
-  }
+  const handleExportJSON = () =>
+    exportToJSON(
+      table.getFilteredRowModel().rows,
+      timeRange,
+      "Products",
+      null,
+      null,
+      data.length
+    );
+  const handleExportPDF = () =>
+    exportToPDF(
+      table.getFilteredRowModel().rows,
+      timeRange,
+      "Products",
+      null,
+      null,
+      data.length
+    );
 
   return (
     <div className="w-full space-y-3 max-w-full overflow-hidden">
@@ -232,13 +237,13 @@ export default function tableUsers() {
           <Input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="🔍 Search users..."
+            placeholder="Search products..."
             className="pl-8 border border-border focus:border-primary transition-colors bg-background text-sm h-8"
           />
         </div>
 
         <div className="flex items-center gap-2 flex-wrap">
-          {/* Role Filter */}
+          {/* Orders Filter Dropdown */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
@@ -246,12 +251,14 @@ export default function tableUsers() {
                 size="sm"
                 className="flex items-center gap-1 rounded-lg border border-border hover:border-primary hover:text-primary hover:bg-primary/5 transition-all duration-200 font-medium bg-transparent text-xs"
               >
-                <Users className="h-3 w-3" />
-                {roleFilter === "admin"
-                  ? "Admin"
-                  : roleFilter === "user"
-                  ? "User"
-                  : "All Roles"}
+                <Calendar className="h-3 w-3" />
+                {timeRange === "today"
+                  ? "Today"
+                  : timeRange === "thisWeek"
+                  ? "This Week"
+                  : timeRange === "thisMonth"
+                  ? "This Month"
+                  : "All Time"}
                 <ChevronDown className="ml-1 h-3 w-3" />
               </Button>
             </DropdownMenuTrigger>
@@ -260,33 +267,39 @@ export default function tableUsers() {
               className="rounded-lg shadow-lg border border-border"
             >
               <DropdownMenuItem
-                onClick={() => setRoleFilter("all")}
+                onClick={() => setTimeRange("all")}
                 className="hover:bg-primary/10 hover:text-primary cursor-pointer text-sm"
               >
-                All Roles
+                All Time
               </DropdownMenuItem>
               <DropdownMenuItem
-                onClick={() => setRoleFilter("admin")}
+                onClick={() => setTimeRange("today")}
                 className="hover:bg-primary/10 hover:text-primary cursor-pointer text-sm"
               >
-                Admin
+                Today
               </DropdownMenuItem>
               <DropdownMenuItem
-                onClick={() => setRoleFilter("user")}
+                onClick={() => setTimeRange("thisWeek")}
                 className="hover:bg-primary/10 hover:text-primary cursor-pointer text-sm"
               >
-                User
+                This Week
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => setTimeRange("thisMonth")}
+                className="hover:bg-primary/10 hover:text-primary cursor-pointer text-sm"
+              >
+                This Month
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
 
           {/* Columns Dropdown */}
-          {/* <DropdownMenu>
+          <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
                 variant="outline"
                 size="sm"
-                className="rounded-lg border border-border hover:border-primary hover:bg-primary/5 transition-all duration-200 font-medium bg-transparent text-xs"
+                className="flex items-center gap-1 rounded-lg border border-border hover:border-primary hover:text-primary hover:bg-primary/5 transition-all duration-200 font-medium bg-transparent text-xs"
               >
                 Columns <ChevronDown className="ml-1 h-3 w-3" />
               </Button>
@@ -297,23 +310,21 @@ export default function tableUsers() {
             >
               {table
                 .getAllColumns()
-                .filter((column) => column.getCanHide())
-                .map((column) => {
-                  return (
-                    <DropdownMenuCheckboxItem
-                      key={column.id}
-                      className="capitalize hover:bg-primary/10 hover:text-primary cursor-pointer text-sm"
-                      checked={column.getIsVisible()}
-                      onCheckedChange={(value) =>
-                        column.toggleVisibility(!!value)
-                      }
-                    >
-                      {column.id}
-                    </DropdownMenuCheckboxItem>
-                  );
-                })}
+                .filter((c) => c.getCanHide())
+                .map((column) => (
+                  <DropdownMenuCheckboxItem
+                    key={column.id}
+                    className="capitalize hover:bg-primary/10 hover:text-primary cursor-pointer text-sm"
+                    checked={column.getIsVisible()}
+                    onCheckedChange={(value) =>
+                      column.toggleVisibility(!!value)
+                    }
+                  >
+                    {column.id}
+                  </DropdownMenuCheckboxItem>
+                ))}
             </DropdownMenuContent>
-          </DropdownMenu> */}
+          </DropdownMenu>
 
           {/* Export Dropdown */}
           <DropdownMenu>
@@ -337,16 +348,29 @@ export default function tableUsers() {
               >
                 Export as CSV <Sheet className="text-green-500 stroke-[2px]" />
               </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={handleExportJSON}
+                className="hover:bg-primary/10 hover:text-primary cursor-pointer text-sm"
+              >
+                Export as JSON{" "}
+                <FileJson className="text-yellow-500 stroke-[2px]" />
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={handleExportPDF}
+                className="hover:bg-primary/10 hover:text-primary cursor-pointer text-sm"
+              >
+                Export as PDF
+                <FileText className="text-[#f32b2b] stroke-[2px]" />
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-
-          {/* Add User Form */}
-          <AddUserForm />
         </div>
       </div>
 
-      {/* Table section with updated styling */}
-      <div className="overflow-auto rounded-lg border border-border bg-card shadow-sm">
+      <div
+        className="overflow-auto rounded-lg border border-border bg-card shadow-sm"
+        id={id}
+      >
         <Table>
           <TableHeader className="bg-muted/50 border-b border-border sticky top-0 z-10">
             {table.getHeaderGroups().map((headerGroup) => (
@@ -367,8 +391,9 @@ export default function tableUsers() {
               </TableRow>
             ))}
           </TableHeader>
+
           <TableBody>
-            {table.getRowModel().rows?.length ? (
+            {table.getRowModel().rows.length ? (
               table.getRowModel().rows.map((row, idx) => (
                 <TableRow
                   key={row.id}
@@ -398,7 +423,15 @@ export default function tableUsers() {
                   colSpan={columns.length}
                   className="h-24 text-center text-muted-foreground py-6"
                 >
-                  No results.
+                  <div className="flex flex-col items-center gap-2">
+                    <Package className="h-6 w-6 text-muted-foreground/50" />
+                    <span className="text-sm font-medium">
+                      No results found.
+                    </span>
+                    <span className="text-xs">
+                      Try adjusting your search or filters
+                    </span>
+                  </div>
                 </TableCell>
               </TableRow>
             )}
@@ -406,7 +439,6 @@ export default function tableUsers() {
         </Table>
       </div>
 
-      {/* Updated pagination section */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-2 p-3 bg-card rounded-lg border border-border">
         <div className="text-xs text-muted-foreground font-medium">
           <span className="text-primary font-semibold">

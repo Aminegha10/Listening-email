@@ -19,16 +19,16 @@ import {
   Tooltip,
 } from "recharts";
 import { ThreeDot } from "react-loading-indicators";
-import { Badge } from "./ui/badge";
+import { Badge } from "../ui/badge";
 import {
   ArrowUpFromLine as ChartNoAxesCombined,
   ChevronDown,
   ShoppingCart,
   Users,
 } from "lucide-react";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 
-export default function SalesAgentBarChart({ timeRange }) {
+export default function SalesOrdersBarchart({ timeRange }) {
   // const [timeRange, setTimeRange] = useState("thisMonth");
   const [agentFilter, setAgentFilter] = useState("all");
   const [type, setType] = useState("orders");

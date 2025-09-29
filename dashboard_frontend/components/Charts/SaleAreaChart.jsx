@@ -39,12 +39,12 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
-import { Button } from "./ui/button";
+} from "../ui/dropdown-menu";
+import { Button } from "../ui/button";
 
 export const description = "A simple area chart";
 
-export function SalesCounter({ timeRange }) {
+export function SaleAreaChart({ timeRange }) {
   const [agentFilter, setAgentFilter] = useState("all");
 
   const {
@@ -165,7 +165,7 @@ export function SalesCounter({ timeRange }) {
                   tickLine={false}
                   axisLine={false}
                   tickMargin={12}
-                    interval={0} // <--- show all labels (forces Week 1 to render)
+                  interval={0} // <--- show all labels (forces Week 1 to render)
                   tick={{ fontSize: 12, fill: "var(--muted-foreground)" }}
                   tickFormatter={(value) => value}
                 />

@@ -2,17 +2,19 @@
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useRefreshMutation } from "@/features/authApi";
-import { setCredentials, logout } from "@/features/authSlice";
+import { logout } from "@/features/authSlice";
 import { useRouter } from "next/navigation";
-import { AppSidebar } from "@/components/app-sidebar";
-import { SiteHeader } from "@/components/site-header";
+import { SideBar } from "@/components/SideBar";
+import { NavBar } from "@/components/NavBar/NavBar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { useState } from "react";
 import { DashboardSkeleton } from "@/components/DashboardSkeleton";
+import { LogOutScreen } from "@/components/AuthScreens/LogOutScreen";
 
 export default function DashboardLayout({ children }) {
   const dispatch = useDispatch();
   const router = useRouter();
+  const [logOut, setLogOut] = useState(false);
   const accessToken = useSelector((state) => state.auth.accessToken);
   const [refresh] = useRefreshMutation();
   const [loading, setLoading] = useState(true); // we control this!
@@ -24,9 +26,6 @@ export default function DashboardLayout({ children }) {
           console.log("z");
           const res = await refresh().unwrap();
           console.log(res);
-          // dispatch(
-          //   setCredentials({ accessToken: res.accessToken, user: res.user })
-          // );
         } catch {
           dispatch(logout());
           router.push("/login");
@@ -39,6 +38,7 @@ export default function DashboardLayout({ children }) {
 
   // Optional: show loading spinner while refreshing token
   if (loading) return <DashboardSkeleton />;
+  if (logOut) return <LogOutScreen />;
 
   return (
     <SidebarProvider
@@ -47,10 +47,10 @@ export default function DashboardLayout({ children }) {
         "--header-height": "calc(var(--spacing) * 12)",
       }}
     >
-      <AppSidebar variant="inset" />
+      <SideBar variant="inset" setLogOut={setLogOut} />
       <SidebarInset>
-        <SiteHeader />
-        <div className="flex flex-1 flex-col p-4">{children}</div>
+        <NavBar />
+        <div className="flex flex-1 flex-col p-6">{children}</div>
       </SidebarInset>
     </SidebarProvider>
   );

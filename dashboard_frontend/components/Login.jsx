@@ -148,11 +148,6 @@ const Login = () => {
               className="w-full max-w-md relative z-10 shadow-[0_10px_30px_rgba(0,0,0,0.15)] border-0 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl"
             >
               <CardHeader className="space-y-4 pb-4">
-                {/* <div className="flex justify-center">
-                <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
-                  <Lock className="w-8 h-8 text-white" />
-                </div>
-              </div> */}
                 <CardTitle className="text-3xl font-bold text-center bg-gradient-to-r from-slate-900 to-slate-600 dark:from-white dark:to-slate-300 bg-clip-text text-transparent">
                   Welcome Back
                 </CardTitle>
@@ -300,20 +295,6 @@ const Login = () => {
                     )}
                   </Button>
                 </form>
-
-                {/* Sign Up Link */}
-                {/* <div className="text-center pt-4 border-t border-slate-200 dark:border-slate-700">
-                <p className="text-sm text-slate-600 dark:text-slate-400">
-                  Don't have an account?{' '}
-                  <button
-                    type="button"
-                    className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-semibold transition-colors duration-200 hover:underline"
-                    onClick={() => console.log("Sign up clicked")}
-                  >
-                    Sign up
-                  </button>
-                </p>
-              </div> */}
               </CardContent>
             </Card>
           </div>

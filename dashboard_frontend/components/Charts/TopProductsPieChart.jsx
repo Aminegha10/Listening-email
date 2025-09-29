@@ -18,7 +18,7 @@ import {
   Users,
 } from "lucide-react";
 import { Pie, PieChart, Cell } from "recharts";
-import { Badge } from "./ui/badge";
+import { Badge } from "../ui/badge";
 import {
   Card,
   CardContent,
@@ -43,7 +43,7 @@ import {
 } from "@/components/ui/chart";
 
 import { useGetTopProductsQuery } from "@/features/dataApi";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import { exportToPDF, exportToCSV, exportToJSON } from "@/utils/exportUtils";
 import { useRef, useState } from "react";
 import { Riple } from "react-loading-indicators";
@@ -82,7 +82,7 @@ const COLORS = [
 // const handleExportJSON = () =>
 //   exportToJSON();
 
-export function TopProducts({ timeRange }) {
+export function TopProductsPieChart({ timeRange }) {
   // Select chart
   const chartRef = useRef(null);
   const [filter, setFilter] = useState("unitsSold"); // default filter

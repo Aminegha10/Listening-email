@@ -1,4 +1,5 @@
 "use client";
+
 import * as React from "react";
 import {
   flexRender,
@@ -10,14 +11,12 @@ import {
 } from "@tanstack/react-table";
 import {
   ArrowUpDown,
-  Calendar,
   ChevronDown,
+  MoreHorizontal,
+  UserPlus,
+  Users,
   Download,
-  FileJson,
-  FileText,
-  Package,
   Sheet,
-  ShoppingCart,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -27,8 +26,11 @@ import {
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -37,10 +39,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useGetClientsQuery } from "@/features/dataApi";
-import { Input } from "./ui/input";
-import { exportToCSV, exportToJSON, exportToPDF } from "@/utils/exportUtils";
+import { Badge } from "../ui/badge";
 
+import { useRegisterMutation } from "../../features/authApi";
+import { useGetAllUsersQuery } from "../../features/dataApi";
+import AddUserForm from "./AddUserForm";
+
+// Update the columns array - modify the header and cell styles
 export const columns = [
   {
     id: "select",
@@ -52,7 +57,6 @@ export const columns = [
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
         aria-label="Select all"
-        className="border-2 border-primary/20 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
       />
     ),
     cell: ({ row }) => (
@@ -67,129 +71,109 @@ export const columns = [
     enableHiding: false,
   },
   {
-    accessorKey: "clientName",
-    header: "Client Name",
-    cell: ({ row }) => (
-      <div className="capitalize text-center font-medium text-foreground">
-        {row.getValue("clientName")}
-      </div>
-    ),
-  },
-  {
-    accessorKey: "ordersCount",
+    accessorKey: "name",
     header: ({ column }) => (
       <Button
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         className="hover:bg-primary/5 hover:text-primary font-semibold"
       >
-        Orders Count <ArrowUpDown className="ml-2 h-4 w-4" />
+        Name <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
     cell: ({ row }) => (
-      <div className="justify-center flex items-center gap-2 font-medium">
-        {row.getValue("ordersCount")}
-        <ShoppingCart className="h-4 w-4 text-primary" />
+      <div className="capitalize text-center font-medium">
+        {row.getValue("name")}
       </div>
     ),
   },
+
   {
-    accessorKey: "productsQuantity",
-    header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        className="hover:bg-primary/5 hover:text-primary font-semibold"
-      >
-        Products Ordered <ArrowUpDown className="ml-2 h-4 w-4" />
-      </Button>
-    ),
-    cell: ({ row }) => (
-      <div className="justify-center flex items-center gap-2 font-medium">
-        {row.getValue("productsQuantity")}
-        <Package className="h-4 w-4 text-primary" />
-      </div>
-    ),
-  },
-  {
-    accessorKey: "orderAverage",
-    header: "Order Average",
-    cell: () => (
-      <div className="flex justify-center">
-        <span className="rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-200">
-          Daily
-        </span>
-      </div>
-    ),
-  },
-  {
-    accessorKey: "revenue",
-    header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        className="hover:bg-primary/5 hover:text-primary font-semibold"
-      >
-        Revenue <ArrowUpDown className="ml-2 h-4 w-4" />
-      </Button>
-    ),
-    cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("revenue"));
-      const formatted = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-      }).format(amount);
+    accessorKey: "email",
+    header: ({ column }) => {
       return (
-        <div className="text-center font-semibold text-primary">
-          {formatted}
-        </div>
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Email
+          <ArrowUpDown />
+        </Button>
       );
     },
+    cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
   },
   {
-    accessorKey: "firstOrderDate",
-    header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        className="hover:bg-primary/5 hover:text-primary font-semibold"
-      >
-        First Order Date <ArrowUpDown className="ml-2 h-4 w-4" />
-      </Button>
+    accessorKey: "role",
+    header: "Role",
+    cell: ({ row }) => (
+      <div className="capitalize">
+        <Badge
+          className={`text-xs ${
+            row.getValue("role") === "user" ? "bg-gray-500" : "bg-blue-500"
+          }`}
+        >
+          {row.getValue("role")}
+        </Badge>
+      </div>
     ),
-    cell: ({ row }) => {
-      // const amount = parseFloat(row.getValue("revenue"));
-      // const formatted = new Intl.NumberFormat("en-US", {
-      //   style: "currency",
-      //   currency: "USD",
-      // }).format(amount);
-      return (
-        <div className="capitalize text-center font-medium text-muted-foreground">
-          {row.getValue("firstOrderDate")}
-        </div>
-      );
-    },
   },
+  {
+    accessorKey: "createdAt",
+    header: "Created Date",
+    cell: ({ row }) => (
+      <div className="capitalize text-center font-medium text-muted-foreground">
+        {row.getValue("createdAt")}
+      </div>
+    ),
+  },
+  // {
+  //   id: "actions",
+  //   enableHiding: false,
+  //   header: "Action",
+
+  //   cell: ({ row }) => {
+  //     const payment = row.original;
+
+  //     return (
+  //       <DropdownMenu>
+  //         <DropdownMenuTrigger asChild>
+  //           <Button variant="ghost" className="h-8 w-8 p-0">
+  //             <span className="sr-only">Open menu</span>
+  //             <MoreHorizontal />
+  //           </Button>
+  //         </DropdownMenuTrigger>
+  //         <DropdownMenuContent align="end">
+  //           <DropdownMenuLabel>Actions</DropdownMenuLabel>
+  //           <DropdownMenuItem
+  //             onClick={() => navigator.clipboard.writeText(payment.id)}
+  //           >
+  //             Copy payment ID
+  //           </DropdownMenuItem>
+  //           <DropdownMenuSeparator />
+  //           <DropdownMenuItem>View customer</DropdownMenuItem>
+  //           <DropdownMenuItem>View payment details</DropdownMenuItem>
+  //         </DropdownMenuContent>
+  //       </DropdownMenu>
+  //     );
+  //   },
+  // },
 ];
 
-export function ClientsTable() {
+export default function UsersTable() {
   const [sorting, setSorting] = React.useState([]);
   const [columnFilters, setColumnFilters] = React.useState([]);
   const [columnVisibility, setColumnVisibility] = React.useState({});
   const [rowSelection, setRowSelection] = React.useState({});
-  const [timeRange, setTimeRange] = React.useState("all");
-
-  const {
-    data: clients = [],
-    isLoading,
-    isError,
-  } = useGetClientsQuery({
-    filter: "all",
-    timeRange,
-  });
+  const [search, setSearch] = React.useState("");
+  const [roleFilter, setRoleFilter] = React.useState("all");
+  const [addUser] = useRegisterMutation();
+  const [openAddUser, setOpenAddUser] = React.useState(false);
+  const { data = [], isLoading, isError } = useGetAllUsersQuery();
+  console.log(data);
 
   const table = useReactTable({
-    data: clients.data || [],
+    data: data || [], // Provide fallback empty array
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -199,55 +183,62 @@ export function ClientsTable() {
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
-    state: { sorting, columnFilters, columnVisibility, rowSelection },
+    state: {
+      sorting,
+      columnFilters,
+      columnVisibility,
+      rowSelection,
+    },
   });
 
-  // exporting
-  const handleExportCSV = () =>
-    exportToCSV(
-      table.getFilteredRowModel().rows,
-      timeRange,
-      "Clients",
-      null,
-      null,
-      clients.data.length
+  const handleExportCSV = () => {
+    const csvContent = [
+      ["Name", "Email", "Role"],
+      ...table
+        .getFilteredRowModel()
+        .rows.map((row) => [
+          row.getValue("name"),
+          row.getValue("email"),
+          row.getValue("role"),
+        ]),
+    ]
+      .map((row) => row.join(","))
+      .join("\n");
+
+    const blob = new Blob([csvContent], { type: "text/csv" });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "users.csv";
+    a.click();
+  };
+
+  if (isLoading) {
+    return <div className="w-full p-4 text-center">Loading...</div>;
+  }
+
+  if (isError) {
+    return (
+      <div className="w-full p-4 text-center text-red-500">
+        Error loading users
+      </div>
     );
-  const handleExportJSON = () =>
-    exportToJSON(
-      table.getFilteredRowModel().rows,
-      timeRange,
-      "Clients",
-      null,
-      null,
-      clients.data.length
-    );
-  const handleExportPDF = () =>
-    exportToPDF(
-      table.getFilteredRowModel().rows,
-      timeRange,
-      "Clients",
-      null,
-      null,
-      clients.data.length
-    );
+  }
 
   return (
     <div className="w-full space-y-3 max-w-full overflow-hidden">
-      {/* Top bar with Export + Columns */}
       <div className="flex flex-col sm:flex-row justify-between items-center gap-2 p-3 bg-card rounded-lg border border-border shadow-sm">
-        <div className="flex items-center gap-2">
-          <div className="relative w-full sm:max-w-xs">
-            <Input
-              // value={search}
-              // onChange={(e) => setSearch(e.target.value)}
-              placeholder="🔍 Search orders..."
-              className="pl-8 border border-border focus:border-primary transition-colors bg-background text-sm h-8"
-            />
-          </div>
+        <div className="relative w-full sm:max-w-xs">
+          <Input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="🔍 Search users..."
+            className="pl-8 border border-border focus:border-primary transition-colors bg-background text-sm h-8"
+          />
         </div>
 
         <div className="flex items-center gap-2 flex-wrap">
-          {/*time range dropdown */}
+          {/* Role Filter */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
@@ -255,14 +246,12 @@ export function ClientsTable() {
                 size="sm"
                 className="flex items-center gap-1 rounded-lg border border-border hover:border-primary hover:text-primary hover:bg-primary/5 transition-all duration-200 font-medium bg-transparent text-xs"
               >
-                <Calendar className="h-3 w-3" />
-                {timeRange === "today"
-                  ? "Today"
-                  : timeRange === "thisWeek"
-                  ? "This Week"
-                  : timeRange === "thisMonth"
-                  ? "This Month"
-                  : "All Time"}
+                <Users className="h-3 w-3" />
+                {roleFilter === "admin"
+                  ? "Admin"
+                  : roleFilter === "user"
+                  ? "User"
+                  : "All Roles"}
                 <ChevronDown className="ml-1 h-3 w-3" />
               </Button>
             </DropdownMenuTrigger>
@@ -271,38 +260,33 @@ export function ClientsTable() {
               className="rounded-lg shadow-lg border border-border"
             >
               <DropdownMenuItem
-                onClick={() => setTimeRange("all")}
+                onClick={() => setRoleFilter("all")}
                 className="hover:bg-primary/10 hover:text-primary cursor-pointer text-sm"
               >
-                All Time
+                All Roles
               </DropdownMenuItem>
               <DropdownMenuItem
-                onClick={() => setTimeRange("today")}
+                onClick={() => setRoleFilter("admin")}
                 className="hover:bg-primary/10 hover:text-primary cursor-pointer text-sm"
               >
-                Today
+                Admin
               </DropdownMenuItem>
               <DropdownMenuItem
-                onClick={() => setTimeRange("thisWeek")}
+                onClick={() => setRoleFilter("user")}
                 className="hover:bg-primary/10 hover:text-primary cursor-pointer text-sm"
               >
-                This Week
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => setTimeRange("thisMonth")}
-                className="hover:bg-primary/10 hover:text-primary cursor-pointer text-sm"
-              >
-                This Month
+                User
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+
           {/* Columns Dropdown */}
-          <DropdownMenu>
+          {/* <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
                 variant="outline"
                 size="sm"
-                className="flex items-center gap-1 rounded-lg border border-border hover:border-primary hover:text-primary hover:bg-primary/5 transition-all duration-200 font-medium bg-transparent text-xs"
+                className="rounded-lg border border-border hover:border-primary hover:bg-primary/5 transition-all duration-200 font-medium bg-transparent text-xs"
               >
                 Columns <ChevronDown className="ml-1 h-3 w-3" />
               </Button>
@@ -313,21 +297,23 @@ export function ClientsTable() {
             >
               {table
                 .getAllColumns()
-                .filter((c) => c.getCanHide())
-                .map((column) => (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize hover:bg-primary/10 hover:text-primary cursor-pointer text-sm"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) =>
-                      column.toggleVisibility(!!value)
-                    }
-                  >
-                    {column.id}
-                  </DropdownMenuCheckboxItem>
-                ))}
+                .filter((column) => column.getCanHide())
+                .map((column) => {
+                  return (
+                    <DropdownMenuCheckboxItem
+                      key={column.id}
+                      className="capitalize hover:bg-primary/10 hover:text-primary cursor-pointer text-sm"
+                      checked={column.getIsVisible()}
+                      onCheckedChange={(value) =>
+                        column.toggleVisibility(!!value)
+                      }
+                    >
+                      {column.id}
+                    </DropdownMenuCheckboxItem>
+                  );
+                })}
             </DropdownMenuContent>
-          </DropdownMenu>
+          </DropdownMenu> */}
 
           {/* Export Dropdown */}
           <DropdownMenu>
@@ -351,26 +337,15 @@ export function ClientsTable() {
               >
                 Export as CSV <Sheet className="text-green-500 stroke-[2px]" />
               </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={handleExportJSON}
-                className="hover:bg-primary/10 hover:text-primary cursor-pointer text-sm"
-              >
-                Export as JSON{" "}
-                <FileJson className="text-yellow-500 stroke-[2px]" />
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={handleExportPDF}
-                className="hover:bg-primary/10 hover:text-primary cursor-pointer text-sm"
-              >
-                Export as PDF{" "}
-                <FileText className="text-[#f32b2b] stroke-[2px]" />
-              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+
+          {/* Add User Form */}
+          <AddUserForm />
         </div>
       </div>
 
-      {/* Table */}
+      {/* Table section with updated styling */}
       <div className="overflow-auto rounded-lg border border-border bg-card shadow-sm">
         <Table>
           <TableHeader className="bg-muted/50 border-b border-border sticky top-0 z-10">
@@ -392,27 +367,8 @@ export function ClientsTable() {
               </TableRow>
             ))}
           </TableHeader>
-
           <TableBody>
-            {isLoading ? (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center text-muted-foreground"
-                >
-                  Loading clients...
-                </TableCell>
-              </TableRow>
-            ) : isError ? (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center text-red-500"
-                >
-                  Error loading clients.
-                </TableCell>
-              </TableRow>
-            ) : table.getRowModel().rows.length ? (
+            {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row, idx) => (
                 <TableRow
                   key={row.id}
@@ -442,13 +398,7 @@ export function ClientsTable() {
                   colSpan={columns.length}
                   className="h-24 text-center text-muted-foreground py-6"
                 >
-                  <div className="flex flex-col items-center gap-2">
-                    <Package className="h-6 w-6 text-muted-foreground/50" />
-                    <span className="text-sm font-medium">
-                      No results found.
-                    </span>
-                    <span className="text-xs">Try adjusting your filters</span>
-                  </div>
+                  No results.
                 </TableCell>
               </TableRow>
             )}
@@ -456,7 +406,7 @@ export function ClientsTable() {
         </Table>
       </div>
 
-      {/* Footer */}
+      {/* Updated pagination section */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-2 p-3 bg-card rounded-lg border border-border">
         <div className="text-xs text-muted-foreground font-medium">
           <span className="text-primary font-semibold">

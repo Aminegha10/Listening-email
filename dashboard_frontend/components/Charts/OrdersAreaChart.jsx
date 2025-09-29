@@ -39,12 +39,12 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
-import { Button } from "./ui/button";
+} from "../ui/dropdown-menu";
+import { Button } from "../ui/button";
 
 export const description = "A simple area chart";
 
-export function OrdersCounter({ timeRange }) {
+export function OrdersAreaChart({ timeRange }) {
   // Filters
   // const [timeRange, setTimeRange] = useState("thisMonth");
   const [agentFilter, setAgentFilter] = useState("all");

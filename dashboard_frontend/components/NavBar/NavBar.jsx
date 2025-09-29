@@ -1,36 +1,22 @@
 import { Button } from "@/components/ui/button";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { Input } from "./ui/input";
+import { Input } from "../ui/input";
 import { Bell, Search, User, Settings, Menu } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { Badge } from "./ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Badge } from "../ui/badge";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
+} from "../ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import { useLogoutMutation } from "@/features/authApi";
 import { useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 
-export function SiteHeader() {
-  // const router = useRouter();
-  // const { user } = useSelector((state) => state.auth);
-  // console.log(user);
-  // const [logout, { isLoading }] = useLogoutMutation();
-
-  // const handleLogout = async () => {
-  //   try {
-  //     await logout();
-  //     router.push("/login");
-  //   } catch (err) {
-  //     console.error("Logout failed:", err);
-  //   }
-  // };
-
+export function NavBar() {
   return (
     <header className="sticky top-0 z-10 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-b border-gray-200/60 dark:border-gray-700/60 px-6 py-4 shadow-sm">
       <div className="flex items-center justify-between">

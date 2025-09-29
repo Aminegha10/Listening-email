@@ -1,5 +1,4 @@
 "use client";
-
 import * as React from "react";
 import {
   flexRender,
@@ -11,13 +10,14 @@ import {
 } from "@tanstack/react-table";
 import {
   ArrowUpDown,
+  Calendar,
   ChevronDown,
   Download,
-  Eye,
   FileJson,
   FileText,
-  Loader2,
+  Package,
   Sheet,
+  ShoppingCart,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -37,12 +37,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Input } from "@/components/ui/input";
-import { useGetOrdersTableQuery } from "@/features/dataApi";
-import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog";
-import { Badge } from "./ui/badge";
+import { useGetClientsQuery } from "@/features/dataApi";
+import { Input } from "../ui/input";
 import { exportToCSV, exportToJSON, exportToPDF } from "@/utils/exportUtils";
-import { Calendar } from "lucide-react";
 
 export const columns = [
   {
@@ -70,194 +67,129 @@ export const columns = [
     enableHiding: false,
   },
   {
-    accessorKey: "orderNumber",
-    header: "Order #",
+    accessorKey: "clientName",
+    header: "Client Name",
     cell: ({ row }) => (
-      <div className="capitalize text-center font-medium">
-        {row.getValue("orderNumber")}
+      <div className="capitalize text-center font-medium text-foreground">
+        {row.getValue("clientName")}
       </div>
     ),
   },
   {
-    accessorKey: "client",
+    accessorKey: "ordersCount",
     header: ({ column }) => (
       <Button
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         className="hover:bg-primary/5 hover:text-primary font-semibold"
       >
-        Client <ArrowUpDown className="ml-2 h-4 w-4" />
+        Orders Count <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
     cell: ({ row }) => (
-      <div className="lowercase justify-center flex items-center font-medium text-center">
-        {row.getValue("client")}
+      <div className="justify-center flex items-center gap-2 font-medium">
+        {row.getValue("ordersCount")}
+        <ShoppingCart className="h-4 w-4 text-primary" />
       </div>
     ),
   },
   {
-    accessorKey: "price",
+    accessorKey: "productsQuantity",
     header: ({ column }) => (
-      <div className="text-right font-semibold">
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="hover:bg-primary/5 hover:text-primary font-semibold"
-        >
-          Price <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      </div>
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        className="hover:bg-primary/5 hover:text-primary font-semibold"
+      >
+        Products Ordered <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
     ),
-    cell: ({ row }) => {
-      const price = parseFloat(row.getValue("price") || 0);
-      const formatted = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-      }).format(price);
-      return (
-        <div className="text-right font-semibold text-primary">{formatted}</div>
-      );
-    },
-  },
-  {
-    accessorKey: "salesAgent",
-    header: "Sales Agent",
     cell: ({ row }) => (
-      <div className="capitalize text-center font-medium">
-        {row.getValue("salesAgent")}
+      <div className="justify-center flex items-center gap-2 font-medium">
+        {row.getValue("productsQuantity")}
+        <Package className="h-4 w-4 text-primary" />
       </div>
     ),
   },
   {
-    accessorKey: "products",
-    header: () => <div className="text-center">Products</div>,
-    cell: ({ row }) => {
-      const products = row.getValue("products") || [];
-      return (
-        <div className="justify-center font-medium flex items-center gap-2">
-          <span className="rounded-md bg-green-50 px-1.5 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-200 flex items-center gap-1">
-            {products.length} Items
-            <Dialog>
-              <DialogTrigger asChild>
-                <button>
-                  <Eye className="text-[#8C8C8C] h-4 w-4 cursor-pointer hover:text-gray-600 transition-colors" />
-                </button>
-              </DialogTrigger>
-              <DialogContent className="max-w-md">
-                <div className="mt-4">
-                  {products.length > 0 ? (
-                    <div className="space-y-3">
-                      {products.map((product, index) => (
-                        <div
-                          key={index}
-                          className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
-                        >
-                          <div className="flex-1">
-                            <h4 className="font-medium text-sm">
-                              {product.name || `Product ${index + 1}`}
-                            </h4>
-                            <div className="flex items-center gap-1 mt-1">
-                              {product.barcode && (
-                                <p className="text-xs text-gray-600">
-                                  {product.barcode}
-                                </p>
-                              )}
-                              <div>
-                                {product.warehouse === "MAG" ? (
-                                  <Badge
-                                    variant="destructive"
-                                    className="text-xs"
-                                  >
-                                    {product.warehouse}
-                                  </Badge>
-                                ) : (
-                                  <Badge
-                                    variant="outline"
-                                    className="text-xs bg-green-500 text-white"
-                                  >
-                                    {product.warehouse}
-                                  </Badge>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                          <div className="text-right ml-4">
-                            {product.quantity && (
-                              <p className="text-xs text-gray-500">
-                                Qty: {product.quantity}
-                              </p>
-                            )}
-                            {product.price && (
-                              <p className="font-medium text-sm">
-                                ${product.price}
-                              </p>
-                            )}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="text-center text-gray-500 py-8">
-                      No products found for this order.
-                    </p>
-                  )}
-                </div>
-              </DialogContent>
-            </Dialog>
-          </span>
-        </div>
-      );
-    },
-  },
-  {
-    accessorKey: "typedepaiement",
-    header: "Payment Type",
-    cell: ({ row }) => (
-      <div className="text-center">
-        <span className="rounded-md bg-sky-50 px-1.5 py-1 text-xs font-medium text-sky-700 ring-1 ring-inset ring-sky-200">
-          {row.getValue("typedepaiement")}
+    accessorKey: "orderAverage",
+    header: "Order Average",
+    cell: () => (
+      <div className="flex justify-center">
+        <span className="rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-200">
+          Daily
         </span>
       </div>
     ),
   },
   {
-    accessorKey: "createdAt",
+    accessorKey: "revenue",
     header: ({ column }) => (
       <Button
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         className="hover:bg-primary/5 hover:text-primary font-semibold"
       >
-        Order Date <ArrowUpDown className="ml-2 h-4 w-4" />
+        Revenue <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
-    cell: ({ row }) => (
-      <div className="capitalize text-center font-medium text-muted-foreground">
-        {row.getValue("createdAt")}
-      </div>
+    cell: ({ row }) => {
+      const amount = parseFloat(row.getValue("revenue"));
+      const formatted = new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD",
+      }).format(amount);
+      return (
+        <div className="text-center font-semibold text-primary">
+          {formatted}
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "firstOrderDate",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        className="hover:bg-primary/5 hover:text-primary font-semibold"
+      >
+        First Order Date <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
     ),
+    cell: ({ row }) => {
+      // const amount = parseFloat(row.getValue("revenue"));
+      // const formatted = new Intl.NumberFormat("en-US", {
+      //   style: "currency",
+      //   currency: "USD",
+      // }).format(amount);
+      return (
+        <div className="capitalize text-center font-medium text-muted-foreground">
+          {row.getValue("firstOrderDate")}
+        </div>
+      );
+    },
   },
 ];
 
-export function OrdersTable({ id }) {
+export function ClientsTable() {
   const [sorting, setSorting] = React.useState([]);
   const [columnFilters, setColumnFilters] = React.useState([]);
   const [columnVisibility, setColumnVisibility] = React.useState({});
   const [rowSelection, setRowSelection] = React.useState({});
   const [timeRange, setTimeRange] = React.useState("all");
-  const [search, setSearch] = React.useState("");
 
   const {
-    data: Orders,
+    data: clients = [],
     isLoading,
-    error,
-  } = useGetOrdersTableQuery({
+    isError,
+  } = useGetClientsQuery({
+    filter: "all",
     timeRange,
-    search,
   });
 
   const table = useReactTable({
-    data: Orders || [],
+    data: clients.data || [],
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -270,49 +202,52 @@ export function OrdersTable({ id }) {
     state: { sorting, columnFilters, columnVisibility, rowSelection },
   });
 
+  // exporting
   const handleExportCSV = () =>
     exportToCSV(
       table.getFilteredRowModel().rows,
       timeRange,
-      "Orders",
+      "Clients",
       null,
       null,
-      Orders.length
+      clients.data.length
     );
   const handleExportJSON = () =>
     exportToJSON(
       table.getFilteredRowModel().rows,
       timeRange,
-      "Orders",
+      "Clients",
       null,
       null,
-      Orders.length
+      clients.data.length
     );
   const handleExportPDF = () =>
     exportToPDF(
       table.getFilteredRowModel().rows,
       timeRange,
-      "Orders",
+      "Clients",
       null,
       null,
-      Orders.length
+      clients.data.length
     );
 
   return (
     <div className="w-full space-y-3 max-w-full overflow-hidden">
-      {/* Search & Actions */}
+      {/* Top bar with Export + Columns */}
       <div className="flex flex-col sm:flex-row justify-between items-center gap-2 p-3 bg-card rounded-lg border border-border shadow-sm">
-        <div className="relative w-full sm:max-w-xs">
-          <Input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search orders..."
-            className="pl-8 border border-border focus:border-primary transition-colors bg-background text-sm h-8"
-          />
+        <div className="flex items-center gap-2">
+          <div className="relative w-full sm:max-w-xs">
+            <Input
+              // value={search}
+              // onChange={(e) => setSearch(e.target.value)}
+              placeholder="🔍 Search orders..."
+              className="pl-8 border border-border focus:border-primary transition-colors bg-background text-sm h-8"
+            />
+          </div>
         </div>
 
         <div className="flex items-center gap-2 flex-wrap">
-          {/* Orders Filter */}
+          {/*time range dropdown */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
@@ -361,7 +296,6 @@ export function OrdersTable({ id }) {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-
           {/* Columns Dropdown */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -421,14 +355,14 @@ export function OrdersTable({ id }) {
                 onClick={handleExportJSON}
                 className="hover:bg-primary/10 hover:text-primary cursor-pointer text-sm"
               >
-                Export as JSON
+                Export as JSON{" "}
                 <FileJson className="text-yellow-500 stroke-[2px]" />
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={handleExportPDF}
                 className="hover:bg-primary/10 hover:text-primary cursor-pointer text-sm"
               >
-                Export as PDF
+                Export as PDF{" "}
                 <FileText className="text-[#f32b2b] stroke-[2px]" />
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -437,10 +371,7 @@ export function OrdersTable({ id }) {
       </div>
 
       {/* Table */}
-      <div
-        className="overflow-auto rounded-lg border border-border bg-card shadow-sm"
-        id={id}
-      >
+      <div className="overflow-auto rounded-lg border border-border bg-card shadow-sm">
         <Table>
           <TableHeader className="bg-muted/50 border-b border-border sticky top-0 z-10">
             {table.getHeaderGroups().map((headerGroup) => (
@@ -461,8 +392,27 @@ export function OrdersTable({ id }) {
               </TableRow>
             ))}
           </TableHeader>
+
           <TableBody>
-            {table.getRowModel().rows.length ? (
+            {isLoading ? (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center text-muted-foreground"
+                >
+                  Loading clients...
+                </TableCell>
+              </TableRow>
+            ) : isError ? (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center text-red-500"
+                >
+                  Error loading clients.
+                </TableCell>
+              </TableRow>
+            ) : table.getRowModel().rows.length ? (
               table.getRowModel().rows.map((row, idx) => (
                 <TableRow
                   key={row.id}
@@ -492,7 +442,13 @@ export function OrdersTable({ id }) {
                   colSpan={columns.length}
                   className="h-24 text-center text-muted-foreground py-6"
                 >
-                  No results.
+                  <div className="flex flex-col items-center gap-2">
+                    <Package className="h-6 w-6 text-muted-foreground/50" />
+                    <span className="text-sm font-medium">
+                      No results found.
+                    </span>
+                    <span className="text-xs">Try adjusting your filters</span>
+                  </div>
                 </TableCell>
               </TableRow>
             )}
@@ -500,7 +456,7 @@ export function OrdersTable({ id }) {
         </Table>
       </div>
 
-      {/* Pagination */}
+      {/* Footer */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-2 p-3 bg-card rounded-lg border border-border">
         <div className="text-xs text-muted-foreground font-medium">
           <span className="text-primary font-semibold">

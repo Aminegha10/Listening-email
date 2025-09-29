@@ -93,7 +93,7 @@ const data = {
   ],
 };
 
-export function AppSidebar({ ...props }) {
+export function SideBar({ setLogOut, ...props }) {
   const router = useRouter();
   const pathname = usePathname();
   const { user } = useSelector((state) => state.auth);
@@ -101,12 +101,14 @@ export function AppSidebar({ ...props }) {
   const [logout, { isLoading }] = useLogoutMutation();
   const [adminCollapsed, setAdminCollapsed] = useState(false);
   const [settingsCollapsed, setSettingsCollapsed] = useState(false);
-  console.log(user);
 
   const handleLogout = async () => {
     try {
       await logout();
-      router.push("/login");
+      setLogOut(true);
+      setTimeout(() => {
+        router.push("/login");
+      }, 1000);
     } catch (err) {
       console.error("Logout failed:", err);
     }
@@ -124,29 +126,16 @@ export function AppSidebar({ ...props }) {
       {...props}
       className="p-0 border-sidebar-border bg-sidebar shadow-xl z-20"
     >
-      <SidebarHeader className=" border-sidebar-border bg-gradient-to-br from-primary/5 via-primary/3 to-transparent py-6 px-4">
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              asChild
-              className="data-[slot=sidebar-menu-button]:!p-0 hover:bg-transparent"
-            >
-              <Link href="/" className="flex items-center gap-4 group">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-primary/80 shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-105 ring-1 ring-primary/20">
-                  <div className="w-6 h-6 bg-primary-foreground rounded-lg opacity-95"></div>
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-base font-bold text-sidebar-foreground leading-tight tracking-tight">
-                    SMAB
-                  </span>
-                  <span className="text-sm text-muted-foreground leading-tight font-medium">
-                    Dashboard
-                  </span>
-                </div>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
+      <SidebarHeader className="border-sidebar-border h-32 bg-gradient-to-br from-primary/5 via-primary/3 to-transparent py-6 px-4 flex justify-center items-center">
+        <Link href="/" className="flex items-center justify-center">
+          <div className="h-64 w-64 flex items-center justify-center">
+            <img
+              src="/SmabLogo.png"
+              alt="Logo"
+              className="h-full w-full"
+            />
+          </div>
+        </Link>
       </SidebarHeader>
 
       <SidebarContent className="px-4 py-8 space-y-8">

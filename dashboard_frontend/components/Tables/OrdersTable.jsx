@@ -1,4 +1,5 @@
 "use client";
+
 import * as React from "react";
 import {
   flexRender,
@@ -10,22 +11,17 @@ import {
 } from "@tanstack/react-table";
 import {
   ArrowUpDown,
-  Calendar,
-  CarIcon as ChartColumn,
   ChevronDown,
   Download,
+  Eye,
   FileJson,
   FileText,
-  Info,
-  Package,
+  Loader2,
   Sheet,
-  ShoppingCart,
-  TrendingUp,
 } from "lucide-react";
-import { Checkbox } from "@/components/ui/checkbox";
-import { exportToCSV, exportToJSON, exportToPDF } from "@/utils/exportUtils";
+
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -41,10 +37,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog";
-
-import { useGetProductsDetailsQuery } from "@/features/dataApi";
-import ProductInfoCard from "./ui/productCardInfo";
+import { Input } from "@/components/ui/input";
+import { useGetOrdersTableQuery } from "@/features/dataApi";
+import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
+import { Badge } from "../ui/badge";
+import { exportToCSV, exportToJSON, exportToPDF } from "@/utils/exportUtils";
+import { Calendar } from "lucide-react";
 
 export const columns = [
   {
@@ -72,123 +70,194 @@ export const columns = [
     enableHiding: false,
   },
   {
-    accessorKey: "productName",
-    header: "Product Name",
+    accessorKey: "orderNumber",
+    header: "Order #",
     cell: ({ row }) => (
-      <div className="capitalize text-center font-medium text-foreground">
-        {row.getValue("productName")}
+      <div className="capitalize text-center font-medium">
+        {row.getValue("orderNumber")}
       </div>
     ),
   },
   {
-    accessorKey: "quantitySold",
+    accessorKey: "client",
     header: ({ column }) => (
       <Button
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         className="hover:bg-primary/5 hover:text-primary font-semibold"
       >
-        Quantity Sold <ArrowUpDown className="ml-2 h-4 w-4" />
+        Client <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
     cell: ({ row }) => (
-      <div className="lowercase justify-center flex items-center gap-2 font-medium">
-        {row.getValue("quantitySold")}{" "}
-        <ChartColumn className="h-4 w-4 text-primary" />
+      <div className="lowercase justify-center flex items-center font-medium text-center">
+        {row.getValue("client")}
       </div>
     ),
   },
   {
-    accessorKey: "revenue",
-    header: () => <div className="text-right font-semibold">Revenue</div>,
+    accessorKey: "price",
+    header: ({ column }) => (
+      <div className="text-right font-semibold">
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="hover:bg-primary/5 hover:text-primary font-semibold"
+        >
+          Price <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      </div>
+    ),
     cell: ({ row }) => {
-      const revenue = Number.parseFloat(row.getValue("revenue"));
+      const price = parseFloat(row.getValue("price") || 0);
       const formatted = new Intl.NumberFormat("en-US", {
         style: "currency",
         currency: "USD",
-      }).format(revenue);
+      }).format(price);
       return (
         <div className="text-right font-semibold text-primary">{formatted}</div>
       );
     },
   },
   {
-    accessorKey: "ordersCount",
-    header: "Orders Count",
+    accessorKey: "salesAgent",
+    header: "Sales Agent",
     cell: ({ row }) => (
-      <div className="lowercase justify-center flex items-center gap-2 font-medium">
-        {row.getValue("ordersCount")}{" "}
-        <ShoppingCart className="h-4 w-4 text-primary" />
+      <div className="capitalize text-center font-medium">
+        {row.getValue("salesAgent")}
       </div>
     ),
   },
   {
-    accessorKey: "lastOrderedDate",
-    header: () => <div className="text-center font-semibold">Last Ordered</div>,
+    accessorKey: "products",
+    header: () => <div className="text-center">Products</div>,
     cell: ({ row }) => {
-      const dateValue = row.getValue("lastOrderedDate");
-      const formattedDate = dateValue
-        ? new Date(dateValue).toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "short",
-            day: "numeric",
-          })
-        : "-";
-
+      const products = row.getValue("products") || [];
       return (
-        <div className="capitalize text-center font-medium text-muted-foreground">
-          {formattedDate}
+        <div className="justify-center font-medium flex items-center gap-2">
+          <span className="rounded-md bg-green-50 px-1.5 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-200 flex items-center gap-1">
+            {products.length} Items
+            <Dialog>
+              <DialogTrigger asChild>
+                <button>
+                  <Eye className="text-[#8C8C8C] h-4 w-4 cursor-pointer hover:text-gray-600 transition-colors" />
+                </button>
+              </DialogTrigger>
+              <DialogContent className="max-w-md">
+                <div className="mt-4">
+                  {products.length > 0 ? (
+                    <div className="space-y-3">
+                      {products.map((product, index) => (
+                        <div
+                          key={index}
+                          className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                        >
+                          <div className="flex-1">
+                            <h4 className="font-medium text-sm">
+                              {product.name || `Product ${index + 1}`}
+                            </h4>
+                            <div className="flex items-center gap-1 mt-1">
+                              {product.barcode && (
+                                <p className="text-xs text-gray-600">
+                                  {product.barcode}
+                                </p>
+                              )}
+                              <div>
+                                {product.warehouse === "MAG" ? (
+                                  <Badge
+                                    variant="destructive"
+                                    className="text-xs"
+                                  >
+                                    {product.warehouse}
+                                  </Badge>
+                                ) : (
+                                  <Badge
+                                    variant="outline"
+                                    className="text-xs bg-green-500 text-white"
+                                  >
+                                    {product.warehouse}
+                                  </Badge>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                          <div className="text-right ml-4">
+                            {product.quantity && (
+                              <p className="text-xs text-gray-500">
+                                Qty: {product.quantity}
+                              </p>
+                            )}
+                            {product.price && (
+                              <p className="font-medium text-sm">
+                                ${product.price}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-center text-gray-500 py-8">
+                      No products found for this order.
+                    </p>
+                  )}
+                </div>
+              </DialogContent>
+            </Dialog>
+          </span>
         </div>
       );
     },
   },
-
   {
-    accessorKey: "productDetails",
-    header: "Product Details",
+    accessorKey: "typedepaiement",
+    header: "Payment Type",
     cell: ({ row }) => (
-      <div className="capitalize flex items-center justify-center">
-        <Dialog>
-          <DialogTrigger asChild>
-            <button className="cursor-pointer p-2 rounded-lg hover:bg-primary/10 transition-colors">
-              <Info className="h-4 w-4 text-primary" />
-            </button>
-          </DialogTrigger>
-          <DialogContent className="bg-transparent p-0 shadow-none">
-            <ProductInfoCard data={row.original} />
-          </DialogContent>
-        </Dialog>
+      <div className="text-center">
+        <span className="rounded-md bg-sky-50 px-1.5 py-1 text-xs font-medium text-sky-700 ring-1 ring-inset ring-sky-200">
+          {row.getValue("typedepaiement")}
+        </span>
       </div>
     ),
   },
   {
-    accessorKey: "trend",
-    header: "Trend",
-    cell: () => (
-      <div className="capitalize text-center">
-        <div className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-green-50">
-          <TrendingUp className="text-green-600 h-4 w-4" />
-        </div>
+    accessorKey: "createdAt",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        className="hover:bg-primary/5 hover:text-primary font-semibold"
+      >
+        Order Date <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
+    cell: ({ row }) => (
+      <div className="capitalize text-center font-medium text-muted-foreground">
+        {row.getValue("createdAt")}
       </div>
     ),
   },
 ];
 
-export function ProductsTables({ id }) {
+export function OrdersTable({ id }) {
   const [sorting, setSorting] = React.useState([]);
   const [columnFilters, setColumnFilters] = React.useState([]);
   const [columnVisibility, setColumnVisibility] = React.useState({});
   const [rowSelection, setRowSelection] = React.useState({});
-  const [search, setSearch] = React.useState("");
   const [timeRange, setTimeRange] = React.useState("all");
+  const [search, setSearch] = React.useState("");
 
-  const { data, isLoading, isError, error } = useGetProductsDetailsQuery({
+  const {
+    data: Orders,
+    isLoading,
+    error,
+  } = useGetOrdersTableQuery({
     timeRange,
     search,
   });
 
   const table = useReactTable({
-    data: data || [],
+    data: Orders || [],
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -200,50 +269,50 @@ export function ProductsTables({ id }) {
     onRowSelectionChange: setRowSelection,
     state: { sorting, columnFilters, columnVisibility, rowSelection },
   });
-  const dataType = "products";
 
   const handleExportCSV = () =>
     exportToCSV(
       table.getFilteredRowModel().rows,
       timeRange,
-      "Products",
+      "Orders",
       null,
       null,
-      data.length
+      Orders.length
     );
   const handleExportJSON = () =>
     exportToJSON(
       table.getFilteredRowModel().rows,
       timeRange,
-      "Products",
+      "Orders",
       null,
       null,
-      data.length
+      Orders.length
     );
   const handleExportPDF = () =>
     exportToPDF(
       table.getFilteredRowModel().rows,
       timeRange,
-      "Products",
+      "Orders",
       null,
       null,
-      data.length
+      Orders.length
     );
 
   return (
     <div className="w-full space-y-3 max-w-full overflow-hidden">
+      {/* Search & Actions */}
       <div className="flex flex-col sm:flex-row justify-between items-center gap-2 p-3 bg-card rounded-lg border border-border shadow-sm">
         <div className="relative w-full sm:max-w-xs">
           <Input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search products..."
+            placeholder="Search orders..."
             className="pl-8 border border-border focus:border-primary transition-colors bg-background text-sm h-8"
           />
         </div>
 
         <div className="flex items-center gap-2 flex-wrap">
-          {/* Orders Filter Dropdown */}
+          {/* Orders Filter */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
@@ -352,7 +421,7 @@ export function ProductsTables({ id }) {
                 onClick={handleExportJSON}
                 className="hover:bg-primary/10 hover:text-primary cursor-pointer text-sm"
               >
-                Export as JSON{" "}
+                Export as JSON
                 <FileJson className="text-yellow-500 stroke-[2px]" />
               </DropdownMenuItem>
               <DropdownMenuItem
@@ -367,6 +436,7 @@ export function ProductsTables({ id }) {
         </div>
       </div>
 
+      {/* Table */}
       <div
         className="overflow-auto rounded-lg border border-border bg-card shadow-sm"
         id={id}
@@ -391,7 +461,6 @@ export function ProductsTables({ id }) {
               </TableRow>
             ))}
           </TableHeader>
-
           <TableBody>
             {table.getRowModel().rows.length ? (
               table.getRowModel().rows.map((row, idx) => (
@@ -423,15 +492,7 @@ export function ProductsTables({ id }) {
                   colSpan={columns.length}
                   className="h-24 text-center text-muted-foreground py-6"
                 >
-                  <div className="flex flex-col items-center gap-2">
-                    <Package className="h-6 w-6 text-muted-foreground/50" />
-                    <span className="text-sm font-medium">
-                      No results found.
-                    </span>
-                    <span className="text-xs">
-                      Try adjusting your search or filters
-                    </span>
-                  </div>
+                  No results.
                 </TableCell>
               </TableRow>
             )}
@@ -439,6 +500,7 @@ export function ProductsTables({ id }) {
         </Table>
       </div>
 
+      {/* Pagination */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-2 p-3 bg-card rounded-lg border border-border">
         <div className="text-xs text-muted-foreground font-medium">
           <span className="text-primary font-semibold">

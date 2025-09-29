@@ -1,13 +1,13 @@
 "use client";
 
-import SalesAgentBarChart from "@/components/chart-area-interactive.jsx";
-import { SectionCards } from "@/components/section-cards";
-import { SalesCounter } from "@/components/SalesCounter.jsx";
-import { OrdersCounter } from "@/components/OrdersCounter.jsx";
-import { OrdersTable } from "@/components/OrdersTable.jsx";
+import SalesOrdersBarchart from "@/components/Charts/SalesOrdersBarchart.jsx";
+import { SectionCards } from "@/components/TopCards";
+import { SaleAreaChart } from "@/components/Charts/SaleAreaChart.jsx";
+import { OrdersAreaChart } from "@/components./Charts/OrdersAreaChart.jsx";
+import { OrdersTable } from "@/components/Tables/OrdersTable.jsx";
 import { TopClients } from "@/components/TopClients.jsx";
-import { ThreeCardSection } from "@/components/ThreeCardSection.jsx";
-import { TopProducts } from "@/components/TopProducts.jsx";
+import { ThreeMidlleCards } from "@/components/ThreeMidlleCards.jsx";
+import { TopProductsPieChart } from "@/components/Charts/TopProductsPieChart.jsx";
 import { ShareButton } from "@/components/ShareButton.jsx";
 import { TopPerformerProduct } from "@/components/TopPerformerProduct";
 import { useState } from "react";
@@ -29,19 +29,19 @@ export default function DashboardPage() {
       </div>
       {/* order and sales Charts and Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
-        <SalesAgentBarChart timeRange={timeRange} className="col-span-2" />
-        <SalesCounter timeRange={timeRange} />
+        <SalesOrdersBarchart timeRange={timeRange} className="col-span-2" />
+        <SaleAreaChart timeRange={timeRange} />
       </div>
       {/* Three Card Section */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
-        <ThreeCardSection timeRange={timeRange} />
+        <ThreeMidlleCards timeRange={timeRange} />
       </div>
       {/* Bottom Grid Section */}
       <div className="grid grid-cols-1 md:grid-cols-[5fr_4fr] gap-4">
-        {/* Left Column: OrdersCounter + TopProducts */}
+        {/* Left Column: OrdersAreaChart + TopProducts */}
         <div className="flex flex-col gap-4">
-          <OrdersCounter timeRange={timeRange} />
-          <TopProducts timeRange={timeRange} />
+          <OrdersAreaChart timeRange={timeRange} />
+          <TopProductsPieChart timeRange={timeRange} />
         </div>
 
         {/* Right Column: TopClients + TopPerformerProduct */}

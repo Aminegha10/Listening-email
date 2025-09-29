@@ -1,7 +1,7 @@
 "use client";
-import { OrdersTable } from "@/components/OrdersTable.jsx";
-import { ProductsTables } from "../../../components/ProductsTables";
-import { ClientsTable } from "../../../components/ClientsTable";
+import { OrdersTable } from "@/components/Tables/OrdersTable";
+import { ProductsTable } from "@/components/Tables/ProductsTable";
+import { ClientsTable } from "@/components/Tables/ClientsTable";
 import { useEffect } from "react";
 import { SepararorTables } from "@/components/SepararorTables";
 import { Database, Package, ShoppingCart, Users } from "lucide-react";
@@ -30,7 +30,7 @@ const TablesPage = () => {
         subtitle="Analyze top-selling items and inventory statistics"
         icon={<Package className="h-5 w-5 text-cyan-600 dark:text-cyan-400" />}
       />
-      <ProductsTables id="products" />
+      <ProductsTable id="products" />
     </div>
   );
 };
