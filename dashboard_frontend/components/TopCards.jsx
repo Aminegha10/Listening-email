@@ -78,7 +78,7 @@ export function SectionCards() {
     },
     {
       title: "Sales",
-      value: stats?.totalSales + " DH",
+      value: 22 + " DH",
       change: "+5%",
       isPositive: true,
       icon: <Wallet className="w-6 h-6" />,

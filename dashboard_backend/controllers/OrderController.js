@@ -13,6 +13,21 @@ const AddOrder = async (req, res) => {
       products = [],
       notes,
     } = req.body;
+    console.log("body");
+
+    // Check if any required field is missing or invalid
+    if (!orderNumber || !salesAgent || !orderDate || !Array.isArray(products) || products.length === 0 || !notes) {
+      return res.status(400).send({
+        error: "Missing or invalid required fields.",
+        missing: {
+          orderNumber: !orderNumber,
+          salesAgent: !salesAgent,
+          orderDate: !orderDate,
+          products: !Array.isArray(products) || products.length === 0,
+          notes: !notes,
+        },
+      });
+    }
 
     // Fetch lead data
     const { data } = await axios.get(
@@ -28,11 +43,6 @@ const AddOrder = async (req, res) => {
     const normalizedNotes = Array.isArray(notes)
       ? notes.join("\n")
       : notes || "";
-    // logger.log(lead);
-    // // is Order completed
-    // logger.log(lead);
-    // const isCompleted =
-    //   lead.pipelineStage.label === "Confirmation de réception" ? true : false;
 
     logger.info(
       `Creating or updating order #${orderNumber} with ${products.length} product(s).`
