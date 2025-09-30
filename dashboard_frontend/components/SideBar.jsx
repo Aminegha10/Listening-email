@@ -128,7 +128,7 @@ export function SideBar({ setLogOut, ...props }) {
     >
       <SidebarHeader className="border-sidebar-border h-32 bg-gradient-to-br from-primary/5 via-primary/3 to-transparent py-6 px-4 flex justify-center items-center">
         <Link href="/" className="flex items-center justify-center">
-          <div className="h-64 w-64 flex items-center justify-center">
+          <div className=" w-64 flex items-center justify-center">
             <img src="/SmabLogo.jpg" alt="Logo" className="h-full w-full" />
           </div>
         </Link>
