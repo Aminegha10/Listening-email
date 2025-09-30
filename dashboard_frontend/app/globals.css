@@ -11,22 +11,22 @@
   --card-foreground: oklch(0.2 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.2 0 0);
-  --primary: #00bca2; /* Teal primary color */
+  --primary: #e72f0b; /* Teal primary color */
   --primary-foreground: oklch(1 0 0); /* White text on teal */
   --secondary: oklch(0.96 0 0); /* Light gray */
   --secondary-foreground: oklch(0.2 0 0);
   --muted: oklch(0.96 0 0); /* Light gray backgrounds */
   --muted-foreground: oklch(0.5 0 0); /* Medium gray text */
-  --accent: oklch(0.7 0.15 180); /* Teal accent */
+  --accent: #e72f0b; /* Teal accent */
   --accent-foreground: oklch(1 0 0);
-  --destructive: oklch(0.6 0.2 25); /* Red for errors */
+  --destructive: oklch(60.197% 0.22128 32.257 / 0.071); /* Red for errors */
   --destructive-foreground: oklch(1 0 0);
   --border: oklch(0.9 0 0); /* Light gray borders */
   --input: oklch(0.98 0 0); /* Very light gray inputs */
-  --ring: #00bca2; /* Teal focus ring */
-  --chart-1: oklch(0.7 0.15 180); /* Teal */
-  --chart-2: oklch(0.6 0.12 220); /* Blue */
-  --chart-3: oklch(0.65 0.18 140); /* Green */
+  --ring: #e72f0b; /* Teal focus ring */
+  --chart-1: #e72f0b; /* Teal */
+  --chart-2: #0090b1; /* Blue */
+  --chart-3: #48a830; /* Green */
   --chart-4: oklch(0.7 0.2 60); /* Orange */
   --chart-5: oklch(0.6 0.15 300); /* Purple */
   --radius: 0.75rem;
@@ -35,7 +35,7 @@
   /* Sidebar specific colors */
   --sidebar: oklch(0.98 0 0); /* Very light gray sidebar */
   --sidebar-foreground: oklch(0.3 0 0);
-  --sidebar-primary: oklch(0.7 0.15 180); /* Teal */
+  --sidebar-primary: ; /* Teal */
   --sidebar-primary-foreground: oklch(1 0 0);
   --sidebar-accent: oklch(0.95 0 0);
   --sidebar-accent-foreground: oklch(0.3 0 0);
@@ -51,7 +51,7 @@
   --card-foreground: oklch(0.95 0 0);
   --popover: oklch(0.15 0 0);
   --popover-foreground: oklch(0.95 0 0);
-  --primary: oklch(0.7 0.15 180); /* Keep teal primary */
+  --primary: rgb(0, 188, 162); /* Keep teal primary */
   --primary-foreground: oklch(0.1 0 0); /* Dark text on teal */
   --secondary: oklch(0.2 0 0); /* Dark gray */
   --secondary-foreground: oklch(0.95 0 0);
@@ -73,7 +73,7 @@
   /* Dark sidebar */
   --sidebar: oklch(0.12 0 0);
   --sidebar-foreground: oklch(0.9 0 0);
-  --sidebar-primary: oklch(0.7 0.15 180);
+  --sidebar-primary: #00bca2;
   --sidebar-primary-foreground: oklch(0.1 0 0);
   --sidebar-accent: oklch(0.18 0 0);
   --sidebar-accent-foreground: oklch(0.9 0 0);

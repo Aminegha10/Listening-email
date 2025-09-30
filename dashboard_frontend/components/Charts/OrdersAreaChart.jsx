@@ -228,11 +228,19 @@ export function OrdersAreaChart({ timeRange }) {
                     x2="0"
                     y2="1"
                   >
-                    <stop offset="0%" stopColor="#00bca2" stopOpacity="0.4" />
-                    <stop offset="60%" stopColor="#00bca2" stopOpacity="0.2" />
+                    <stop
+                      offset="0%"
+                      stopColor="var(--chart-1)"
+                      stopOpacity="0.4"
+                    />
+                    <stop
+                      offset="60%"
+                      stopColor="var(--chart-1)"
+                      stopOpacity="0.2"
+                    />
                     <stop
                       offset="100%"
-                      stopColor="#00bca2"
+                      stopColor="var(--chart-1)"
                       stopOpacity="0.05"
                     />
                   </linearGradient>
@@ -244,7 +252,7 @@ export function OrdersAreaChart({ timeRange }) {
                   fillOpacity={0.8}
                   stroke="var(--primary)"
                   strokeWidth={2.5}
-                  dot={{ fill: "teal", strokeWidth: 2, r: 4 }}
+                  dot={{ fill: "var(--primary)", strokeWidth: 2, r: 4 }}
                   activeDot={{
                     r: 6,
                     stroke: "var(--primary)",

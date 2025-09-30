@@ -15,16 +15,16 @@ export default function NotFound() {
         <CardContent className="relative z-10 p-12 space-y-8">
           {/* Animated icon with pulse effect */}
           <div className="relative mx-auto w-24 h-24">
-            <div className="absolute inset-0 bg-[var(--chart-2)]/20 rounded-full animate-ping" />
-            <div className="absolute inset-2 bg-[var(--chart-2)]/30 rounded-full animate-pulse" />
-            <div className="relative w-24 h-24 bg-[var(--chart-2)]/10 rounded-full flex items-center justify-center border-2 border-[var(--chart-2)]/30">
-              <Construction className="h-10 w-10 text-[var(--chart-2)]" />
+            <div className="absolute inset-0 bg-[var(--color-primary)]/20 rounded-full animate-ping" />
+            <div className="absolute inset-2 bg-[var(--color-primary)]/30 rounded-full animate-pulse" />
+            <div className="relative w-24 h-24 bg-[var(--color-primary)]/10 rounded-full flex items-center justify-center border-2 border-[var(--color-primary)]/30">
+              <Construction className="h-10 w-10 text-[var(--color-primary)]" />
             </div>
           </div>
 
           {/* Main heading with gradient text */}
           <div className="space-y-6 text-center">
-            <h1 className="text-4xl py-2 text-center font-black bg-gradient-to-r from-[var(--chart-2)] to-[var(--chart-1)] bg-clip-text text-transparent">
+            <h1 className="text-4xl py-2 text-center font-black bg-[var(--color-primary)]/50  bg-clip-text text-transparent">
               Page Not Found
             </h1>
             <div className="flex items-center justify-center gap-2 text-lg text-muted-foreground">
@@ -43,15 +43,15 @@ export default function NotFound() {
           {/* Animated progress dots */}
           <div className="flex items-center justify-center gap-2">
             <div
-              className="w-3 h-3 bg-[var(--chart-2)] rounded-full animate-bounce"
+              className="w-3 h-3 bg-[var(--color-primary)] rounded-full animate-bounce"
               style={{ animationDelay: "0ms" }}
             />
             <div
-              className="w-3 h-3 bg-[var(--chart-1)] rounded-full animate-bounce"
+              className="w-3 h-3 bg-[var(--color-primary)] rounded-full animate-bounce"
               style={{ animationDelay: "150ms" }}
             />
             <div
-              className="w-3 h-3 bg-[var(--chart-3)] rounded-full animate-bounce"
+              className="w-3 h-3 bg-[var(--color-primary)] rounded-full animate-bounce"
               style={{ animationDelay: "300ms" }}
             />
           </div>
@@ -60,7 +60,7 @@ export default function NotFound() {
             {/* Back to dashboard button */}
             <Link
               href="/dashboard"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-[var(--chart-2)] text-white rounded-xl font-medium hover:bg-[var(--chart-2)]/90 transition-all duration-300 hover:scale-105 hover:shadow-lg"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-[var(--color-primary)] text-white rounded-xl font-medium hover:bg-[var(--color-primary)]/90 transition-all duration-300 hover:scale-105 hover:shadow-lg"
             >
               <ArrowLeft className="h-4 w-4" />
               Back to Dashboard

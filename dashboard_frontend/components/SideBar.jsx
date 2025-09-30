@@ -278,11 +278,11 @@ export function SideBar({ setLogOut, ...props }) {
                 <DropdownMenuSeparator className="my-3" />
                 <DropdownMenuItem
                   onClick={handleLogout}
-                  className="rounded-lg cursor-pointer text-destructive hover:bg-destructive/10 transition-colors duration-200 py-2.5"
+                  className="rounded-lg cursor-pointer text-red-500 hover:bg-destructive/10 transition-colors duration-200 py-2.5 flex items-center group"
                   disabled={isLoading}
                 >
-                  <LogOut className="h-4 w-4 mr-3" />
-                  <span className="font-medium">
+                  <LogOut className="h-4 w-4 mr-3 text-red-500 group-hover:text-white transition-colors duration-200" />
+                  <span className="font-medium group-hover:text-white">
                     {isLoading ? "Signing out..." : "Sign out"}
                   </span>
                 </DropdownMenuItem>

@@ -54,27 +54,28 @@ export const description = "A pie chart showing top-selling products";
 
 // Up to 20 colors (for dynamic data)
 const COLORS = [
-  "#14b8a6", // chart-1 (teal-500)
-  "#0f766e", // chart-2 (teal-700)
-  "#2dd4bf", // chart-3 (teal-400)
-  "#64748b", // chart-4 (slate-500)
-  "#334155", // chart-5 (slate-700)
-  "#0d9488", // primary (teal-600)
-  "#0891b2", // accent (cyan-600, complementary)
-  "#10b981", // success / green (fits teal family)
-  "#dc2626", // destructive (red-600)
-  "#f1f5f9", // muted (slate-100)
-  "#0f766e", // sidebar-primary (teal-700)
-  "#1e293b", // sidebar-accent (slate-800)
-  "#334155", // sidebar-border (slate-700)
-  "#ffffff", // primary-foreground
-  "#e2e8f0", // secondary-foreground (slate-200)
+  "#e72f0b", // chart-1 / primary (bright red)
+  "#b71c1c", // chart-2 / dark red
+  "#ff7043", // chart-3 / orange-red
+  "#ffb74d", // chart-4 / light orange
+  "#f4511e", // chart-5 / deep orange
+  "#d32f2f", // primary-alt / secondary red
+  "#ff8a65", // accent / warm salmon
+  "#43a047", // success / green (clearly different)
+  "#0288d1", // destructive / blue (contrasting)
+  "#fff3f0", // muted background / very light
+  "#c62828", // sidebar-primary / strong dark red
+  "#ef6c00", // sidebar-accent / orange
+  "#8d2300", // sidebar-border / deep brown-red
+  "#ffffff", // primary-foreground / text on primary
+  "#ffe0b2", // secondary-foreground / light contrast
   "#ffffff", // accent-foreground
   "#ffffff", // destructive-foreground
-  "#94a3b8", // muted-foreground (slate-400)
-  "#f8fafc", // card (slate-50)
-  "#ffffff", // popover
+  "#ffccbc", // muted-foreground / soft light
+  "#fff8f5", // card background / very light
+  "#ffffff", // popover background
 ];
+
 
 // export functions with date suffix
 // const handleExportCSV = () =>

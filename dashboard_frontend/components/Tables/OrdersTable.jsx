@@ -135,12 +135,12 @@ export const columns = [
       const products = row.getValue("products") || [];
       return (
         <div className="justify-center font-medium flex items-center gap-2">
-          <span className="rounded-md bg-green-50 px-1.5 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-200 flex items-center gap-1">
+          <span className="rounded-md bg-[var(--color-primary)]/10 px-1.5 py-1 text-xs font-medium text-[var(--color-primary)] ring-1 ring-inset ring-[var(--color-muted)] flex items-center gap-1">
             {products.length} Items
             <Dialog>
               <DialogTrigger asChild>
                 <button>
-                  <Eye className="text-[#8C8C8C] h-4 w-4 cursor-pointer hover:text-gray-600 transition-colors" />
+                  <Eye className="text-[var(--color-primary)] h-4 w-4 cursor-pointer hover:text-gray-600 transition-colors" />
                 </button>
               </DialogTrigger>
               <DialogContent className="max-w-md">

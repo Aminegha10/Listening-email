@@ -215,7 +215,7 @@ export default function SalesOrdersBarchart({ timeRange }) {
 
                 <Bar
                   dataKey="value"
-                  fill="#00bca2"
+                  fill="var(--chart-1)"
                   radius={[6, 6, 0, 0]}
                   className="hover:opacity-80 transition-opacity"
                 />

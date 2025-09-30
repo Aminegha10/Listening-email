@@ -159,7 +159,6 @@ function TopClients({ timeRange }) {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-          
         </div>
       </div>
 
@@ -227,8 +226,8 @@ function TopClients({ timeRange }) {
                   </div>
                 </div>
 
-                <Avatar className="w-12 h-12">
-                  <AvatarFallback className="bg-emerald-100 text-emerald-700 text-xs">
+                <Avatar className="w-12 h-12 ">
+                  <AvatarFallback className="bg-[var(--color-destructive)] text-[var(--color-primary)] text-xs">
                     KA
                   </AvatarFallback>
                 </Avatar>

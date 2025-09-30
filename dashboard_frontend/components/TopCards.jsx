@@ -44,8 +44,8 @@ function MetricCard({ title, value, change, isPositive, icon, isLoading }) {
                 </span>
               </div>
             </div>
-            <div className="p-3 bg-teal-100 rounded-lg">
-              <div className="text-teal-600">{icon}</div>
+            <div className="p-3 bg-[var(--color-destructive)] rounded-lg">
+              <div className="text-[var(--color-primary)]">{icon}</div>
             </div>
           </div>
         )}
