@@ -43,10 +43,17 @@ export default function DashboardLayout({ children }) {
   return (
     <SidebarProvider
       style={{
-        "--sidebar-width": "calc(var(--spacing) * 72)",
+        "--sidebar-width": "calc(var(--spacing) * 69)",
         "--header-height": "calc(var(--spacing) * 12)",
       }}
     >
+      <style jsx global>{`
+        @media (min-width: 1536px) {
+          :root {
+            --sidebar-width: calc(var(--spacing) * 72);
+          }
+        }
+      `}</style>
       <SideBar variant="inset" setLogOut={setLogOut} />
       <SidebarInset>
         <NavBar />
