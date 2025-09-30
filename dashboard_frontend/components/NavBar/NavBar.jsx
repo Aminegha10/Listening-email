@@ -18,8 +18,8 @@ import { useRouter } from "next/navigation";
 
 export function NavBar() {
   return (
-    <header className="sticky top-0 z-10 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-b border-gray-200/60 dark:border-gray-700/60 px-6 py-4 shadow-sm">
-      <div className="flex items-center justify-between">
+    <header className="sticky top-0 z-10 bg-gray/80 dark:bg-gray-900/80 backdrop-blur-xl border-b border-gray-200/60 dark:border-gray-700/60 px-6 py-4 shadow-sm">
+      <div className="flex items-center justify-between backdrop-blur-2xl">
         {/* Left Section */}
         <div className="flex items-center space-x-6">
           <SidebarTrigger className="h-9 w-9 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors duration-200 p-0">

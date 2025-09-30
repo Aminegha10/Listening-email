@@ -129,11 +129,7 @@ export function SideBar({ setLogOut, ...props }) {
       <SidebarHeader className="border-sidebar-border h-32 bg-gradient-to-br from-primary/5 via-primary/3 to-transparent py-6 px-4 flex justify-center items-center">
         <Link href="/" className="flex items-center justify-center">
           <div className="h-64 w-64 flex items-center justify-center">
-            <img
-              src="/SmabLogo.png"
-              alt="Logo"
-              className="h-full w-full"
-            />
+            <img src="/SmabLogo.jpg" alt="Logo" className="h-full w-full" />
           </div>
         </Link>
       </SidebarHeader>
@@ -219,30 +215,6 @@ export function SideBar({ setLogOut, ...props }) {
                         )}
                       >
                         Users Management
-                      </Link>
-                    </SidebarMenuSubItem>
-                    <SidebarMenuSubItem>
-                      <Link
-                        href="/settings/security"
-                        className={cn(
-                          "block px-4 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
-                          pathname === "/settings/security" &&
-                            "bg-primary/10 text-primary"
-                        )}
-                      >
-                        Security Settings
-                      </Link>
-                    </SidebarMenuSubItem>
-                    <SidebarMenuSubItem>
-                      <Link
-                        href="/settings/notifications"
-                        className={cn(
-                          "block px-4 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
-                          pathname === "/settings/notifications" &&
-                            "bg-primary/10 text-primary"
-                        )}
-                      >
-                        Notifications
                       </Link>
                     </SidebarMenuSubItem>
                   </SidebarMenuSub>
