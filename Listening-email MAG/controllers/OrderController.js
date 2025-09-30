@@ -22,15 +22,21 @@ const addOrder = async (products, orderDetails) => {
       logger.error("Invalid product entry detected. All fields are required.");
       return;
     }
-
-    const res = await axios.post(`http://217.65.146.240:5000/api/Lead`, {
-      orderNumber,
-      salesAgent,
-      orderDate,
-      products,
-      notes,
-    });
-    // console.log(res.data);
+    const res = await axios.post(
+      `http://217.65.146.240:5000/api/Lead`,
+      {
+        orderNumber,
+        salesAgent,
+        orderDate,
+        products,
+        notes,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.TOKEN_DASHBOARD}`,
+        },
+      }
+    );
     // const pdfPath = await generatePdf(orderInfo);
     logger.info(
       "MAG email send and order created or updated with MAG Products successfully"
@@ -38,8 +44,8 @@ const addOrder = async (products, orderDetails) => {
     logger.info(`Order Created/Updated: ${JSON.stringify(res.data, null, 2)}`);
     return;
   } catch (err) {
-    logger.error(err);
-    res.send(err);
+    logger.error(err.response.data);
+    return;
   }
 };
 

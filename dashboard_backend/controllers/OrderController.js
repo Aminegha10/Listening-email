@@ -16,18 +16,17 @@ const AddOrder = async (req, res) => {
     console.log("body");
 
     // Check if any required field is missing or invalid
-    if (!orderNumber || !salesAgent || !orderDate || !Array.isArray(products) || products.length === 0 || !notes) {
-      return res.status(400).send({
-        error: "Missing or invalid required fields.",
-        missing: {
-          orderNumber: !orderNumber,
-          salesAgent: !salesAgent,
-          orderDate: !orderDate,
-          products: !Array.isArray(products) || products.length === 0,
-          notes: !notes,
-        },
-      });
-    }
+    // if (!orderNumber || !salesAgent || !orderDate || !Array.isArray(products) || products.length === 0 ) {
+    //   return res.status(400).send({
+    //     error: "Missing or invalid required fields.",
+    //     missing: {
+    //       orderNumber: !orderNumber,
+    //       salesAgent: !salesAgent,
+    //       orderDate: !orderDate,
+    //       products: !Array.isArray(products) || products.length === 0,
+    //     },
+    //   });
+    // }
 
     // Fetch lead data
     const { data } = await axios.get(
@@ -59,7 +58,6 @@ const AddOrder = async (req, res) => {
         orderDate: orderDate ? new Date(orderDate) : null,
         notes: normalizedNotes,
         products,
-        // isCompleted,
       });
 
       logger.info(`Order created successfully: ID ${newOrder._id}`);
@@ -92,6 +90,7 @@ const AddOrder = async (req, res) => {
     return res.send(neworder);
   } catch (error) {
     logger.error(`Failed to create or update order: ${error.message}`);
+    res.status(500).send(`Failed to create or update order: ${error.message}`);
   }
 };
 
@@ -540,16 +539,18 @@ const GetOrdersTableStats = async (req, res) => {
     ).sort({ createdAt: -1 });
 
     // Format the orders with proper date
-    const formattedOrders = Orders.map(order => ({
+    const formattedOrders = Orders.map((order) => ({
       ...order.toObject(),
-      createdAt: order.createdAt ? new Date(order.createdAt).toLocaleString('en-GB', {
-        day: 'numeric',
-        month: 'short',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false
-      }) : null
+      createdAt: order.createdAt
+        ? new Date(order.createdAt).toLocaleString("en-GB", {
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: false,
+          })
+        : null,
     }));
 
     return res.json(formattedOrders);

@@ -3,6 +3,7 @@ import logger from "../utils/Logger.js";
 // import { generatePdf } from "../services/EmailPrinting.js";
 import axios from "axios";
 const addOrder = async (products, orderDetails) => {
+  console.log("a", process.env.TOKEN_DASHBOARD);
   try {
     const { orderNumber, salesAgent, orderDate, notes } = orderDetails;
     console.log(orderNumber);
@@ -22,14 +23,23 @@ const addOrder = async (products, orderDetails) => {
       logger.error("Invalid product entry detected. All fields are required.");
       return;
     }
+    console.log("z");
 
-    const res = await axios.post(`http://localhost:5000/api/Lead`, {
-      orderNumber,
-      salesAgent,
-      orderDate,
-      products,
-      notes,
-    });
+    const res = await axios.post(
+      `http://217.65.146.240:5000/api/Lead`,
+      {
+        orderNumber,
+        salesAgent,
+        orderDate,
+        products,
+        notes,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.TOKEN_DASHBOARD}`,
+        },
+      }
+    );
     // console.log(res.data);
     // const pdfPath = await generatePdf(orderInfo);
     logger.info(
