@@ -139,12 +139,12 @@
   }
   
   ::-webkit-scrollbar-thumb {
-    background: oklch(0.7 0.15 180);
+    background: #e72f0b;
     border-radius: 3px;
   }
   
   ::-webkit-scrollbar-thumb:hover {
-    background: oklch(0.6 0.15 180);
+    background: #e72f0b;
   }
 }
 
