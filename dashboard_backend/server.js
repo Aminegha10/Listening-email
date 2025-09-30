@@ -37,7 +37,7 @@ app.use(cookieParser());
 // Connect to DB
 connectDB();
 
-// Middleware to parse JSON
+// Middleware to parse JSON 
 app.use(express.json());
 
 // Use routes

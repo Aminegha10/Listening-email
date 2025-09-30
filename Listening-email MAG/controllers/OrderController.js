@@ -23,7 +23,7 @@ const addOrder = async (products, orderDetails) => {
       return;
     }
 
-    const res = await axios.post(`http://localhost:5000/api/Lead`, {
+    const res = await axios.post(`http://217.65.146.240:5000/api/Lead`, {
       orderNumber,
       salesAgent,
       orderDate,
@@ -41,49 +41,6 @@ const addOrder = async (products, orderDetails) => {
     logger.error(err);
     res.send(err);
   }
-  // try {
-  //   // Find and update existing order
-  //   const existingOrder = await OrderModel.findOne({ orderNumber });
-  //   if (!existingOrder) {
-  //     logger.error(`Order #${orderNumber} not found.`);
-  //     return;
-  //   }
-
-  //   // products = [
-  //   //   {
-  //   //     name: "Rouleau de papier filtrant pour ensacheuse de thé",
-  //   //     quantity: "1",
-  //   //     barcode: "000.000.1063",
-  //   //     warehouse: "MAG",
-  //   //   },
-  //   // ];
-
-  //   // Remove old MED products & add new ones
-  //   existingOrder.products = [
-  //     ...existingOrder.products.filter((p) => p.warehouse !== "MED"), //all mag already exist
-  //     ...products, //all med comming from email
-  //   ];
-
-  //   await existingOrder.save();
-  //   logger.info(
-  //     `Updated order #${orderNumber} successfully with MED products.`
-  //   );
-  //   //   logger.debug(
-  //   //     `Updated order details: ${JSON.stringify(existingOrder, null, 2)}`
-  //   //   );
-
-  //   //   logger.info(`Generated PDF for order #${orderNumber}.....`);
-  //   //   // Generate PDF with just the MED products comming from email
-  //   //   const pdfPath = await generatePdf({
-  //   //     orderNumber,
-  //   //     salesAgent,
-  //   //     orderDate,
-  //   //     products,
-  //   //   });
-  //   //   // i need to add error catching for pdf generation
-  // } catch (error) {
-  //   logger.error(`Failed to create or update order: ${error.message}`);
-  // }
 };
 
 export { addOrder };

@@ -169,3 +169,10 @@
 html {
   scroll-behavior: smooth;
 }
+/* @media (min-width: 1280px) and (max-width: 1535px) {
+  .dashboard-zoomed {
+    transform: scale(0.95);
+    transform-origin: top left;
+  }
+} */
+
