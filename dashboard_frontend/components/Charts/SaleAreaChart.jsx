@@ -209,9 +209,9 @@ export function SaleAreaChart({ timeRange }) {
                   dot={{ fill: "var(--primary)", strokeWidth: 2, r: 4 }}
                   activeDot={{
                     r: 6,
-                    stroke: "teal",
+                    stroke: "var(--primary)",
                     strokeWidth: 2,
-                    fill: "teal",
+                    fill: "var(--primary)",
                   }}
                 />
               </AreaChart>

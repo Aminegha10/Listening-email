@@ -317,7 +317,7 @@ export function TopProductsPieChart({ timeRange }) {
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6">
                   {/* Left: Icon + Info */}
                   <div className="flex items-start sm:items-center gap-3 sm:gap-4 w-full sm:w-auto">
-                    <div className="flex items-center justify-center w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl shadow-lg flex-shrink-0">
+                    <div className="flex items-center justify-center w-12 h-12 bg-gradient-to-br from-[var(--color-primary)] to-indigo-300 rounded-xl shadow-lg flex-shrink-0">
                       <Trophy className="w-6 h-6 text-white" />
                     </div>
 

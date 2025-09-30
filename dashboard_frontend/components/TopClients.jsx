@@ -252,41 +252,21 @@ function TopClients({ timeRange }) {
 
                 <div className="flex items-center gap-8 text-right">
                   <div className="min-w-0 flex gap-3 items-center">
-                    {/* <div className="flex items-center gap-1 text-slate-500 mb-1">
-                        {filter == "revenue" ? (
-                          <>
-                            <DollarSign className="h-3 w-3" />
-                            <span className="text-xs font-medium">Revenue</span>
-                          </>
-                        ) : filter == "ordersCount" ? (
-                          <>
-                            <ShoppingCartIcon />
-                            <span className="text-xs font-medium">Orders</span>
-                          </>
-                        ) : (
-                          <>
-                            <ShoppingBasket />
-                            <span className="text-xs font-medium">
-                              Product Quantity
-                            </span>
-                          </>
-                        )}
-                      </div> */}
                     <div className="text-lg font-bold text-slate-900">
                       {filter == "revenue" ? (
                         <div className="flex gap-2 items-center">
                           {formatCurrency(client.revenue)}{" "}
-                          <Wallet className="text-teal-500" />
+                          <Wallet className="text-[var(--color-primary)]" />
                         </div>
                       ) : filter == "productsQuantity" ? (
                         <div className="flex gap-2 items-center">
                           {client.productsQuantity}
-                          <Package className="text-teal-500" />
+                          <Package className="text-[var(--color-primary)]" />
                         </div>
                       ) : (
                         <div className="flex gap-2 items-center">
                           {client.ordersCount}
-                          <ShoppingCartIcon className="text-teal-500" />
+                          <ShoppingCartIcon className="text-[var(--color-primary)]" />
                         </div>
                       )}
                     </div>
