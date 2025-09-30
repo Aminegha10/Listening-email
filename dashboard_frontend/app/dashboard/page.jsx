@@ -28,7 +28,7 @@ export default function DashboardPage() {
         />
       </div>
       {/* order and sales Charts and Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 md:gap-4">
         <SalesOrdersBarchart timeRange={timeRange} className="col-span-2" />
         <SaleAreaChart timeRange={timeRange} />
       </div>
@@ -37,7 +37,7 @@ export default function DashboardPage() {
         <ThreeMidlleCards timeRange={timeRange} />
       </div>
       {/* Bottom Grid Section */}
-      <div className="grid grid-cols-1 md:grid-cols-[5fr_4fr] gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-[5fr_4fr] gap-4">
         {/* Left Column: OrdersAreaChart + TopProducts */}
         <div className="flex flex-col gap-4">
           <OrdersAreaChart timeRange={timeRange} />
