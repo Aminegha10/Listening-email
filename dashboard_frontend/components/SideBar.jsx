@@ -149,7 +149,7 @@ export function SideBar({ setLogOut, ...props }) {
                     className={cn(
                       "group relative rounded-xl px-4 py-3.5 text-sm font-semibold transition-all duration-300 hover:bg-sidebar-accent/80 hover:text-sidebar-accent-foreground hover:shadow-sm",
                       isActive &&
-                        "bg-primary/10 text-primary shadow-sm ring-1 ring-primary/20 hover:bg-primary/15"
+                      "bg-primary/10 text-primary shadow-sm ring-1 ring-primary/20 hover:bg-primary/15"
                     )}
                   >
                     <Link
@@ -211,7 +211,7 @@ export function SideBar({ setLogOut, ...props }) {
                         className={cn(
                           "block px-4 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
                           pathname === "/dashboard/administration/users" &&
-                            "bg-primary/10 text-primary"
+                          "bg-primary/10 text-primary"
                         )}
                       >
                         Users Management
@@ -225,7 +225,7 @@ export function SideBar({ setLogOut, ...props }) {
         )}
       </SidebarContent>
 
-      <SidebarFooter className="border-t border-sidebar-border bg-sidebar/50 p-4">
+      <SidebarFooter className="border-t border-sidebar-border bg-sidebar/50  p-4">
         <SidebarMenu>
           <SidebarMenuItem>
             <DropdownMenu>

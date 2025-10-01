@@ -91,7 +91,7 @@ export function OrdersAreaChart({ timeRange }) {
 
   return (
     <Card
-      className="border-0 shadow-sm bg-white/50 backdrop-blur-sm"
+      className="border-0 shadow-sm bg-white/50 dark:bg-[var(--card)] backdrop-blur-sm"
       style={{
         boxShadow:
           "rgba(50, 50, 93, 0.25) 0px 0px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px",
@@ -101,18 +101,18 @@ export function OrdersAreaChart({ timeRange }) {
         <div className="flex items-center justify-between flex-wrap gap-3">
           <div className="flex items-center gap-3">
             <div className="p-2.5 bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl border border-primary/10">
-              <ChartNoAxesCombined className="h-5 w-5 text-primary" />
+              <ChartNoAxesCombined className="h-5 w-5 text-primary dark:text-white" />
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-gray-900 tracking-tight">
+              <h3 className="text-lg font-semibold dark:text-foreground text-gray-900 tracking-tight">
                 Orders Analytics
               </h3>
               <p className="text-sm text-gray-500 font-medium">
                 {timeRange === "thisWeek"
                   ? "Orders performance this Week"
                   : timeRange === "thisMonth"
-                  ? "Orders performance this Month"
-                  : "Orders performance this Year"}{" "}
+                    ? "Orders performance this Month"
+                    : "Orders performance this Year"}{" "}
               </p>
             </div>
           </div>

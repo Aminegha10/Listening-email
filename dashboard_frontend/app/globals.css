@@ -4,38 +4,35 @@
 
 
 :root {
-  /* Light mode - Purity UI Theme */
-  --background: oklch(1 0 0); /* Pure white */
-  --foreground: oklch(0.2 0 0); /* Dark gray text */
-  --card: oklch(1 0 0); /* White cards */
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.2 0 0);
+  --card: oklch(1 0 0);
   --card-foreground: oklch(0.2 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.2 0 0);
-  --primary: #e72f0b; /* Teal primary color */
-  --primary-foreground: oklch(1 0 0); /* White text on teal */
-  --secondary: oklch(0.96 0 0); /* Light gray */
+  --primary: #e72f0b;
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.96 0 0);
   --secondary-foreground: oklch(0.2 0 0);
-  --muted: oklch(0.96 0 0); /* Light gray backgrounds */
-  --muted-foreground: oklch(0.5 0 0); /* Medium gray text */
-  --accent: #e72f0b; /* Teal accent */
+  --muted: oklch(0.96 0 0);
+  --muted-foreground: oklch(0.5 0 0);
+  --accent: #e72f0b;
   --accent-foreground: oklch(1 0 0);
-  --destructive: oklch(60.197% 0.22128 32.257 / 0.071); /* Red for errors */
+  --destructive: oklch(60.197% 0.22128 32.257 / 0.071);
   --destructive-foreground: oklch(1 0 0);
-  --border: oklch(0.9 0 0); /* Light gray borders */
-  --input: oklch(0.98 0 0); /* Very light gray inputs */
-  --ring: #e72f0b; /* Teal focus ring */
-  --chart-1: #e72f0b; /* Teal */
-  --chart-2: #0090b1; /* Blue */
-  --chart-3: #48a830; /* Green */
-  --chart-4: oklch(0.7 0.2 60); /* Orange */
-  --chart-5: oklch(0.6 0.15 300); /* Purple */
+  --border: oklch(0.9 0 0);
+  --input: oklch(0.98 0 0);
+  --ring: #e72f0b;
+  --chart-1: #e72f0b;
+  --chart-2: #0090b1;
+  --chart-3: #48a830;
+  --chart-4: oklch(0.7 0.2 60);
+  --chart-5: oklch(0.6 0.15 300);
   --radius: 0.75rem;
 
-  
-  /* Sidebar specific colors */
-  --sidebar: oklch(0.98 0 0); /* Very light gray sidebar */
+  --sidebar: oklch(0.98 0 0);
   --sidebar-foreground: oklch(0.3 0 0);
-  --sidebar-primary: ; /* Teal */
+  --sidebar-primary: #e72f0b;
   --sidebar-primary-foreground: oklch(1 0 0);
   --sidebar-accent: oklch(0.95 0 0);
   --sidebar-accent-foreground: oklch(0.3 0 0);
@@ -43,42 +40,41 @@
   --sidebar-ring: oklch(0.7 0.15 180);
 }
 
+/* Dark mode - derived from :root */
 .dark {
-  /* Dark mode */
-  --background: oklch(0.1 0 0); /* Very dark background */
-  --foreground: oklch(0.95 0 0); /* Light text */
-  --card: oklch(0.15 0 0); /* Dark cards */
-  --card-foreground: oklch(0.95 0 0);
-  --popover: oklch(0.15 0 0);
-  --popover-foreground: oklch(0.95 0 0);
-  --primary: rgb(0, 188, 162); /* Keep teal primary */
-  --primary-foreground: oklch(0.1 0 0); /* Dark text on teal */
-  --secondary: oklch(0.2 0 0); /* Dark gray */
-  --secondary-foreground: oklch(0.95 0 0);
-  --muted: oklch(0.2 0 0);
-  --muted-foreground: oklch(0.6 0 0);
-  --accent: oklch(0.7 0.15 180); /* Teal accent */
-  --accent-foreground: oklch(0.1 0 0);
-  --destructive: oklch(0.6 0.2 25);
-  --destructive-foreground: oklch(0.95 0 0);
-  --border: oklch(0.25 0 0); /* Dark borders */
-  --input: oklch(0.2 0 0);
-  --ring: oklch(0.7 0.15 180);
-  --chart-1: oklch(0.7 0.15 180);
-  --chart-2: oklch(0.6 0.12 220);
-  --chart-3: oklch(0.65 0.18 140);
-  --chart-4: oklch(0.7 0.2 60);
-  --chart-5: oklch(0.6 0.15 300);
-  
-  /* Dark sidebar */
-  --sidebar: oklch(0.12 0 0);
-  --sidebar-foreground: oklch(0.9 0 0);
-  --sidebar-primary: #00bca2;
-  --sidebar-primary-foreground: oklch(0.1 0 0);
-  --sidebar-accent: oklch(0.18 0 0);
-  --sidebar-accent-foreground: oklch(0.9 0 0);
-  --sidebar-border: oklch(0.25 0 0);
-  --sidebar-ring: oklch(0.7 0.15 180);
+  --background: oklch(0.14 0.008 296);
+  --foreground: oklch(0.98 0 0);
+  --card: oklch(0.18 0.01 296);
+  --card-foreground: oklch(0.98 0 0);
+  --popover: oklch(0.16 0.01 296);
+  --popover-foreground: oklch(0.98 0 0);
+  --primary: #ff4520;
+  --primary-foreground: oklch(0.98 0 0);
+  --secondary: oklch(0.22 0.01 296);
+  --secondary-foreground: oklch(0.98 0 0);
+  --muted: oklch(0.22 0.01 296);
+  --muted-foreground: oklch(0.65 0 0);
+  --accent: #ff4520;
+  --accent-foreground: oklch(0.98 0 0);
+  --destructive: oklch(0.55 0.22 25);
+  --destructive-foreground: oklch(0.98 0 0);
+  --border: oklch(0.28 0.012 296);
+  --input: oklch(0.22 0.01 296);
+  --ring: #ff4520;
+  --chart-1: #ff4520;
+  --chart-2: #00b8e6;
+  --chart-3: #5fcd3d;
+  --chart-4: oklch(0.65 0.18 65);
+  --chart-5: oklch(0.6 0.16 295);
+
+  --sidebar: oklch(0.16 0.01 296);
+  --sidebar-foreground: oklch(0.92 0 0);
+  --sidebar-primary: #ff4520;
+  --sidebar-primary-foreground: oklch(0.98 0 0);
+  --sidebar-accent: oklch(0.22 0.012 296);
+  --sidebar-accent-foreground: oklch(0.92 0 0);
+  --sidebar-border: oklch(0.26 0.012 296);
+  --sidebar-ring: oklch(0.5 0.12 200);
 }
 
 @theme inline {
@@ -124,25 +120,26 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
-  
+
   /* Custom scrollbar for webkit browsers */
   ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
   }
-  
+
   ::-webkit-scrollbar-track {
     background: transparent;
   }
-  
+
   ::-webkit-scrollbar-thumb {
     background: #e72f0b;
     border-radius: 3px;
   }
-  
+
   ::-webkit-scrollbar-thumb:hover {
     background: #e72f0b;
   }
@@ -153,26 +150,27 @@
   .bg-purity-teal {
     background-color: oklch(0.7 0.15 180);
   }
-  
+
   .text-purity-teal {
     color: oklch(0.7 0.15 180);
   }
-  
+
   .border-purity-teal {
     border-color: oklch(0.7 0.15 180);
   }
-  
+
   .shadow-purity {
     box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
   }
 }
+
 html {
   scroll-behavior: smooth;
 }
+
 /* @media (min-width: 1280px) and (max-width: 1535px) {
   .dashboard-zoomed {
     transform: scale(0.95);
     transform-origin: top left;
   }
 } */
-

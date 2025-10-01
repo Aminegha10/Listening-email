@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { Input } from "../ui/input";
-import { Bell, Search, User, Settings, Menu } from "lucide-react";
+import { Bell, Settings, Menu, Sun, Moon } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Badge } from "../ui/badge";
 import {
@@ -11,14 +10,17 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import { cn } from "@/lib/utils";
-import { useLogoutMutation } from "@/features/authApi";
-import { useSelector } from "react-redux";
-import { useRouter } from "next/navigation";
+import { useTheme } from "next-themes";
 
 export function NavBar() {
+  const { theme, setTheme, resolvedTheme } = useTheme();
+
+  const toggleTheme = () => {
+    setTheme(theme === "dark" ? "light" : "dark");
+  };
+
   return (
-    <header className="sticky top-0 z-10 bg-gray/80 dark:bg-gray-900/80 backdrop-blur-xl border-b border-gray-200/60 dark:border-gray-700/60 px-6 py-4 shadow-sm">
+    <header className="sticky top-0 z-10 bg-gray/80 backdrop-blur-xl dark:bg-sidebar dark:backdrop-blur-xl border-b border-gray-200/60 dark:border-gray-700/60 px-6 py-4 shadow-sm">
       <div className="flex items-center justify-between backdrop-blur-2xl">
         {/* Left Section */}
         <div className="flex items-center space-x-6">
@@ -112,61 +114,40 @@ export function NavBar() {
             </DropdownMenuContent>
           </DropdownMenu>
 
-          {/* Settings */}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-9 w-9 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-all duration-200 group"
-          >
-            <Settings className="h-4 w-4 group-hover:text-teal-600 dark:group-hover:text-teal-400 group-hover:rotate-90 transition-all duration-300" />
-          </Button>
-
-          {/* User Avatar */}
-          {/* <DropdownMenu>
+          {/* Settings Dropdown */}
+          <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
                 variant="ghost"
-                className="relative h-9 w-9 rounded-full p-0 hover:bg-transparent"
+                size="icon"
+                className="h-9 w-9 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-all duration-200 group"
               >
-                <Avatar className="h-9 w-9 border-2 border-white dark:border-gray-700 shadow-md hover:shadow-lg transition-all duration-200 hover:scale-105">
-                  <AvatarImage
-                    src="/diverse-user-avatars.png"
-                    alt={user?.name || "User Avatar"}
-                  />
-                  <AvatarFallback className="bg-gradient-to-br from-teal-500 to-cyan-600 text-white text-sm font-medium">
-                    {user?.name?.[0].toUpperCase() || "U"}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="absolute -bottom-0.5 -right-0.5 h-3 w-3 bg-green-500 border-2 border-white dark:border-gray-900 rounded-full"></div>
+                <Settings className="h-4 w-4 group-hover:text-primary dark:group-hover:text-teal-400 group-hover:rotate-90 transition-all duration-300" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56 p-2 shadow-xl">
-              <div className="px-3 py-2 border-b border-gray-100 dark:border-gray-700 mb-2">
-                <div className="text-sm font-medium text-gray-900 dark:text-white">
-                  {user?.name || "User"}
-                </div>
-                <div className="text-xs text-gray-500 dark:text-gray-400">
-                  {user?.email || "user@example.com"}
-                </div>
-              </div>
-              <DropdownMenuItem className="rounded-md cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-150">
-                <User className="h-4 w-4 mr-3 text-gray-500" />
-                <span>Profile</span>
-              </DropdownMenuItem>
               <DropdownMenuItem className="rounded-md cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-150">
                 <Settings className="h-4 w-4 mr-3 text-gray-500" />
                 <span>Settings</span>
               </DropdownMenuItem>
-              <DropdownMenuSeparator />
               <DropdownMenuItem
-                onClick={handleLogout}
-                disabled={isLoading}
-                className="rounded-md cursor-pointer text-red-600 hover:bg-red-50 dark:hover:bg-red-950/20 transition-colors duration-150"
+                onClick={toggleTheme}
+                className="rounded-md cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-150"
               >
-                <span>{isLoading ? "Signing out..." : "Sign out"}</span>
+                {theme === "dark" ? (
+                  <>
+                    <Sun className="h-4 w-4 mr-3 text-gray-500" />
+                    <span>Light Mode</span>
+                  </>
+                ) : (
+                  <>
+                    <Moon className="h-4 w-4 mr-3 text-gray-500" />
+                    <span>Dark Mode</span>
+                  </>
+                )}
               </DropdownMenuItem>
             </DropdownMenuContent>
-          </DropdownMenu> */}
+          </DropdownMenu>
         </div>
       </div>
     </header>

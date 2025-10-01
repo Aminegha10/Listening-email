@@ -11,7 +11,7 @@ import { Riple } from "react-loading-indicators";
 function MetricCard({ title, value, change, isPositive, icon, isLoading }) {
   return (
     <Card
-      className="bg-white border-0"
+      className="dark:border-2 border-0 transition-colors duration-300 bg-white dark:bg-[var(--card)]"
       style={{
         boxShadow:
           "rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px",
@@ -32,20 +32,19 @@ function MetricCard({ title, value, change, isPositive, icon, isLoading }) {
             <div className="space-y-2">
               <p className="text-sm font-medium text-[#8C8C8C]">{title}</p>
               <div>
-                <span className="text-2xl font-bold text-gray-900 mr-1">
+                <span className="text-2xl font-bold text-gray-900 dark:text-white mr-1">
                   {value}
                 </span>
                 <span
-                  className={`text-sm font-medium ${
-                    isPositive ? "text-green-600" : "text-red-600"
-                  }`}
+                  className={`text-sm font-medium ${isPositive ? "text-green-600" : "text-red-600"
+                    }`}
                 >
                   {change}
                 </span>
               </div>
             </div>
-            <div className="p-3 bg-[var(--color-destructive)] rounded-lg">
-              <div className="text-[var(--color-primary)]">{icon}</div>
+            <div className="p-3 dark:bg-[var(--color-accent)] bg-[var(--color-destructive)] rounded-lg">
+              <div className="dark:text-[var(--color-foreground)] text-[var(--color-primary)]">{icon}</div>
             </div>
           </div>
         )}
@@ -78,14 +77,14 @@ export function SectionCards() {
     },
     {
       title: "Sales",
-      value: 22 + " DH",
+      value:  stats?.totalSalesToday + " DH",
       change: "+5%",
       isPositive: true,
       icon: <Wallet className="w-6 h-6" />,
     },
     {
       title: "Sales Today",
-      value: stats?.totalSalesToday + " DH",
+      value: stats?.totalSales + " DH",
       change: "+2%",
       isPositive: true,
       icon: <FileText className="w-6 h-6" />,

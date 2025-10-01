@@ -151,11 +151,11 @@ export function TopProductsPieChart({ timeRange }) {
           <div className="p-4 sm:p-6 border-b border-slate-200 flex flex-col md:flex-row md:justify-between md:items-center gap-4">
             {/* Left side — Title */}
             <div className="flex items-start sm:items-center gap-3">
-              <div className="p-2.5 bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl border border-primary/10">
-                <Package className="h-5 w-5 text-primary" />
+            <div className="p-2.5 bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl border border-primary/10">
+                <Package className="h-5 w-5 text-primary dark:text-white" />
               </div>
               <div>
-                <h3 className="text-lg sm:text-xl font-semibold text-slate-900">
+                <h3 className="text-lg sm:text-xl font-semibold text-slate-900 dark:text-foreground">
                   Top 10 Products
                 </h3>
                 <p className="text-xs sm:text-sm text-gray-500 font-medium">
@@ -178,8 +178,8 @@ export function TopProductsPieChart({ timeRange }) {
                     {filter === "unitsSold"
                       ? "Most Sold"
                       : filter === "revenue"
-                      ? "Top Revenue"
-                      : "Most Orders Count"}
+                        ? "Top Revenue"
+                        : "Most Orders Count"}
                     <ChevronDown className="h-4 w-4" />
                   </Button>
                 </DropdownMenuTrigger>
@@ -299,8 +299,8 @@ export function TopProductsPieChart({ timeRange }) {
                   {timeRange === "thisWeek"
                     ? "This Week : "
                     : timeRange === "thisMonth"
-                    ? "This Month : "
-                    : "This Year : "}
+                      ? "This Month : "
+                      : "This Year : "}
                   {data?.totalOrderedProducts}
                 </Badge>
               </div>

@@ -13,7 +13,6 @@ const AddOrder = async (req, res) => {
       products = [],
       notes,
     } = req.body;
-    console.log("body", req.body);
 
     function parseOrderDate(dateStr) {
       if (!dateStr || typeof dateStr !== "string") return null;
