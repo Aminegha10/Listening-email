@@ -23,8 +23,6 @@ const addOrder = async (products, orderDetails) => {
       logger.error("Invalid product entry detected. All fields are required.");
       return;
     }
-    console.log("z");
-
     const res = await axios.post(
       `http://217.65.146.240:5000/api/Lead`,
       {

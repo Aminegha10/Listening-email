@@ -50,20 +50,3 @@ const addOrder = async (products, orderDetails) => {
 };
 
 export { addOrder };
-
-// await OrderModel.updateOne(
-//   { orderNumber },
-//   {
-//     // Step 1: remove all products with MAG warehouse
-//     $pull: { products: { warehouse: "MAG" } },
-//     // Step 2: add the new MAG products from email
-//     $push: { products: { $each: products } },
-//     // Optional: update other order fields
-//     $set: {
-//       salesAgent,
-//       orderDate: orderDate ? new Date(orderDate) : null,
-//       notes: Array.isArray(notes) ? notes.join("\n") : notes || "",
-//     },
-//   },
-//   { upsert: true } // create if doesn't exist
-// );
