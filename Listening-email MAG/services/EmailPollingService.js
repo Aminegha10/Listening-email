@@ -67,6 +67,7 @@ export default async function startPolling(oauth2Client) {
     const orderNumber = orderNumberMatch ? orderNumberMatch[1].trim() : "";
     const salesAgent = salesAgentMatch ? salesAgentMatch[1].trim() : "";
     const orderDate = orderDateMatch ? orderDateMatch[1].trim() : "";
+    console.log(orderDate)
 
     // Extract products
     const products = [];

@@ -3,7 +3,7 @@ import logger from "../utils/Logger.js";
 // import { generatePdf } from "../services/EmailPrinting.js";
 import axios from "axios";
 const addOrder = async (products, orderDetails) => {
-  console.log("a", process.env.TOKEN_DASHBOARD);
+  // console.log(orderDetails);
   try {
     const { orderNumber, salesAgent, orderDate, notes } = orderDetails;
     console.log(orderNumber);
@@ -23,8 +23,6 @@ const addOrder = async (products, orderDetails) => {
       logger.error("Invalid product entry detected. All fields are required.");
       return;
     }
-    console.log("z");
-
     const res = await axios.post(
       `http://217.65.146.240:5000/api/Lead`,
       {
@@ -48,8 +46,8 @@ const addOrder = async (products, orderDetails) => {
     logger.info(`order Created/Updated: ${JSON.stringify(res.data, null, 2)}`);
     return;
   } catch (err) {
-    logger.error(err);
-    res.send(err);
+    logger.error(err.response.data);
+    return;
   }
   // try {
   //   // Find and update existing order

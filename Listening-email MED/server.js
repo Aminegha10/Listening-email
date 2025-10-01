@@ -66,5 +66,5 @@ await listPrinters();
 
 // Start server
 app.listen(port, () => {
-  logger.info(`Server running at http://localhost:`, port);
+  logger.info(`Server running at http://localhost:${port}`);
 });
