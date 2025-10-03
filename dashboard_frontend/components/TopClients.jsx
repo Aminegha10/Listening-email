@@ -79,24 +79,24 @@ function TopClients({ timeRange }) {
 
   return (
     <div
-      className="max-w-6xl mx-auto"
+      className="max-w-6xl mx-auto dark:bg-[var(--card)] "
       style={{
         boxShadow:
           "rgba(50, 50, 93, 0.25) 0px 0px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px",
       }}
     >
       {/* Clients Card */}
-      <div className="p-6 border-b border-slate-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div className="p-6 border-b border-slate-200  flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         {/* Left: Title + Icon */}
         <div className="flex items-center gap-3 w-full sm:w-auto">
           <div className="p-2.5 bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl border border-primary/10">
             <Users className="h-5 w-5 text-primary" />
           </div>
           <div>
-            <h3 className="text-lg sm:text-xl font-semibold text-slate-900 ">
+            <h3 className="text-lg sm:text-xl font-semibold text-slate-900 dark:text-white ">
               Top 10 Clients
             </h3>
-            <p className="text-sm text-gray-500 font-medium">
+            <p className="text-sm text-gray-500 font-medium ">
               Showing {topClients?.data.length} of {topClients?.totalClients}{" "}
               clients
             </p>
@@ -116,8 +116,8 @@ function TopClients({ timeRange }) {
                 {filter === "revenue"
                   ? "Revenue"
                   : filter === "productsQuantity"
-                  ? "Products"
-                  : "Orders"}
+                    ? "Products"
+                    : "Orders"}
                 <ChevronDown className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
@@ -212,29 +212,28 @@ function TopClients({ timeRange }) {
               <div className="flex items-center gap-4">
                 <div className="flex-shrink-0">
                   <div
-                    className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
-                      index === 0
+                    className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${index === 0
                         ? "bg-yellow-100 text-yellow-800"
                         : index === 1
-                        ? "bg-slate-200 text-slate-600"
-                        : index === 2
-                        ? "bg-orange-100 text-orange-800"
-                        : "bg-slate-50 text-slate-500"
-                    }`}
+                          ? "bg-slate-200 text-slate-600"
+                          : index === 2
+                            ? "bg-orange-100 text-orange-800"
+                            : "bg-slate-50 text-slate-500"
+                      }`}
                   >
                     {index + 1}
                   </div>
                 </div>
 
                 <Avatar className="w-12 h-12 ">
-                  <AvatarFallback className="bg-[var(--color-destructive)] text-[var(--color-primary)] text-xs">
+                  <AvatarFallback className="dark:text-white bg-[var(--color-destructive)] text-[var(--color-primary)] text-xs">
                     KA
                   </AvatarFallback>
                 </Avatar>
 
                 <div className="flex-grow min-w-0">
                   <div className="flex items-center gap-2 mb-1">
-                    <h4 className="text-lg font-semibold text-slate-900 truncate">
+                    <h4 className="text-lg font-semibold text-slate-900 truncate dark:text-white">
                       {client.clientName}
                     </h4>
                     <span

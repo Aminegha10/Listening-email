@@ -55,7 +55,7 @@ export default function SalesOrdersBarchart({ timeRange }) {
 
   return (
     <Card
-      className="shadow-sm border-0 bg-gradient-to-br from-white to-slate-50/30"
+      className="shadow-sm border-0 dark:bg-[var(--card)]"
       style={{
         boxShadow:
           "rgba(50, 50, 93, 0.25) 0px 0px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px",
@@ -66,24 +66,24 @@ export default function SalesOrdersBarchart({ timeRange }) {
           {/* Left section */}
           <div className="flex items-center gap-3">
             <div className="p-2.5 bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl border border-primary/10">
-              <ChartNoAxesCombined className="h-5 w-5 text-primary" />
+              <ChartNoAxesCombined className="h-5 w-5 text-primary dark:text-white" />
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-gray-900 tracking-tight">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-foreground tracking-tight">
                 {type === "orders" ? "Orders Analytics" : "Sales Analytics"}
               </h3>
-              <p className="text-sm text-gray-500 font-medium">
+              <p className="text-sm text-gray-500  font-medium">
                 {type === "orders"
                   ? timeRange === "thisWeek"
                     ? "Orders performance this Week"
                     : timeRange === "thisMonth"
-                    ? "Orders performance this Month"
-                    : "Orders performance this Year"
+                      ? "Orders performance this Month"
+                      : "Orders performance this Year"
                   : timeRange === "thisWeek"
-                  ? "Sales performance this Week"
-                  : timeRange === "thisMonth"
-                  ? "Sales performance this Month"
-                  : "Sales performance this Year"}
+                    ? "Sales performance this Week"
+                    : timeRange === "thisMonth"
+                      ? "Sales performance this Month"
+                      : "Sales performance this Year"}
               </p>
             </div>
           </div>
@@ -228,20 +228,18 @@ export default function SalesOrdersBarchart({ timeRange }) {
                 className="bg-primary/10 text-primary border-primary/20 px-4 py-1.5 font-medium"
               >
                 {type === "orders"
-                  ? `Total Orders ${
-                      timeRange === "thisWeek"
-                        ? "This Week :"
-                        : timeRange === "thisMonth"
-                        ? "This Month :"
-                        : "This Year :"
-                    } ${stats.totalOrdersByTimeRange}`
-                  : `Total Sales ${
-                      timeRange === "thisWeek"
-                        ? "This Week :"
-                        : timeRange === "thisMonth"
-                        ? "This Month :"
-                        : "This Year :"
-                    } ${stats.totalSalesByTimeRange} DH`}
+                  ? `Total Orders ${timeRange === "thisWeek"
+                    ? "This Week :"
+                    : timeRange === "thisMonth"
+                      ? "This Month :"
+                      : "This Year :"
+                  } ${stats.totalOrdersByTimeRange}`
+                  : `Total Sales ${timeRange === "thisWeek"
+                    ? "This Week :"
+                    : timeRange === "thisMonth"
+                      ? "This Month :"
+                      : "This Year :"
+                  } ${stats.totalSalesByTimeRange} DH`}
               </Badge>
             </div>
           </>

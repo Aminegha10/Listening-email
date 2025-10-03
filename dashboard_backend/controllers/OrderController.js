@@ -13,7 +13,14 @@ const AddOrder = async (req, res) => {
       products = [],
       notes,
     } = req.body;
-    console.log("body");
+
+    function parseOrderDate(dateStr) {
+      if (!dateStr || typeof dateStr !== "string") return null;
+      const [day, month, year] = dateStr.split("/"); // assuming "DD/MM/YYYY"
+      if (!day || !month || !year) return null;
+
+      return new Date(`${year}-${month}-${day}`); // Mongoose can parse this
+    }
 
     // Check if any required field is missing or invalid
     // if (!orderNumber || !salesAgent || !orderDate || !Array.isArray(products) || products.length === 0 ) {
@@ -47,6 +54,7 @@ const AddOrder = async (req, res) => {
       `Creating or updating order #${orderNumber} with ${products.length} product(s).`
     );
 
+
     // Try to create order
     try {
       const newOrder = await OrderModel.create({
@@ -55,7 +63,7 @@ const AddOrder = async (req, res) => {
         price: lead.prixttc,
         typedepaiement,
         salesAgent,
-        orderDate: orderDate ? new Date(orderDate) : null,
+        orderDate: parseOrderDate(orderDate),
         notes: normalizedNotes,
         products,
       });
@@ -543,13 +551,13 @@ const GetOrdersTableStats = async (req, res) => {
       ...order.toObject(),
       createdAt: order.createdAt
         ? new Date(order.createdAt).toLocaleString("en-GB", {
-            day: "numeric",
-            month: "short",
-            year: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-            hour12: false,
-          })
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: false,
+        })
         : null,
     }));
 

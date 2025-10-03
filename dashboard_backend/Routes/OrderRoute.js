@@ -8,11 +8,12 @@ import {
   GetTopSalesAgent,
 } from "../controllers/OrderController.js";
 import { verifyToken } from "../middleware/auth.js";
+import { leadLimiter } from "../middleware/limitOrders..js";
 
 const router = express.Router();
 
 // Add or update order
-router.post("/Lead", verifyToken, AddOrder);
+router.post("/Lead", leadLimiter, verifyToken, AddOrder);
 
 // Get order stats (total + today, optional filter by salesAgent)
 router.get("/LeadStats", verifyToken, GetOrderAndSalesStats);

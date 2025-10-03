@@ -88,7 +88,7 @@ export function SaleAreaChart({ timeRange }) {
 
   return (
     <Card
-      className="border-0 shadow-sm bg-white/50 backdrop-blur-sm"
+      className="dark:border-2 border-0 shadow:sm  dark:bg-[var(--card)] bg-white/50 backdrop-blur-sm"
       style={{
         boxShadow:
           "rgba(50, 50, 93, 0.25) 0px 0px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px",
@@ -98,18 +98,18 @@ export function SaleAreaChart({ timeRange }) {
         <div className="flex items-center justify-between flex-wrap gap-3">
           <div className="flex items-center gap-3">
             <div className="p-2.5 bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl border border-primary/10">
-              <ChartNoAxesCombined className="h-5 w-5 text-primary" />
+              <ChartNoAxesCombined className="h-5 w-5 text-primary dark:text-white" />
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-gray-900 tracking-tight">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-foreground tracking-tight">
                 Sales Analytics
               </h3>
               <p className="text-sm text-gray-500 font-medium">
                 {timeRange === "thisWeek"
                   ? "Sales performance this Week"
                   : timeRange === "thisMonth"
-                  ? "Sales performance this Month"
-                  : "Sales performance this Year"}
+                    ? "Sales performance this Month"
+                    : "Sales performance this Year"}
               </p>
             </div>
           </div>
