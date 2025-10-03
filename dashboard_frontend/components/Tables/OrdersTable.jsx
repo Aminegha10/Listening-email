@@ -39,7 +39,12 @@ import {
 } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 import { useGetOrdersTableQuery } from "@/features/dataApi";
-import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogTrigger,
+} from "../ui/dialog";
 import { Badge } from "../ui/badge";
 import { exportToCSV, exportToJSON, exportToPDF } from "@/utils/exportUtils";
 import { Calendar } from "lucide-react";
@@ -144,16 +149,22 @@ export const columns = [
                 </button>
               </DialogTrigger>
               <DialogContent className="max-w-md">
+                <DialogTitle className="text-lg font-semibold">
+                  Products - Order #
+                  <span className="text-[var(--color-primary)]">
+                    {row.getValue("orderNumber")}
+                  </span>
+                </DialogTitle>
                 <div className="mt-4">
                   {products.length > 0 ? (
                     <div className="space-y-3">
                       {products.map((product, index) => (
                         <div
                           key={index}
-                          className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                          className="flex items-center justify-between p-3 dark:bg-accent/20 bg-gray-50 rounded-lg"
                         >
                           <div className="flex-1">
-                            <h4 className="font-medium text-sm">
+                            <h4 className="font-medium dark:text-foreground text-sm">
                               {product.name || `Product ${index + 1}`}
                             </h4>
                             <div className="flex items-center gap-1 mt-1">
@@ -166,7 +177,7 @@ export const columns = [
                                 {product.warehouse === "MAG" ? (
                                   <Badge
                                     variant="destructive"
-                                    className="text-xs"
+                                    className="text-xs bg-red-500"
                                   >
                                     {product.warehouse}
                                   </Badge>

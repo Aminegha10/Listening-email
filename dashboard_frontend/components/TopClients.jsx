@@ -79,18 +79,18 @@ function TopClients({ timeRange }) {
 
   return (
     <div
-      className="max-w-6xl mx-auto dark:bg-[var(--card)] "
+      className="max-w-6xl mx-auto dark:bg-[var(--card)]  "
       style={{
         boxShadow:
           "rgba(50, 50, 93, 0.25) 0px 0px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px",
       }}
     >
       {/* Clients Card */}
-      <div className="p-6 border-b border-slate-200  flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div className="p-6 border-b border-slate-200   dark:border-white dark:border-b-1 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         {/* Left: Title + Icon */}
         <div className="flex items-center gap-3 w-full sm:w-auto">
           <div className="p-2.5 bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl border border-primary/10">
-            <Users className="h-5 w-5 text-primary" />
+            <Users className="h-5 w-5 text-primary dark:text-white" />
           </div>
           <div>
             <h3 className="text-lg sm:text-xl font-semibold text-slate-900 dark:text-white ">
@@ -116,8 +116,8 @@ function TopClients({ timeRange }) {
                 {filter === "revenue"
                   ? "Revenue"
                   : filter === "productsQuantity"
-                    ? "Products"
-                    : "Orders"}
+                  ? "Products"
+                  : "Orders"}
                 <ChevronDown className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
@@ -207,19 +207,20 @@ function TopClients({ timeRange }) {
           topClients.data.map((client, index) => (
             <div
               key={client.clientName}
-              className="p-6 hover:bg-slate-50 transition-colors group"
+              className="p-6 hover:bg-slate-50 dark:hover:bg-primary/5 transition-all duration-200 border-b border-border/50 group"
             >
               <div className="flex items-center gap-4">
                 <div className="flex-shrink-0">
                   <div
-                    className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${index === 0
+                    className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
+                      index === 0
                         ? "bg-yellow-100 text-yellow-800"
                         : index === 1
-                          ? "bg-slate-200 text-slate-600"
-                          : index === 2
-                            ? "bg-orange-100 text-orange-800"
-                            : "bg-slate-50 text-slate-500"
-                      }`}
+                        ? "bg-slate-200 text-slate-600"
+                        : index === 2
+                        ? "bg-orange-100 text-orange-800"
+                        : "bg-slate-50 text-slate-500"
+                    }`}
                   >
                     {index + 1}
                   </div>
@@ -253,7 +254,7 @@ function TopClients({ timeRange }) {
                   <div className="min-w-0 flex gap-3 items-center">
                     <div className="text-lg font-bold text-slate-900">
                       {filter == "revenue" ? (
-                        <div className="flex gap-2 items-center">
+                        <div className="flex gap-2 items-center dark:text-white">
                           {formatCurrency(client.revenue)}{" "}
                           <Wallet className="text-[var(--color-primary)]" />
                         </div>

@@ -139,7 +139,7 @@ export function TopProductsPieChart({ timeRange }) {
   return (
     <>
       <Card
-        className="flex flex-col py-0"
+        className="flex flex-col py-0 dark:border-2"
         style={{
           boxShadow:
             "rgba(50, 50, 93, 0.25) 0px 0px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px",
@@ -226,7 +226,7 @@ export function TopProductsPieChart({ timeRange }) {
 
               {/* Table link button */}
               <Link href="/dashboard/tables#products" passHref>
-                <Button className="px-3 py-2 bg-white hover:bg-slate-200 text-slate-700 rounded-lg border border-slate-300 hover:border-slate-400 flex items-center gap-2 text-sm sm:text-base">
+                <Button className="px-3 py-2 bg-white dark: hover:bg-slate-200 text-slate-700 rounded-lg border border-slate-300 hover:border-slate-400 flex items-center gap-2 text-sm sm:text-base">
                   <Table className="h-4 w-4" />
                 </Button>
               </Link>

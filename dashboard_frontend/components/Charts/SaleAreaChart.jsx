@@ -57,6 +57,7 @@ export function SaleAreaChart({ timeRange }) {
     type: "orders",
   });
 
+  console.log(leadStats);
   // Determine chart data based on timeRange
   let chartData = [];
   if (timeRange === "thisWeek") {
@@ -108,8 +109,8 @@ export function SaleAreaChart({ timeRange }) {
                 {timeRange === "thisWeek"
                   ? "Sales performance this Week"
                   : timeRange === "thisMonth"
-                    ? "Sales performance this Month"
-                    : "Sales performance this Year"}
+                  ? "Sales performance this Month"
+                  : "Sales performance this Year"}
               </p>
             </div>
           </div>
@@ -178,7 +179,7 @@ export function SaleAreaChart({ timeRange }) {
                   content={
                     <ChartTooltipContent
                       indicator="dot"
-                      className="bg-white text-foreground backdrop-blur-sm border border-border shadow-md"
+                      className="bg-white text-black dark:bg-gray-800 dark:text-white backdrop-blur-sm border border-border shadow-md"
                     />
                   }
                 />
@@ -190,8 +191,16 @@ export function SaleAreaChart({ timeRange }) {
                     x2="0"
                     y2="1"
                   >
-                    <stop offset="0%" stopColor="var(--chart-1)" stopOpacity="0.4" />
-                    <stop offset="60%" stopColor="var(--chart-1)" stopOpacity="0.2" />
+                    <stop
+                      offset="0%"
+                      stopColor="var(--chart-1)"
+                      stopOpacity="0.4"
+                    />
+                    <stop
+                      offset="60%"
+                      stopColor="var(--chart-1)"
+                      stopOpacity="0.2"
+                    />
                     <stop
                       offset="100%"
                       stopColor="var(--chart-1)"

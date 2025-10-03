@@ -91,7 +91,7 @@ export function OrdersAreaChart({ timeRange }) {
 
   return (
     <Card
-      className="border-0 shadow-sm bg-white/50 dark:bg-[var(--card)] backdrop-blur-sm"
+      className="border-0 dark:border-2 shadow-sm bg-white/50 dark:bg-[var(--card)] backdrop-blur-sm"
       style={{
         boxShadow:
           "rgba(50, 50, 93, 0.25) 0px 0px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px",
@@ -207,7 +207,7 @@ export function OrdersAreaChart({ timeRange }) {
                   tick={{ fontSize: 12, fill: "var(--muted-foreground)" }}
                   tickFormatter={(value) => value}
                 />
-                <ChartTooltip
+               <ChartTooltip
                   cursor={{
                     stroke: "var(--secondary)",
                     strokeWidth: 1,
@@ -216,7 +216,7 @@ export function OrdersAreaChart({ timeRange }) {
                   content={
                     <ChartTooltipContent
                       indicator="dot"
-                      className="bg-white text-foreground backdrop-blur-sm border border-border shadow-md"
+                      className="bg-white text-black dark:bg-gray-800 dark:text-white backdrop-blur-sm border border-border shadow-md"
                     />
                   }
                 />

@@ -45,109 +45,91 @@ export function NavBar() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="relative h-9 w-9 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-all duration-200 group"
+                className="relative h-9 w-9 hover:bg-[var(--muted)] dark:hover:bg-[var(--muted)] rounded-lg transition-all duration-200 group"
               >
-                <Bell className="h-5 w-5 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors duration-200" />
+                <Bell className="h-5 w-5 group-hover:text-[var(--primary)] transition-colors duration-200" />
                 <Badge
                   variant="destructive"
-                  className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs bg-red-500 hover:bg-red-600"
+                  className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs bg-[var(--primary)] text-[var(--destructive-foreground)] hover:bg-[var(--destructive)]"
                 >
                   3
                 </Badge>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-80 p-2 shadow-xl">
-              <div className="px-3 py-2 border-b border-gray-100 dark:border-gray-700 mb-2">
+
+            <DropdownMenuContent
+              align="end"
+              className="w-80 p-2 shadow-xl bg-[var(--card)] text-[var(--foreground)] border border-[var(--border)]"
+            >
+              <div className="px-3 py-2 border-b border-[var(--border)] mb-2">
                 <div className="flex items-center justify-between">
                   <h4 className="text-sm font-medium">Notifications</h4>
                   <Badge
                     variant="secondary"
-                    className="bg-teal-100 text-teal-700 dark:bg-teal-950 dark:text-teal-300"
+                    className="bg-[var(--secondary)] text-[var(--secondary-foreground)]"
                   >
                     3 new
                   </Badge>
                 </div>
               </div>
-              <DropdownMenuItem className="p-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md cursor-pointer">
+
+              <DropdownMenuItem className="p-3 hover:bg-[var(--muted)] rounded-md cursor-pointer transition-colors duration-150">
                 <div className="flex items-start space-x-3">
-                  <div className="h-2 w-2 bg-teal-500 rounded-full mt-2"></div>
+                  <div className="h-2 w-2 bg-[var(--chart-3)] rounded-full mt-2"></div>
                   <div className="flex-1 space-y-1">
-                    <p className="text-sm text-gray-900 dark:text-white">
-                      New order received
-                    </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                    <p className="text-sm">New order received</p>
+                    <p className="text-xs text-[var(--muted-foreground)]">
                       2 minutes ago
                     </p>
                   </div>
                 </div>
               </DropdownMenuItem>
-              <DropdownMenuItem className="p-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md cursor-pointer">
+
+              <DropdownMenuItem className="p-3 hover:bg-[var(--muted)] rounded-md cursor-pointer transition-colors duration-150">
                 <div className="flex items-start space-x-3">
-                  <div className="h-2 w-2 bg-blue-500 rounded-full mt-2"></div>
+                  <div className="h-2 w-2 bg-[var(--chart-2)] rounded-full mt-2"></div>
                   <div className="flex-1 space-y-1">
-                    <p className="text-sm text-gray-900 dark:text-white">
-                      User registration
-                    </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                    <p className="text-sm">User registration</p>
+                    <p className="text-xs text-[var(--muted-foreground)]">
                       1 hour ago
                     </p>
                   </div>
                 </div>
               </DropdownMenuItem>
-              <DropdownMenuItem className="p-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md cursor-pointer">
+
+              <DropdownMenuItem className="p-3 hover:bg-[var(--muted)] rounded-md cursor-pointer transition-colors duration-150">
                 <div className="flex items-start space-x-3">
-                  <div className="h-2 w-2 bg-yellow-500 rounded-full mt-2"></div>
+                  <div className="h-2 w-2 bg-[var(--chart-4)] rounded-full mt-2"></div>
                   <div className="flex-1 space-y-1">
-                    <p className="text-sm text-gray-900 dark:text-white">
-                      System maintenance
-                    </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                    <p className="text-sm">System maintenance</p>
+                    <p className="text-xs text-[var(--muted-foreground)]">
                       3 hours ago
                     </p>
                   </div>
                 </div>
               </DropdownMenuItem>
-              <DropdownMenuSeparator className="my-2" />
-              <DropdownMenuItem className="p-2 text-center text-sm text-teal-600 hover:text-teal-700 dark:text-teal-400 dark:hover:text-teal-300 cursor-pointer rounded-md hover:bg-teal-50 dark:hover:bg-teal-950/20">
+
+              <DropdownMenuSeparator className="my-2 bg-[var(--border)]" />
+
+              <DropdownMenuItem className="p-2 text-center text-sm text-[var(--primary)] hover:text-[var(--primary)] cursor-pointer rounded-md hover:bg-[var(--muted)] transition-colors duration-150">
                 View all notifications
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
 
           {/* Settings Dropdown */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-9 w-9 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-all duration-200 group"
-              >
-                <Settings className="h-4 w-4 group-hover:text-primary dark:group-hover:text-teal-400 group-hover:rotate-90 transition-all duration-300" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56 p-2 shadow-xl">
-              <DropdownMenuItem className="rounded-md cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-150">
-                <Settings className="h-4 w-4 mr-3 text-gray-500" />
-                <span>Settings</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={toggleTheme}
-                className="rounded-md cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-150"
-              >
-                {theme === "dark" ? (
-                  <>
-                    <Sun className="h-4 w-4 mr-3 text-gray-500" />
-                    <span>Light Mode</span>
-                  </>
-                ) : (
-                  <>
-                    <Moon className="h-4 w-4 mr-3 text-gray-500" />
-                    <span>Dark Mode</span>
-                  </>
-                )}
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={toggleTheme}
+            className="h-9 w-9 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-all duration-200 group"
+          >
+            {theme === "dark" ? (
+              <Sun className="h-4 w-4 text-white group-hover:text-primary transition-all duration-300" />
+            ) : (
+              <Moon className="h-4 w-4 text-gray-700 group-hover:text-primary transition-all duration-300" />
+            )}
+          </Button>
         </div>
       </div>
     </header>

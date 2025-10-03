@@ -55,13 +55,13 @@ export default function SalesOrdersBarchart({ timeRange }) {
 
   return (
     <Card
-      className="shadow-sm border-0 dark:bg-[var(--card)]"
+      className="dark:border-2 shadow-sm border-0 dark:bg-[var(--card)]"
       style={{
         boxShadow:
           "rgba(50, 50, 93, 0.25) 0px 0px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px",
       }}
     >
-      <CardHeader className="px-6 pb-4 border-b border-border/50">
+      <CardHeader className="px-6 pb-4 border-b border-gray-100">
         <div className="flex items-center justify-between flex-wrap gap-4">
           {/* Left section */}
           <div className="flex items-center gap-3">
@@ -77,13 +77,13 @@ export default function SalesOrdersBarchart({ timeRange }) {
                   ? timeRange === "thisWeek"
                     ? "Orders performance this Week"
                     : timeRange === "thisMonth"
-                      ? "Orders performance this Month"
-                      : "Orders performance this Year"
+                    ? "Orders performance this Month"
+                    : "Orders performance this Year"
                   : timeRange === "thisWeek"
-                    ? "Sales performance this Week"
-                    : timeRange === "thisMonth"
-                      ? "Sales performance this Month"
-                      : "Sales performance this Year"}
+                  ? "Sales performance this Week"
+                  : timeRange === "thisMonth"
+                  ? "Sales performance this Month"
+                  : "Sales performance this Year"}
               </p>
             </div>
           </div>
@@ -194,22 +194,18 @@ export default function SalesOrdersBarchart({ timeRange }) {
                 <Tooltip
                   cursor={{ fill: "var(--muted-foreground)", opacity: 0.2 }}
                   contentStyle={{
-                    backgroundColor: "var(--background)",
-                    border: "1px solid var(--border)",
+                    backgroundColor: "var(--secondary)",
                     borderRadius: "0.75rem", // matches --radius-lg
-                    boxShadow:
-                      "0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.05)",
-                    padding: "10px 12px",
                   }}
                   labelStyle={{
-                    color: "hslvar(--primary))",
+                    color: "var(--foreground)",
                     fontWeight: 600,
-                    fontSize: "14px",
+                    fontSize: "11px",
                     marginBottom: "4px",
                   }}
                   itemStyle={{
-                    color: "hsl(var(--chart-1))", // 🔹 pulled directly from your theme
-                    fontSize: "13px",
+                    color: "var(--foreground)", // 🔹 pulled directly from your theme
+                    fontSize: "11px",
                   }}
                 />
 
@@ -228,18 +224,20 @@ export default function SalesOrdersBarchart({ timeRange }) {
                 className="bg-primary/10 text-primary border-primary/20 px-4 py-1.5 font-medium"
               >
                 {type === "orders"
-                  ? `Total Orders ${timeRange === "thisWeek"
-                    ? "This Week :"
-                    : timeRange === "thisMonth"
-                      ? "This Month :"
-                      : "This Year :"
-                  } ${stats.totalOrdersByTimeRange}`
-                  : `Total Sales ${timeRange === "thisWeek"
-                    ? "This Week :"
-                    : timeRange === "thisMonth"
-                      ? "This Month :"
-                      : "This Year :"
-                  } ${stats.totalSalesByTimeRange} DH`}
+                  ? `Total Orders ${
+                      timeRange === "thisWeek"
+                        ? "This Week :"
+                        : timeRange === "thisMonth"
+                        ? "This Month :"
+                        : "This Year :"
+                    } ${stats.totalOrdersByTimeRange}`
+                  : `Total Sales ${
+                      timeRange === "thisWeek"
+                        ? "This Week :"
+                        : timeRange === "thisMonth"
+                        ? "This Month :"
+                        : "This Year :"
+                    } ${stats.totalSalesByTimeRange} DH`}
               </Badge>
             </div>
           </>

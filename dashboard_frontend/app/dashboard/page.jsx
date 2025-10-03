@@ -46,7 +46,7 @@ export default function DashboardPage() {
 
         {/* Right Column: TopClients + TopPerformerProduct */}
         <div className="flex flex-col gap-4">
-          <div className="overflow-auto bg-white rounded-xl shadow-sm border border-slate-200">
+          <div className="overflow-auto bg-white rounded-xl shadow-sm border border-slate-200 dark:border-2 dark:border-[var(--border)] dark:bg-[var(--card)]">
             <TopClients timeRange={timeRange} />
           </div>
           <TopPerformerProduct timeRange={timeRange} />

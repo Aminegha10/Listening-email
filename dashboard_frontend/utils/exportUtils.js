@@ -301,7 +301,7 @@ export const exportToPDF = async (
       ? data.map((row) => [
           row.getValue("orderNumber"),
           row.getValue("client"),
-          row.getValue("price"),
+          row.getValue("price") || "N/A",
           row.getValue("salesAgent"),
           (row.getValue("products") || []).length,
         ])
