@@ -76,7 +76,6 @@ const COLORS = [
   "#ffffff", // popover background
 ];
 
-
 // export functions with date suffix
 // const handleExportCSV = () =>
 //   exportToCSV();
@@ -151,7 +150,7 @@ export function TopProductsPieChart({ timeRange }) {
           <div className="p-4 sm:p-6 border-b border-slate-200 flex flex-col md:flex-row md:justify-between md:items-center gap-4">
             {/* Left side — Title */}
             <div className="flex items-start sm:items-center gap-3">
-            <div className="p-2.5 bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl border border-primary/10">
+              <div className="p-2.5 bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl border border-primary/10">
                 <Package className="h-5 w-5 text-primary dark:text-white" />
               </div>
               <div>
@@ -178,8 +177,8 @@ export function TopProductsPieChart({ timeRange }) {
                     {filter === "unitsSold"
                       ? "Most Sold"
                       : filter === "revenue"
-                        ? "Top Revenue"
-                        : "Most Orders Count"}
+                      ? "Top Revenue"
+                      : "Most Orders Count"}
                     <ChevronDown className="h-4 w-4" />
                   </Button>
                 </DropdownMenuTrigger>
@@ -299,8 +298,8 @@ export function TopProductsPieChart({ timeRange }) {
                   {timeRange === "thisWeek"
                     ? "This Week : "
                     : timeRange === "thisMonth"
-                      ? "This Month : "
-                      : "This Year : "}
+                    ? "This Month : "
+                    : "This Year : "}
                   {data?.totalOrderedProducts}
                 </Badge>
               </div>
@@ -310,21 +309,21 @@ export function TopProductsPieChart({ timeRange }) {
 
         {/* Top Product Performance Section */}
         {TopProducts && TopProducts.length > 0 && (
-          <CardFooter className="border-t bg-slate-50/50 p-0">
+          <CardFooter className="border-t dark:bg-secondary bg-slate-50/50 p-0">
             <div className="w-full p-4 sm:p-6">
-              <div className="bg-white border border-slate-200 rounded-xl p-4 sm:p-5 shadow-sm">
+              <div className="bg-white dark:bg-secondary  border border-slate-200 rounded-xl p-4 sm:p-5 shadow-sm">
                 {/* Responsive layout */}
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6">
                   {/* Left: Icon + Info */}
                   <div className="flex items-start sm:items-center gap-3 sm:gap-4 w-full sm:w-auto">
-                    <div className="flex items-center justify-center w-12 h-12 bg-gradient-to-br from-[var(--color-primary)] to-indigo-300 rounded-xl shadow-lg flex-shrink-0">
+                    <div className="flex items-center justify-center w-12 h-12 bg-gradient-to-br from-[var(--color-primary)] to-indigo-300 dark:to-secondary rounded-xl shadow-lg flex-shrink-0">
                       <Trophy className="w-6 h-6 text-white" />
                     </div>
 
                     <div className="space-y-1 w-full">
                       <div className="flex flex-wrap items-center gap-2">
                         <Badge
-                          variant="secondary"
+                          variant="outline"
                           className="bg-blue-50 text-blue-700 border-blue-200 text-xs font-medium px-2 py-1"
                         >
                           TOP PRODUCT
@@ -334,7 +333,7 @@ export function TopProductsPieChart({ timeRange }) {
                         </span>
                       </div>
 
-                      <h4 className="text-base sm:text-lg font-semibold text-slate-900 truncate max-w-[200px] sm:max-w-md">
+                      <h4 className="text-base sm:text-lg font-semibold text-slate-900 dark:text-white truncate max-w-[200px] sm:max-w-md">
                         {TopProducts[0].product}
                       </h4>
                     </div>
@@ -342,14 +341,14 @@ export function TopProductsPieChart({ timeRange }) {
 
                   {/* Right: Value + Trend */}
                   <div className="w-full sm:w-auto text-left sm:text-right">
-                    <div className="text-xl sm:text-2xl font-bold text-slate-900 mb-1">
+                    <div className="text-xl sm:text-2xl font-bold dark:text-white text-slate-900 mb-1">
                       {filterInfo.unit === "$"
                         ? `${TopProducts[0][filter]} DH`
                         : `${TopProducts[0][filter]}${filterInfo.unit}`}
                     </div>
 
-                    <div className="flex sm:justify-end items-center gap-1 text-sm text-green-600">
-                      <TrendingUp className="w-4 h-4 flex-shrink-0" />
+                    <div className="flex sm:justify-end items-center gap-1 text-sm dark:text-gray-500 text-green-600">
+                      <TrendingUp className="w-4 h-4 flex-shrink-0 dark:text-green-500" />
                       <span className="text-xs sm:text-sm">
                         Leading performance
                       </span>

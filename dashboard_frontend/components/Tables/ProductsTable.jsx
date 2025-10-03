@@ -426,7 +426,7 @@ export function ProductsTable({ id }) {
                   <div className="flex flex-col items-center gap-2">
                     <Package className="h-6 w-6 text-muted-foreground/50" />
                     <span className="text-sm font-medium">
-                      No results found.
+                      No product found.
                     </span>
                     <span className="text-xs">
                       Try adjusting your search or filters

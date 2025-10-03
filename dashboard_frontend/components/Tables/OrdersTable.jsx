@@ -17,7 +17,9 @@ import {
   FileJson,
   FileText,
   Loader2,
+  Package,
   Sheet,
+  ShoppingCart,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -115,9 +117,9 @@ export const columns = [
     ),
     cell: ({ row }) => {
       const price = parseFloat(row.getValue("price") || 0);
-      const formatted = new Intl.NumberFormat("en-US", {
+      const formatted = new Intl.NumberFormat("fr-MA", {
         style: "currency",
-        currency: "USD",
+        currency: "MAD",
       }).format(price);
       return (
         <div className="text-right font-semibold text-primary">{formatted}</div>
@@ -503,7 +505,15 @@ export function OrdersTable({ id }) {
                   colSpan={columns.length}
                   className="h-24 text-center text-muted-foreground py-6"
                 >
-                  No results.
+                  <div className="flex flex-col items-center gap-2">
+                    <ShoppingCart className="h-6 w-6 text-muted-foreground/50" />
+                    <span className="text-sm font-medium">
+                      No order found.
+                    </span>
+                    <span className="text-xs">
+                      Try adjusting your search or filters
+                    </span>
+                  </div>
                 </TableCell>
               </TableRow>
             )}

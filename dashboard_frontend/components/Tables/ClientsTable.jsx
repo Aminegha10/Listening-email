@@ -18,6 +18,7 @@ import {
   Package,
   Sheet,
   ShoppingCart,
+  Users,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -443,9 +444,9 @@ export function ClientsTable() {
                   className="h-24 text-center text-muted-foreground py-6"
                 >
                   <div className="flex flex-col items-center gap-2">
-                    <Package className="h-6 w-6 text-muted-foreground/50" />
+                    <Users className="h-6 w-6 text-muted-foreground/50" />
                     <span className="text-sm font-medium">
-                      No results found.
+                      No client found.
                     </span>
                     <span className="text-xs">Try adjusting your filters</span>
                   </div>
