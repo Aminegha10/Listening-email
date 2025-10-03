@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { setCredentials } from "./authSlice";
+import { DataApi } from "./dataApi";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -24,7 +25,7 @@ export const authApi = createApi({
       return headers;
     },
   }),
-
+  tagTypes: ["User"],
   endpoints: (builder) => ({
     register: builder.mutation({
       query: (credentials) => ({
@@ -32,17 +33,15 @@ export const authApi = createApi({
         method: "POST", // ✅ Usually login is POST
         body: credentials, // ✅ Send data in request body
       }),
-      // async onQueryStarted(args, { dispatch, queryFulfilled }) {
-      //   try {
-      //     // console.log("d");
-      //     const { data } = await queryFulfilled;
-      //     dispatch(
-      //       setCredentials({ accessToken: data.accessToken, user: data.user })
-      //     );
-      //   } catch (err) {
-      //     console.log("err");
-      //   }
-      // },
+      async onQueryStarted(args, { dispatch, queryFulfilled }) {
+        try {
+          // console.log("d");
+          const { data } = await queryFulfilled;
+          dispatch(DataApi.util.invalidateTags(["User"]));
+        } catch (err) {
+          console.log(err.message);
+        }
+      },
     }),
     login: builder.mutation({
       query: (credentials) => ({

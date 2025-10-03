@@ -134,18 +134,16 @@ const Login = () => {
       <>
         {!isSuccess ? (
           // Enhanced Login form
-          <div className="min-h-screen bg-gray-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 flex items-center justify-center p-4 overflow-visible relative">
+          <div className="min-h-screen bg-gray-50 dark:bg-background flex items-center justify-center p-4 overflow-visible relative">
             {/* Background layers */}
-            <div className="absolute inset-0 bg-grid-slate-200/20 dark:bg-grid-slate-700/25 bg-[size:60px_60px] opacity-60 pointer-events-none z-0" />
-            <div className="absolute inset-0 bg-gradient-to-t from-white/80 via-white/40 to-white/80 dark:from-slate-900/80 dark:via-slate-900/40 dark:to-slate-900/80 pointer-events-none z-0" />
-
+      
             {/* Card */}
             <Card
               style={{
                 boxShadow:
                   "rgba(50, 50, 93, 0.25) 0px 0px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px",
               }}
-              className="w-full max-w-md relative z-10 shadow-[0_10px_30px_rgba(0,0,0,0.15)] border-0 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl"
+              className="w-full max-w-md relative z-10 dark:bg-card shadow-[0_10px_30px_rgba(0,0,0,0.15)] border-0 dark:border-2 bg-white/95  backdrop-blur-xl"
             >
               <CardHeader className="space-y-4 pb-4">
                 <CardTitle className="text-3xl font-bold text-center bg-gradient-to-r from-slate-900 to-slate-600 dark:from-white dark:to-slate-300 bg-clip-text text-transparent">
@@ -161,7 +159,7 @@ const Login = () => {
                   <Button
                     type="button"
                     variant="outline"
-                    className="w-full h-12 border-2 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all duration-200 hover:border-slate-300 dark:hover:border-slate-600 group"
+                    className="w-full h-12 border-2 hover:bg-primary/40  dark:hover:bg-slate-800 transition-all duration-200 hover:border-slate-300 dark:hover:border-slate-600 group"
                     onClick={handleGoogleLogin}
                   >
                     <GoogleIcon />
@@ -173,7 +171,7 @@ const Login = () => {
                   <Button
                     type="button"
                     variant="outline"
-                    className="w-full h-12 border-2 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all duration-200 hover:border-slate-300 dark:hover:border-slate-600 group"
+                    className="w-full h-12 border-2  hover:bg-primary/40 dark:hover:bg-slate-800 transition-all duration-200 hover:border-slate-300 dark:hover:border-slate-600 group"
                     onClick={handleGithubLogin}
                   >
                     <Github className="w-5 h-5" />
@@ -204,12 +202,12 @@ const Login = () => {
                       Email Address
                     </Label>
                     <div className="relative group">
-                      <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors duration-200 w-5 h-5" />
+                      <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600  group-focus-within:text-white-600 dark:group-focus-within:text-white transition-colors duration-200 w-5 h-5" />
                       <Input
-                        className="pl-11 h-12 border-2 border-slate-200 dark:border-slate-700 focus:border-blue-600 dark:focus:border-blue-500 rounded-xl bg-slate-50/50 dark:bg-slate-800/50 transition-all duration-200 hover:border-slate-300 dark:hover:border-slate-600"
+                        className="pl-11 pr-11 h-12 border- dark:border-1 border-slate-200 dark:border-primary  dark:focus:border-primary rounded-xl bg-slate-50/50 dark:bg-primary/20 transition-all duration-200 "
                         id="email"
                         type="email"
-                        defaultValue={"amine32@smab.com"}
+                        defaultValue={"oussama214@smab.com"}
                         placeholder="username@smab.com"
                         {...register("email", {
                           required: "Email is required",
@@ -233,11 +231,11 @@ const Login = () => {
                       Password
                     </Label>
                     <div className="relative group">
-                      <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors duration-200 w-5 h-5" />
+                      <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 dark:group-focus-within:text-white transition-colors duration-200 w-5 h-5" />
                       <Input
-                        className="pl-11 pr-11 h-12 border-2 border-slate-200 dark:border-slate-700 focus:border-blue-600 dark:focus:border-blue-500 rounded-xl bg-slate-50/50 dark:bg-slate-800/50 transition-all duration-200 hover:border-slate-300 dark:hover:border-slate-600"
+                        className="pl-11 pr-11 h-12 border-2 dark:border-1 border-slate-200 dark:border-primary focus:border-primary dark:focus:border-primary rounded-xl bg-slate-50/50 dark:bg-primary/20 transition-all duration-200 "
                         id="password"
-                        defaultValue={"azAZ@2002"}
+                        defaultValue={"azertyui"}
                         type={showPassword ? "text" : "password"}
                         placeholder="••••••••••••"
                         {...register("password", {

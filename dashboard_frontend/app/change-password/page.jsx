@@ -1,6 +1,14 @@
 "use client";
 import React, { useState } from "react";
-import { Eye, EyeOff, KeyRound, Check, X, Lock } from "lucide-react";
+import {
+  Eye,
+  EyeOff,
+  KeyRound,
+  Check,
+  X,
+  Lock,
+  CheckCircle,
+} from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
@@ -138,7 +146,8 @@ const Page = () => {
   } = useForm();
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [updatePassword, { isLoading }] = useUpdatePasswordMutation();
+  const [updatePassword, { isLoading, isSuccess }] =
+    useUpdatePasswordMutation();
 
   const newPassword = watch("newPassword", "");
   const confirmPassword = watch("confirmPassword", "");
@@ -157,7 +166,6 @@ const Page = () => {
       });
       return;
     }
-
     try {
       const response = await updatePassword(data.newPassword).unwrap();
 
@@ -193,8 +201,7 @@ const Page = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      {/* Add ToastContainer */}
+    <div className="min-h-screen bg-background flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <ToastContainer
         position="bottom-right"
         autoClose={3000}
@@ -205,28 +212,29 @@ const Page = () => {
         pauseOnFocusLoss
         draggable
         pauseOnHover
-        theme="colored"
+        theme={
+          document.documentElement.classList.contains("dark") ? "dark" : "light"
+        }
       />
 
       <div className="w-full max-w-md">
         <div
-          className="bg-white rounded-2xl border border-gray-100 p-8 "
+          className="bg-card rounded-2xl border border-border p-8"
           style={{
-            boxShadow:
-              "rgba(50, 50, 93, 0.25) 0px 0px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px",
+            boxShadow: "0 0 5px rgba(0,0,0,0.3), 0 1px 3px rgba(0,0,0,0.2)",
           }}
         >
-          {/* Header inside Card */}
+          {/* Header */}
           <div className="text-center mb-6">
             <div className="flex items-center justify-center mb-4">
-              <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center">
-                <KeyRound className="h-8 w-8 text-orange-500" />
+              <div className="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center">
+                <KeyRound className="h-8 w-8 text-accent" />
               </div>
             </div>
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">
+            <h1 className="text-2xl font-bold text-card-foreground mb-2">
               Update Password
             </h1>
-            <p className="text-gray-600 text-sm">
+            <p className="text-foreground text-sm">
               Please create a new secure password for your account
             </p>
           </div>
@@ -235,17 +243,17 @@ const Page = () => {
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             {/* New Password */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-foreground mb-2">
                 New Password
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <Lock className="h-5 w-5 text-gray-400" />
+                  <Lock className="h-5 w-5 text-muted-foreground" />
                 </div>
                 <input
                   type={showNewPassword ? "text" : "password"}
                   placeholder="Enter your new password"
-                  className="w-full pl-12 pr-12 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 transition-all duration-200 text-gray-900 placeholder-gray-500"
+                  className="w-full pl-12 pr-12 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-200 bg-card text-card-foreground placeholder-muted-foreground"
                   {...register("newPassword", {
                     required: "New password is required",
                   })}
@@ -253,7 +261,7 @@ const Page = () => {
                 <button
                   type="button"
                   onClick={() => setShowNewPassword(!showNewPassword)}
-                  className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600 transition-colors"
+                  className="absolute inset-y-0 right-0 pr-4 flex items-center text-muted-foreground hover:text-foreground transition-colors"
                 >
                   {showNewPassword ? (
                     <EyeOff className="h-5 w-5" />
@@ -272,17 +280,17 @@ const Page = () => {
 
             {/* Confirm Password */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-foreground mb-2">
                 Confirm New Password
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <Lock className="h-5 w-5 text-gray-400" />
+                  <Lock className="h-5 w-5 text-muted-foreground" />
                 </div>
                 <input
                   type={showConfirmPassword ? "text" : "password"}
                   placeholder="Confirm your new password"
-                  className="w-full pl-12 pr-12 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 transition-all duration-200 text-gray-900 placeholder-gray-500"
+                  className="w-full pl-12 pr-12 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-200 bg-card text-card-foreground placeholder-muted-foreground"
                   {...register("confirmPassword", {
                     required: "Please confirm your password",
                   })}
@@ -290,7 +298,7 @@ const Page = () => {
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600 transition-colors"
+                  className="absolute inset-y-0 right-0 pr-4 flex items-center text-muted-foreground hover:text-foreground transition-colors"
                 >
                   {showConfirmPassword ? (
                     <EyeOff className="h-5 w-5" />
@@ -318,13 +326,17 @@ const Page = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-teal-500 hover:bg-teal-600 text-white font-medium py-3 px-4 rounded-xl transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+              className="w-full bg-primary cursor-pointer hover:bg-primary/80 text-primary-foreground font-medium py-3 px-4 rounded-xl transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
             >
               {isLoading ? (
-                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-primary-foreground mr-2"></div>
               ) : (
                 <>
-                  <Lock className="h-5 w-5 mr-2" />
+                  {isSuccess ? (
+                    <CheckCircle className="h-5 w-5 mr-2 text-white" />
+                  ) : (
+                    <Lock className="h-5 w-5 mr-2" />
+                  )}
                   Update Password
                 </>
               )}
@@ -335,7 +347,7 @@ const Page = () => {
               <button
                 type="button"
                 onClick={() => router.push("/login")}
-                className="text-blue-600 hover:text-blue-800 text-sm font-medium transition-colors duration-200"
+                className="text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium transition-colors duration-200 hover:underline"
               >
                 ← Back to Sign In
               </button>
