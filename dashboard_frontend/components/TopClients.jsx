@@ -86,17 +86,17 @@ function TopClients({ timeRange }) {
       }}
     >
       {/* Clients Card */}
-      <div className="p-6 border-b border-slate-200   dark:border-white dark:border-b-1 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div className="p-6 border-b border-slate-200   dark:border-white dark:border-b-1 flex flex-row justify-between items-center sm:items-center sm:gap-4">
         {/* Left: Title + Icon */}
         <div className="flex items-center gap-3 w-full sm:w-auto">
           <div className="p-2.5 bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl border border-primary/10">
             <Users className="h-5 w-5 text-primary dark:text-white" />
           </div>
           <div>
-            <h3 className="text-lg sm:text-xl font-semibold text-slate-900 dark:text-white ">
+            <h3 className="text-base sm:text-xl font-semibold text-slate-900 dark:text-white ">
               Top 10 Clients
             </h3>
-            <p className="text-sm text-gray-500 font-medium ">
+            <p className="text-xs sm:text-sm text-gray-500 font-medium ">
               Showing {topClients?.data.length} of {topClients?.totalClients}{" "}
               clients
             </p>
@@ -104,7 +104,7 @@ function TopClients({ timeRange }) {
         </div>
 
         {/* Right: Filters & Export */}
-        <div className="flex flex-wrap gap-2 w-full sm:w-auto justify-start sm:justify-end">
+        <div className="flex flex-wrap gap-2 w-full sm:w-auto justify-end sm:justify-end">
           {/* Filter Dropdown */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -113,11 +113,13 @@ function TopClients({ timeRange }) {
                 className="flex items-center gap-1 rounded-lg border border-border hover:border-primary hover:text-primary hover:bg-primary/5 transition-all duration-200 font-medium bg-transparent text-xs"
               >
                 <Settings2 className="h-4 w-4" />
-                {filter === "revenue"
-                  ? "Revenue"
-                  : filter === "productsQuantity"
-                  ? "Products"
-                  : "Orders"}
+                <span className="sm:inline hidden">
+                  {filter === "revenue"
+                    ? "Revenue"
+                    : filter === "productsQuantity"
+                    ? "Products"
+                    : "Orders"}
+                </span>
                 <ChevronDown className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
@@ -142,7 +144,8 @@ function TopClients({ timeRange }) {
                 className="flex items-center gap-1 rounded-lg border border-border hover:border-primary hover:text-primary hover:bg-primary/5 transition-all duration-200 font-medium bg-transparent text-xs"
               >
                 <Download className="h-4 w-4" />
-                Export <ChevronDown className="h-4 w-4" />
+                <span className="sm:inline hidden">Export</span>
+                <ChevronDown className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">

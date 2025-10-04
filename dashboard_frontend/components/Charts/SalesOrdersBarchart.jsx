@@ -62,17 +62,17 @@ export default function SalesOrdersBarchart({ timeRange }) {
       }}
     >
       <CardHeader className="px-6 pb-4 border-b border-gray-100">
-        <div className="flex items-center justify-between flex-wrap gap-4">
+        <div className="flex items-center justify-between  gap-4">
           {/* Left section */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             <div className="p-2.5 bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl border border-primary/10">
-              <ChartNoAxesCombined className="h-5 w-5 text-primary dark:text-white" />
+              <ChartNoAxesCombined className="h-4 w-4 sm:h-5 sm:w-5 text-primary dark:text-white" />
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-foreground tracking-tight">
+              <h3 className="text-base sm:text-xl font-semibold text-slate-900 dark:text-white ">
                 {type === "orders" ? "Orders Analytics" : "Sales Analytics"}
               </h3>
-              <p className="text-sm text-gray-500  font-medium">
+              <p className="text-xs sm:text-sm text-gray-500 font-medium ">
                 {type === "orders"
                   ? timeRange === "thisWeek"
                     ? "Orders performance this Week"
@@ -89,7 +89,7 @@ export default function SalesOrdersBarchart({ timeRange }) {
           </div>
 
           {/* Right section */}
-          <div className="flex items-center gap-2 flex-wrap">
+          <div className="flex justify-end items-center gap-2">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -97,7 +97,9 @@ export default function SalesOrdersBarchart({ timeRange }) {
                   className="flex items-center gap-1 rounded-lg border border-border hover:border-primary hover:text-primary hover:bg-primary/5 transition-all duration-200 font-medium bg-transparent text-xs"
                 >
                   <ShoppingCart className="h-4 w-4" />
-                  {type === "orders" ? "Orders" : "Sales"}
+                  <span className="sm:inline hidden">
+                    {type === "orders" ? "Orders" : "Sales"}
+                  </span>
                   <ChevronDown className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
@@ -124,7 +126,9 @@ export default function SalesOrdersBarchart({ timeRange }) {
                   className="flex items-center gap-1 rounded-lg border border-border hover:border-primary hover:text-primary hover:bg-primary/5 transition-all duration-200 font-medium bg-transparent text-xs"
                 >
                   <Users className="h-4 w-4" />
-                  {agentFilter === "all" ? "All Agents" : agentFilter}
+                  <span className="sm:inline hidden">
+                    {agentFilter === "all" ? "All Agents" : agentFilter}
+                  </span>
                   <ChevronDown className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>

@@ -145,7 +145,7 @@ export function OrdersAreaChart({ timeRange }) {
       }}
     >
       <CardHeader className="px-6 pb-4 border-b border-gray-100">
-        <div className="flex items-center justify-between flex-wrap gap-3">
+        <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-3">
             <div className="p-2.5 bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl border border-primary/10">
               <ChartNoAxesCombined className="h-5 w-5 text-primary dark:text-white" />

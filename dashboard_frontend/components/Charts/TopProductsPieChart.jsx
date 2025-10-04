@@ -147,17 +147,17 @@ export function TopProductsPieChart({ timeRange }) {
       >
         {/* Header */}
         <CardHeader>
-          <div className="p-4 sm:p-6 border-b border-slate-200 flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+          <div className="p-4 sm:p-6 border-b border-slate-200 flex flex-row justify-between items-center gap-3">
             {/* Left side — Title */}
-            <div className="flex items-start sm:items-center gap-3">
+            <div className="flex flex-row items-center justify-between sm:items-center gap-2 sm:gap-3">
               <div className="p-2.5 bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl border border-primary/10">
-                <Package className="h-5 w-5 text-primary dark:text-white" />
+                <Package className="h-4 w-4 sm:h-5 sm:w-5 text-primary dark:text-white" />
               </div>
               <div>
-                <h3 className="text-lg sm:text-xl font-semibold text-slate-900 dark:text-foreground">
+                <h3 className="text-base sm:text-xl font-semibold text-slate-900 dark:text-white ">
                   Top 10 Products
                 </h3>
-                <p className="text-xs sm:text-sm text-gray-500 font-medium">
+                <p className="text-xs sm:text-sm text-gray-500 font-medium ">
                   Showing {TopProducts?.length} of {data?.totalOrderedProducts}{" "}
                   products
                 </p>
@@ -165,7 +165,7 @@ export function TopProductsPieChart({ timeRange }) {
             </div>
 
             {/* Right side — Controls */}
-            <div className="flex flex-wrap justify-start md:justify-end gap-2 sm:gap-3">
+            <div className="flex justify-end md:justify-end gap-3 sm:gap-3">
               {/* Filter dropdown */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -173,12 +173,14 @@ export function TopProductsPieChart({ timeRange }) {
                     variant="outline"
                     className="flex items-center gap-1 rounded-lg border border-border hover:border-primary hover:text-primary hover:bg-primary/5 transition-all duration-200 font-medium bg-transparent text-xs"
                   >
-                    <Settings2 className="h-4 w-4" />
-                    {filter === "unitsSold"
-                      ? "Most Sold"
-                      : filter === "revenue"
-                      ? "Top Revenue"
-                      : "Most Orders Count"}
+                    <Settings2 className="h-4 w-4 " />
+                    <span className="sm:inline hidden">
+                      {filter === "unitsSold"
+                        ? "Most Sold"
+                        : filter === "revenue"
+                        ? "Top Revenue"
+                        : "Top Ordered"}
+                    </span>
                     <ChevronDown className="h-4 w-4" />
                   </Button>
                 </DropdownMenuTrigger>
@@ -203,7 +205,7 @@ export function TopProductsPieChart({ timeRange }) {
                     className="flex items-center gap-1 rounded-lg border border-border hover:border-primary hover:text-primary hover:bg-primary/5 transition-all duration-200 font-medium bg-transparent text-xs"
                   >
                     <Download className="h-4 w-4" />
-                    Export
+                    <span className="sm:inline hidden">Export</span>
                     <ChevronDown className="h-4 w-4" />
                   </Button>
                 </DropdownMenuTrigger>
@@ -224,11 +226,11 @@ export function TopProductsPieChart({ timeRange }) {
               </DropdownMenu>
 
               {/* Table link button */}
-              <Link href="/dashboard/tables#products" passHref>
-                <Button className="px-3 py-2 bg-white dark: hover:bg-slate-200 text-slate-700 rounded-lg border border-slate-300 hover:border-slate-400 flex items-center gap-2 text-sm sm:text-base">
-                  <Table className="h-4 w-4" />
+              {/* <Link href="/dashboard/tables#products" passHref>
+                <Button className="!p-2 bg-white dark:bg-secondary dark:border dark:border-border dark:hover:bg-slate-200 text-slate-700 rounded-lg border border-slate-300 hover:border-slate-400 flex items-center gap-1 text-xs sm:!p-2 sm:gap-2 sm:text-sm">
+                  <Table className="w-3 h-3 sm:w-4 sm:h-4" />
                 </Button>
-              </Link>
+              </Link> */}
             </div>
           </div>
         </CardHeader>

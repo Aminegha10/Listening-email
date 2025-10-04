@@ -267,10 +267,10 @@ export function SideBar({ setLogOut, ...props }) {
                   <User className="h-4 w-4 mr-3 text-muted-foreground" />
                   <span className="font-medium">Account Settings</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem className="rounded-lg cursor-pointer hover:bg-sidebar-accent transition-colors duration-200 py-2.5">
+                {/* <DropdownMenuItem className="rounded-lg cursor-pointer hover:bg-sidebar-accent transition-colors duration-200 py-2.5">
                   <CreditCard className="h-4 w-4 mr-3 text-muted-foreground" />
                   <span className="font-medium">Billing & Plans</span>
-                </DropdownMenuItem>
+                </DropdownMenuItem> */}
                 <DropdownMenuItem className="rounded-lg cursor-pointer hover:bg-sidebar-accent transition-colors duration-200 py-2.5">
                   <HelpCircle className="h-4 w-4 mr-3 text-muted-foreground" />
                   <span className="font-medium">Help & Support</span>
