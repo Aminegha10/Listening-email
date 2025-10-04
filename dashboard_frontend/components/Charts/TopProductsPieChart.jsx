@@ -165,7 +165,7 @@ export function TopProductsPieChart({ timeRange }) {
             </div>
 
             {/* Right side — Controls */}
-            <div className="flex justify-end md:justify-end gap-3 sm:gap-3">
+            <div className="flex justify-end gap-3 sm:gap-3">
               {/* Filter dropdown */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -226,11 +226,11 @@ export function TopProductsPieChart({ timeRange }) {
               </DropdownMenu>
 
               {/* Table link button */}
-              {/* <Link href="/dashboard/tables#products" passHref>
-                <Button className="!p-2 bg-white dark:bg-secondary dark:border dark:border-border dark:hover:bg-slate-200 text-slate-700 rounded-lg border border-slate-300 hover:border-slate-400 flex items-center gap-1 text-xs sm:!p-2 sm:gap-2 sm:text-sm">
+              <Link href="/dashboard/tables#products" passHref>
+                <Button className="!p-2  hidden bg-white dark:bg-secondary dark:border dark:border-border dark:hover:bg-slate-200 text-slate-700 rounded-lg border border-slate-300 hover:border-slate-400 sm:flex items-center gap-1 text-xs sm:!p-2 sm:gap-2 sm:text-sm">
                   <Table className="w-3 h-3 sm:w-4 sm:h-4" />
                 </Button>
-              </Link> */}
+              </Link>
             </div>
           </div>
         </CardHeader>
@@ -311,7 +311,7 @@ export function TopProductsPieChart({ timeRange }) {
 
         {/* Top Product Performance Section */}
         {TopProducts && TopProducts.length > 0 && (
-          <CardFooter className="border-t dark:bg-secondary bg-slate-50/50 p-0">
+          <CardFooter className="border-t rounded-xl dark:bg-secondary bg-slate-50/50 p-0">
             <div className="w-full p-4 sm:p-6">
               <div className="bg-white dark:bg-secondary  border border-slate-200 rounded-xl p-4 sm:p-5 shadow-sm">
                 {/* Responsive layout */}

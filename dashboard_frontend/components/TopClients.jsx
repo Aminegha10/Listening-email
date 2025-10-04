@@ -86,7 +86,7 @@ function TopClients({ timeRange }) {
       }}
     >
       {/* Clients Card */}
-      <div className="p-6 border-b border-slate-200   dark:border-white dark:border-b-1 flex flex-row justify-between items-center sm:items-center sm:gap-4">
+      <div className="p-6 border-b border-slate-200   dark:border-white dark:border-b-1 flex flex-row justify-between items-center sm:items-center sm:gap-1">
         {/* Left: Title + Icon */}
         <div className="flex items-center gap-3 w-full sm:w-auto">
           <div className="p-2.5 bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl border border-primary/10">
@@ -104,7 +104,7 @@ function TopClients({ timeRange }) {
         </div>
 
         {/* Right: Filters & Export */}
-        <div className="flex flex-wrap gap-2 w-full sm:w-auto justify-end sm:justify-end">
+        <div className="flex gap-2 w-full sm:w-auto justify-end sm:justify-end">
           {/* Filter Dropdown */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
