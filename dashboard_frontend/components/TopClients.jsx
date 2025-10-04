@@ -93,10 +93,10 @@ function TopClients({ timeRange }) {
             <Users className="h-5 w-5 text-primary dark:text-white" />
           </div>
           <div>
-            <h3 className="text-base sm:text-xl font-semibold text-slate-900 dark:text-white ">
+            <h3 className="text-xs sm:text-xl font-semibold text-slate-900 dark:text-white ">
               Top 10 Clients
             </h3>
-            <p className="text-xs sm:text-sm text-gray-500 font-medium ">
+            <p className="text-[10px] sm:text-sm text-gray-500 font-medium ">
               Showing {topClients?.data.length} of {topClients?.totalClients}{" "}
               clients
             </p>

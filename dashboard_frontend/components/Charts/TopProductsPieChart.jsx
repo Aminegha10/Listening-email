@@ -154,10 +154,10 @@ export function TopProductsPieChart({ timeRange }) {
                 <Package className="h-4 w-4 sm:h-5 sm:w-5 text-primary dark:text-white" />
               </div>
               <div>
-                <h3 className="text-base sm:text-xl font-semibold text-slate-900 dark:text-white ">
+                <h3 className="text-xs sm:text-xl font-semibold text-slate-900 dark:text-white ">
                   Top 10 Products
                 </h3>
-                <p className="text-xs sm:text-sm text-gray-500 font-medium ">
+                <p className="text-[10px] sm:text-sm text-gray-500 font-medium ">
                   Showing {TopProducts?.length} of {data?.totalOrderedProducts}{" "}
                   products
                 </p>
@@ -236,7 +236,7 @@ export function TopProductsPieChart({ timeRange }) {
         </CardHeader>
 
         {/* Chart */}
-        <CardContent className="flex-1 pb-4">
+        <CardContent className="flex-1 flex justify-center pb-4">
           {isLoading ? (
             <div className=" h-full w-full flex justify-center items-center">
               <Riple
