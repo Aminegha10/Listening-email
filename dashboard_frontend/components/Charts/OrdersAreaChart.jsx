@@ -42,12 +42,59 @@ import {
 } from "../ui/dropdown-menu";
 import { Button } from "../ui/button";
 
-export const description = "A simple area chart";
+// Weekday abbreviations (two-letter)
+const weekDayAbbr = {
+  Monday: "Mo",
+  Tuesday: "Tu",
+  Wednesday: "We",
+  Thursday: "Th",
+  Friday: "Fr",
+  Saturday: "Sa",
+  Sunday: "Su",
+};
 
+// Month abbreviations (two-letter)
+const monthAbbr = {
+  January: "Ja",
+  February: "Fe",
+  March: "Ma",
+  April: "Ap",
+  May: "My",
+  June: "Ju",
+  July: "Jl",
+  August: "Au",
+  September: "Se",
+  October: "Oc",
+  November: "No",
+  December: "De",
+};
+
+// Week number abbreviations for "thisMonth" range
+const weekAbbr = {
+  week1: "W1",
+  week2: "W2",
+  week3: "W3",
+  week4: "W4",
+  week5: "W5",
+};
 export function OrdersAreaChart({ timeRange }) {
   // Filters
   // const [timeRange, setTimeRange] = useState("thisMonth");
   const [agentFilter, setAgentFilter] = useState("all");
+  // function to format X-axis ticks based on time Range and for small screens
+  const formatTick = (value) => {
+    if (typeof window !== "undefined" && window.innerWidth < 640) {
+      // Only abbreviate for small screens
+      if (timeRange === "thisWeek") {
+        return weekDayAbbr[value] || value;
+      } else if (timeRange === "thisMonth") {
+        return weekAbbr[value] || value;
+      } else if (timeRange === "currentYear") {
+        return monthAbbr[value] || value;
+      }
+    }
+    return value; // For larger screens, show full label
+  };
 
   // API request with filters
   const {
@@ -111,8 +158,8 @@ export function OrdersAreaChart({ timeRange }) {
                 {timeRange === "thisWeek"
                   ? "Orders performance this Week"
                   : timeRange === "thisMonth"
-                    ? "Orders performance this Month"
-                    : "Orders performance this Year"}{" "}
+                  ? "Orders performance this Month"
+                  : "Orders performance this Year"}{" "}
               </p>
             </div>
           </div>
@@ -205,9 +252,9 @@ export function OrdersAreaChart({ timeRange }) {
                   axisLine={false}
                   tickMargin={12}
                   tick={{ fontSize: 12, fill: "var(--muted-foreground)" }}
-                  tickFormatter={(value) => value}
+                  tickFormatter={formatTick}
                 />
-               <ChartTooltip
+                <ChartTooltip
                   cursor={{
                     stroke: "var(--secondary)",
                     strokeWidth: 1,

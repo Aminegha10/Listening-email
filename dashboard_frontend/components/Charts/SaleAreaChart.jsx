@@ -42,11 +42,59 @@ import {
 } from "../ui/dropdown-menu";
 import { Button } from "../ui/button";
 
-export const description = "A simple area chart";
+// Weekday abbreviations (two-letter)
+const weekDayAbbr = {
+  Monday: "Mo",
+  Tuesday: "Tu",
+  Wednesday: "We",
+  Thursday: "Th",
+  Friday: "Fr",
+  Saturday: "Sa",
+  Sunday: "Su",
+};
+
+// Month abbreviations (two-letter)
+const monthAbbr = {
+  January: "Ja",
+  February: "Fe",
+  March: "Ma",
+  April: "Ap",
+  May: "My",
+  June: "Ju",
+  July: "Jl",
+  August: "Au",
+  September: "Se",
+  October: "Oc",
+  November: "No",
+  December: "De",
+};
+
+// Week number abbreviations for "thisMonth" range
+const weekAbbr = {
+  week1: "W1",
+  week2: "W2",
+  week3: "W3",
+  week4: "W4",
+  week5: "W5",
+};
 
 export function SaleAreaChart({ timeRange }) {
   const [agentFilter, setAgentFilter] = useState("all");
 
+  // Function to format X-axis ticks based on screen size
+  const formatTick = (value) => {
+    if (typeof window !== "undefined" && window.innerWidth < 640) {
+      // Only abbreviate for small screens
+      if (timeRange === "thisWeek") {
+        return weekDayAbbr[value] || value;
+      } else if (timeRange === "thisMonth") {
+        return weekAbbr[value] || value;
+      } else if (timeRange === "currentYear") {
+        return monthAbbr[value] || value;
+      }
+    }
+    return value; // For larger screens, show full label
+  };
   const {
     data: leadStats,
     isLoading,
@@ -166,9 +214,9 @@ export function SaleAreaChart({ timeRange }) {
                   tickLine={false}
                   axisLine={false}
                   tickMargin={12}
-                  interval={0} // <--- show all labels (forces Week 1 to render)
+                  interval={0}
                   tick={{ fontSize: 12, fill: "var(--muted-foreground)" }}
-                  tickFormatter={(value) => value}
+                  tickFormatter={formatTick} //this is the format of the value
                 />
                 <ChartTooltip
                   cursor={{

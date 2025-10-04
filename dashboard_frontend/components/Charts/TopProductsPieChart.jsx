@@ -138,7 +138,7 @@ export function TopProductsPieChart({ timeRange }) {
   return (
     <>
       <Card
-        className="flex flex-col py-0 dark:border-2"
+        className="flex flex-col py-0 dark:border-2 rounded-xl"
         style={{
           boxShadow:
             "rgba(50, 50, 93, 0.25) 0px 0px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px",
