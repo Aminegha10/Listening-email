@@ -10,6 +10,7 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { useState } from "react";
 import { DashboardSkeleton } from "@/components/DashboardSkeleton";
 import { LogOutScreen } from "@/components/AuthScreens/LogOutScreen";
+import { useTheme } from "next-themes";
 
 export default function DashboardLayout({ children }) {
   const dispatch = useDispatch();

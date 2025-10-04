@@ -207,7 +207,7 @@ const Login = () => {
                         className="pl-11 pr-11 h-12 border- dark:border-1 border-slate-200 dark:border-primary  dark:focus:border-primary rounded-xl bg-slate-50/50 dark:bg-primary/20 transition-all duration-200 "
                         id="email"
                         type="email"
-                        defaultValue={"oussama214@smab.com"}
+                        defaultValue={"amine32@smab.com"}
                         placeholder="username@smab.com"
                         {...register("email", {
                           required: "Email is required",
@@ -235,7 +235,7 @@ const Login = () => {
                       <Input
                         className="pl-11 pr-11 h-12 border-2 dark:border-1 border-slate-200 dark:border-primary focus:border-primary dark:focus:border-primary rounded-xl bg-slate-50/50 dark:bg-primary/20 transition-all duration-200 "
                         id="password"
-                        defaultValue={"azertyui"}
+                        defaultValue={"azAZ@2002"}
                         type={showPassword ? "text" : "password"}
                         placeholder="••••••••••••"
                         {...register("password", {

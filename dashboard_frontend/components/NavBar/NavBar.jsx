@@ -14,6 +14,8 @@ import { useTheme } from "next-themes";
 
 export function NavBar() {
   const { theme, setTheme, resolvedTheme } = useTheme();
+  console.log("Current theme:", theme);
+  console.log("Resolved theme:", resolvedTheme);
 
   const toggleTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark");
@@ -124,7 +126,7 @@ export function NavBar() {
             onClick={toggleTheme}
             className="h-9 w-9 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-all duration-200 group"
           >
-            {theme === "dark" ? (
+            {resolvedTheme === "dark" ? (
               <Sun className="h-4 w-4 text-white group-hover:text-primary transition-all duration-300" />
             ) : (
               <Moon className="h-4 w-4 text-gray-700 group-hover:text-primary transition-all duration-300" />
