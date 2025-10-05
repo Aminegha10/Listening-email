@@ -14,6 +14,8 @@ import {
   Shield,
   LogOut,
   MoreHorizontal,
+  Settings,
+  Users,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -56,16 +58,10 @@ const data = {
       badge: null,
     },
     {
-      title: "Tables",
+      title: "Records",
       url: "/dashboard/tables",
       icon: Table,
       badge: "New",
-    },
-    {
-      title: "Billing",
-      url: "/dashboard/billing",
-      icon: CreditCard,
-      badge: null,
     },
     {
       title: "RTL",
@@ -73,22 +69,11 @@ const data = {
       icon: Globe,
       badge: null,
     },
-  ],
-  accountPages: [
     {
-      title: "Profile",
-      url: "/profile",
-      icon: User,
-    },
-    {
-      title: "Sign In",
-      url: "/signin",
-      icon: LogIn,
-    },
-    {
-      title: "Sign Up",
-      url: "/signup",
-      icon: UserPlus,
+      title: "Settings",
+      url: "/dashboard/settings",
+      icon: Settings,
+      badge: null,
     },
   ],
 };
@@ -149,7 +134,7 @@ export function SideBar({ setLogOut, ...props }) {
                     className={cn(
                       "group relative rounded-xl px-4 py-3.5 text-sm font-semibold transition-all duration-300 hover:bg-sidebar-accent/80 hover:text-sidebar-accent-foreground hover:shadow-sm",
                       isActive &&
-                      "bg-primary/10 text-primary shadow-sm ring-1 ring-primary/20 hover:bg-primary/15"
+                        "bg-primary/10 text-primary shadow-sm ring-1 ring-primary/20 hover:bg-primary/15"
                     )}
                   >
                     <Link
@@ -190,31 +175,40 @@ export function SideBar({ setLogOut, ...props }) {
               Admin
             </div>
             <Collapsible open={adminCollapsed} onOpenChange={setAdminCollapsed}>
-              <SidebarMenuItem>
-                <CollapsibleTrigger asChild>
-                  <SidebarMenuButton className="group rounded-xl px-4 py-3.5 text-sm font-semibold transition-all duration-300 hover:bg-destructive/10 hover:text-destructive hover:shadow-sm">
-                    <Shield className="h-5 w-5 text-destructive/80 group-hover:text-destructive transition-colors duration-300" />
+              <SidebarMenuItem className="list-none">
+                <CollapsibleTrigger asChild className="">
+                  <SidebarMenuButton
+                    className={cn(
+                      "group rounded-xl px-4 py-3.5  text-sm font-semibold transition-all duration-300  text-black dark:hover:bg-destructive/10  dark:hover:text-destructive hover:shadow-sm",
+                      (adminCollapsed == true ||
+                        pathname === "/dashboard/administration/users") &&
+                        "dark:bg-destructive/10 dark:text-destructive shadow-sm bg-[#d40924]/10 text-[#d40924] ring-1 ring-[#d40924]/20 hover:bg-[#d40924]/15"
+                    )}
+                  >
+                    <Shield className="h-5 w-5 dark:text-destructive/80  text-[#d40924]/80 transition-colors duration-300" />
                     <span className="flex-1 font-medium">Administration</span>
                     <ChevronUp
                       className={cn(
-                        "ml-auto h-4 w-4 transition-all duration-300 text-muted-foreground group-hover:text-destructive",
+                        "ml-auto h-4 w-4 transition-all duration-300 text-muted-foreground dark:text-destructive",
                         adminCollapsed ? "rotate-0" : "rotate-180"
                       )}
                     />
                   </SidebarMenuButton>
                 </CollapsibleTrigger>
                 <CollapsibleContent className="transition-all duration-300 data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down">
-                  <SidebarMenuSub className="ml-8 mt-3 space-y-2 border-l-2 border-sidebar-border pl-6">
-                    <SidebarMenuSubItem>
-                      <Link
-                        href="/dashboard/administration/users"
-                        className={cn(
-                          "block px-4 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
-                          pathname === "/dashboard/administration/users" &&
-                          "bg-primary/10 text-primary"
-                        )}
-                      >
-                        Users Management
+                  <SidebarMenuSub className="ml-8 mt-3 mr-0 pr-0 rounded-xl space-y-2 !border-none ">
+                    <SidebarMenuSubItem className=" rounded-xl">
+                      <Link href="/dashboard/administration/users">
+                        <SidebarMenuButton
+                          className={cn(
+                            "flex items-center gap-2 pl-4 text-sm font-medium rounded-lg transition-all duration-200 hover:bg-primary/10 hover:text-primary bg-sidebar-accent ",
+                            pathname === "/dashboard/administration/users" &&
+                              "bg-primary/10 text-primary"
+                          )}
+                        >
+                          <Users className="h-5 w-5 text-primary  transition-colors duration-300" />
+                          <span className="flex-1 font-medium">Users</span>
+                        </SidebarMenuButton>
                       </Link>
                     </SidebarMenuSubItem>
                   </SidebarMenuSub>
