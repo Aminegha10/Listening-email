@@ -179,10 +179,10 @@ export function SideBar({ setLogOut, ...props }) {
                 <CollapsibleTrigger asChild className="">
                   <SidebarMenuButton
                     className={cn(
-                      "group rounded-xl px-4 py-3.5  text-sm font-semibold transition-all duration-300  text-black dark:hover:bg-destructive/10  dark:hover:text-destructive hover:shadow-sm",
+                      "group rounded-xl px-4 py-3.5 cursor-pointer text-sm font-semibold transition-all duration-300 dark:hover:bg-destructive/10  dark:hover:text-destructive hover:shadow-sm",
                       (adminCollapsed == true ||
                         pathname === "/dashboard/administration/users") &&
-                        "dark:bg-destructive/10 dark:text-destructive shadow-sm bg-[#d40924]/10 text-[#d40924] ring-1 ring-[#d40924]/20 hover:bg-[#d40924]/15"
+                        "dark:bg-destructive/10 dark:text-destructive shadow-sm bg-[#d40924]/10 text-[#d40924] ring-1 ring-[#d40924]/20 "
                     )}
                   >
                     <Shield className="h-5 w-5 dark:text-destructive/80  text-[#d40924]/80 transition-colors duration-300" />
@@ -197,11 +197,11 @@ export function SideBar({ setLogOut, ...props }) {
                 </CollapsibleTrigger>
                 <CollapsibleContent className="transition-all duration-300 data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down">
                   <SidebarMenuSub className="ml-8 mt-3 mr-0 pr-0 rounded-xl space-y-2 !border-none ">
-                    <SidebarMenuSubItem className=" rounded-xl">
+                    <SidebarMenuSubItem className=" rounded-xl ">
                       <Link href="/dashboard/administration/users">
                         <SidebarMenuButton
                           className={cn(
-                            "flex items-center gap-2 pl-4 text-sm font-medium rounded-lg transition-all duration-200 hover:bg-primary/10 hover:text-primary bg-sidebar-accent ",
+                            "flex items-center gap-2 cursor-pointer pl-4 text-sm font-medium rounded-lg transition-all duration-200 hover:bg-primary/10 hover:text-primary bg-sidebar-accent ",
                             pathname === "/dashboard/administration/users" &&
                               "bg-primary/10 text-primary"
                           )}
