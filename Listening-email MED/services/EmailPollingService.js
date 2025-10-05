@@ -14,14 +14,9 @@ export default async function startPolling(oauth2Client) {
     const orderNumberMatch = infoText.match(/رقم الطلب:\s*(\d+)/);
     const salesAgentMatch = infoText.match(/اسم ممثل المبيعات:\s*([^\n]+)/);
     const orderDateMatch = infoText.match(/تاريخ الطلب:\s*([0-9/]+)/);
-    // console.log(orderDateMatch);
-    // parsing salesagent
-
     const orderNumber = orderNumberMatch ? orderNumberMatch[1].trim() : "";
     const salesAgent = salesAgentMatch ? salesAgentMatch[1].trim() : "";
     const orderDate = orderDateMatch ? orderDateMatch[1].trim() : "";
-    console.log(orderDate)
-
 
     // Extract products
     const products = [];
@@ -98,16 +93,9 @@ export default async function startPolling(oauth2Client) {
         }
 
         const parsedBody = parseEmailBody(body);
-
-        logger.info(`Parsed order number: ${parsedBody.orderNumber}`);
-        // logger.info(
-        //   `Parsed products: ${JSON.stringify(parsedBody.products, null, 2)}`
-        // );
-
+        logger.info("Email(s) processed.");
         await addOrder(parsedBody.products, parsedBody);
       }
-
-      logger.info("Email(s) processed.");
     } catch (error) {
       logger.error(`Polling error: ${error.message}`);
     }

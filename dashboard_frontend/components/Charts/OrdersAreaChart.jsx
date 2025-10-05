@@ -83,7 +83,7 @@ export function OrdersAreaChart({ timeRange }) {
   const [agentFilter, setAgentFilter] = useState("all");
   // function to format X-axis ticks based on time Range and for small screens
   const formatTick = (value) => {
-    if (typeof window !== "undefined" && window.innerWidth < 640) {
+    if (typeof window !== "undefined") {
       // Only abbreviate for small screens
       if (timeRange === "thisWeek") {
         return weekDayAbbr[value] || value;

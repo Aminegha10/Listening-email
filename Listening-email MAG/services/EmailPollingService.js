@@ -13,61 +13,13 @@ export default async function startPolling(oauth2Client) {
     // Extract order info
     const orderNumberMatch = infoText.match(/رقم الطلب:\s*(\d+)/);
     const salesAgentMatch = infoText.match(/اسم ممثل المبيعات:\s*([^\n]+)/);
-    // console.log(salesAgentMatch);
-    //     [
-    //   'تاريخ الطلب: 08/08/2025',
-    //   '08/08/2025',
-    //   index: 361,
-    //   input: '---------- Forwarded message ---------From: <contact@smab-co.com>Date: Fri, Aug 8, 2025 at 3:43 PM‪Subject: إعداد الطلبية رقم 1470 – المنتجات المطلوبةة‬To:  <preparateur.mag@gmail.com>\n' +
-    //     '    السلام عليكم،\n' +
-    //     '    \n' +
-    //     '    يرجى إعداد المنتجات التالية المتعلقة بالطلبية المذكورة:\n' +
-    //     '     \n' +
-    //     '    \n' +
-    //     '    \n' +
-    //     '      \n' +
-    //     '    \n' +
-    //     '      رقم الطلب: 1470\n' +
-    //     '      اسم ممثل المبيعات: Sales Agent3\n' +
-    //     '      تاريخ الطلب: 08/08/2025\n' +
-    //     '      \n' +
-    //     '      \n' +
-    //     '      \n' +
-    //     '      ملاحظات: \n' +
-    //     '      \n' +
-    //     '    \n' +
-    //     '  \n' +
-    //     '      \n' +
-    //     '          \n' +
-    //     '              \n' +
-    //     '                  المنتجالكميةالباركودالمخزن\n' +
-    //     '              \n' +
-    //     '          \n' +
-    //     '          \n' +
-    //     '              \n' +
-    //     '          Presse à huile H06C avec thermostat digital\n' +
-    //     '          10\n' +
-    //     '          000.000.383\n' +
-    //     '          MAG\n' +
-    //     '        \n' +
-    //     '          \n' +
-    //     '      \n' +
-    //     '    \n' +
-    //     '   \n' +
-    //     '    \n' +
-    //     '    \n' +
-    //     '  \n' +
-    //     '\n',
-    //   groups: undefined
-    // ]
+
     const orderDateMatch = infoText.match(/تاريخ الطلب:\s*([0-9/]+)/);
-    // console.log(orderDateMatch);
-    // parsing salesagent
 
     const orderNumber = orderNumberMatch ? orderNumberMatch[1].trim() : "";
     const salesAgent = salesAgentMatch ? salesAgentMatch[1].trim() : "";
     const orderDate = orderDateMatch ? orderDateMatch[1].trim() : "";
-    console.log(orderDate)
+    console.log(orderDate);
 
     // Extract products
     const products = [];
@@ -145,16 +97,9 @@ export default async function startPolling(oauth2Client) {
         }
 
         const parsedBody = parseEmailBody(body);
-
-        logger.info(`Parsed order number: ${parsedBody.orderNumber}`);
-        logger.info(
-          `Parsed products: ${JSON.stringify(parsedBody.products, null, 2)}`
-        );
-
+        logger.info("Email(s) processed.");
         await addOrder(parsedBody.products, parsedBody);
       }
-
-      logger.info("Email(s) processed.");
     } catch (error) {
       logger.error(`Polling error: ${error.message}`);
     }

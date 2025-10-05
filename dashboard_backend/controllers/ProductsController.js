@@ -64,6 +64,9 @@ const GetTopProducts = async (req, res) => {
         break;
     }
 
+    // -------------------------
+    // Top products aggregation
+    // -------------------------
     const pipeline = [
       Object.keys(dateFilter).length > 0 ? { $match: dateFilter } : null,
       { $unwind: "$products" },
@@ -86,7 +89,6 @@ const GetTopProducts = async (req, res) => {
       { $sort: { [sortField]: -1 } },
       { $limit: 10 },
     ].filter(Boolean); // remove null if no date filter
-    console.log(dateFilter);
 
     // -------------------------
     // Total distinct ordered products
@@ -99,15 +101,32 @@ const GetTopProducts = async (req, res) => {
         { $count: "totalDistinctProducts" },
       ].filter(Boolean)
     );
-
-    const totalOrderedProducts =
+    const totalDistinctProducts =
       distinctProducts[0]?.totalDistinctProducts || 0;
+
+    // -------------------------
+    // Total all ordered products (sum of quantity)
+    // -------------------------
+    const totalAllProductsAgg = await OrderModel.aggregate(
+      [
+        Object.keys(dateFilter).length > 0 ? { $match: dateFilter } : null,
+        { $unwind: "$products" },
+        {
+          $group: {
+            _id: null,
+            totalQuantity: { $sum: "$products.quantity" },
+          },
+        },
+      ].filter(Boolean)
+    );
+    const totalAllProducts = totalAllProductsAgg[0]?.totalQuantity || 0;
 
     const topProducts = await OrderModel.aggregate(pipeline);
 
     res.status(200).json({
       topProducts,
-      totalOrderedProducts,
+      totalDistinctProducts,
+      totalAllProducts, 
     });
   } catch (err) {
     logger.error(err.message);
@@ -197,7 +216,6 @@ const GetProductsDetails = async (req, res) => {
     ].filter(Boolean); // Remove null stages
 
     const products = await OrderModel.aggregate(pipeline);
-    
 
     logger.info("Fetched product details successfully");
     res.status(200).json(products);

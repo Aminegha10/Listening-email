@@ -42,30 +42,30 @@
 
 /* Dark mode - derived from :root */
 .dark {
-  --background: oklch(0.14 0.008 296);
-  --foreground: oklch(0.98 0 0);
-  --card: oklch(0.18 0.01 296);
-  --card-foreground: oklch(0.98 0 0);
-  --popover: oklch(0.16 0.01 296);
-  --popover-foreground: oklch(0.98 0 0);
+  --background: #09080c;
+  --foreground: rgb(248, 248, 248);
+  --card: rgb(18, 17, 22);
+  --card-foreground: rgb(248, 248, 248);
+  --popover: rgb(14, 12, 17);
+  --popover-foreground: rgb(248, 248, 248);
   --primary: #ff4520;
-  --primary-foreground: oklch(0.98 0 0);
-  --secondary: oklch(0.22 0.01 296);
-  --secondary-foreground: oklch(0.98 0 0);
-  --muted: oklch(0.22 0.01 296);
-  --muted-foreground: oklch(0.65 0 0);
+  --primary-foreground: rgb(248, 248, 248);
+  --secondary: #1b1a1f;
+  --secondary-foreground: rgb(248, 248, 248);
+  --muted: rgb(27, 26, 31);
+  --muted-foreground: rgb(143, 143, 143);
   --accent: #ff4520;
-  --accent-foreground: oklch(0.98 0 0);
+  --accent-foreground: rgb(248, 248, 248);
   --destructive: #d40924;
-  --destructive-foreground: oklch(0.98 0 0);
-  --border: oklch(0.28 0.012 296);
-  --input: oklch(0.22 0.01 296);
+  --destructive-foreground: rgb(248, 248, 248);
+  --border: rgb(41, 40, 46);
+  --input: rgb(27, 26, 31);
   --ring: #ff4520;
   --chart-1: #ff4520;
   --chart-2: #00b8e6;
   --chart-3: #5fcd3d;
-  --chart-4: oklch(0.65 0.18 65);
-  --chart-5: oklch(0.6 0.16 295);
+  --chart-4: rgb(215, 113, 0);
+  --chart-5: rgb(137, 104, 212);
 
   --sidebar: oklch(0.16 0.01 296);
   --sidebar-foreground: oklch(0.92 0 0);

@@ -158,7 +158,7 @@ export function TopProductsPieChart({ timeRange }) {
                   Top 10 Products
                 </h3>
                 <p className="text-[10px] sm:text-sm text-gray-500 font-medium ">
-                  Showing {TopProducts?.length} of {data?.totalOrderedProducts}{" "}
+                  Showing {TopProducts?.length} of {data?.totalDistinctProducts}{" "}
                   products
                 </p>
               </div>
@@ -294,15 +294,18 @@ export function TopProductsPieChart({ timeRange }) {
                   ))}
                 </Pie>
               </PieChart>
-              <div className="mt-4 text-center font-medium">
-                <Badge variant="secondary">
-                  Total Products{" "}
+              <div className=" flex justify-center">
+                <Badge
+                  variant="secondary"
+                  className="bg-primary/10 text-primary border-primary/20 px-4 py-1.5 font-medium"
+                >
+                  Total distinct Products {data?.totalDistinctProducts} || Total
+                  Products Sold : {data?.totalAllProducts || 0} :  
                   {timeRange === "thisWeek"
-                    ? "This Week : "
+                    ? "This Week"
                     : timeRange === "thisMonth"
-                    ? "This Month : "
-                    : "This Year : "}
-                  {data?.totalOrderedProducts}
+                    ? "This Month"
+                    : "This Year"}
                 </Badge>
               </div>
             </ChartContainer>

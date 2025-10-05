@@ -54,7 +54,6 @@ const AddOrder = async (req, res) => {
       `Creating or updating order #${orderNumber} with ${products.length} product(s).`
     );
 
-
     // Try to create order
     try {
       const newOrder = await OrderModel.create({
@@ -67,9 +66,13 @@ const AddOrder = async (req, res) => {
         notes: normalizedNotes,
         products,
       });
+      console.log(newOrder);
 
       logger.info(`Order created successfully: ID ${newOrder._id}`);
-      return res.send(newOrder);
+      return res.send({
+        message: `Order created successfully: ID ${newOrder._id}`,
+        newOrder,
+      });
     } catch (err) {
       if (err.code !== 11000) throw err;
       logger.error(
@@ -91,11 +94,19 @@ const AddOrder = async (req, res) => {
       ...products,
     ];
 
-    const neworder = await existingOrder.save();
+    const newOrder = await existingOrder.save();
     logger.info(
       `Updated order #${orderNumber} successfully with ${products[0].warehouse} products.`
     );
-    return res.send(neworder);
+    return res.send({
+      message:
+        "Order updated successfully with " +
+        products.length +
+        " " +
+        products[0].warehouse +
+        " products.",
+      newOrder,
+    });
   } catch (error) {
     logger.error(`Failed to create or update order: ${error.message}`);
     res.status(500).send(`Failed to create or update order: ${error.message}`);
@@ -131,21 +142,6 @@ const GetOrderAndSalesStats = async (req, res) => {
       { $group: { _id: null, total: { $sum: "$price" } } },
     ]);
     const totalSales = totalSalesResult[0]?.total || 0;
-
-    // =========================
-    // Orders per agent (global)
-    // =========================
-    // const agentsAggregate = await OrderModel.aggregate([
-    //   { $match: { ...(salesAgent ? { salesAgent } : {}) } },
-    //   {
-    //     $group: {
-    //       _id: "$salesAgent",
-    //       totalOrders: { $sum: 1 },
-    //       totalSales: { $sum: "$price" },
-    //     },
-    //   },
-    //   { $project: { name: "$_id", totalOrders: 1, totalSales: 1, _id: 0 } },
-    // ]);
 
     const allAgents = await OrderModel.distinct("salesAgent");
 
@@ -215,10 +211,12 @@ const GetOrderAndSalesStats = async (req, res) => {
     }
 
     // =========================
-    // Totals by time range
+    // Totals Orders by time range
     // =========================
     const totalOrdersByTimeRange = await OrderModel.countDocuments(dateFilter);
-
+    // =========================
+    // Totals Sales by time range
+    // =========================
     const totalSalesByTimeRangeResult = await OrderModel.aggregate([
       { $match: { ...dateFilter, price: { $ne: null } } },
       { $group: { _id: null, total: { $sum: "$price" } } },
@@ -431,39 +429,87 @@ const GetOrderAndSalesStats = async (req, res) => {
 
       responseKey = "thisMonth";
     } else if (timeRange === "currentYear") {
+      const startOfYear = new Date(now.getFullYear(), 0, 1);
+      const endOfYear = new Date(now.getFullYear(), 11, 31, 23, 59, 59, 999);
+
+      const dateFilter = {
+        createdAt: { $gte: startOfYear, $lte: endOfYear },
+        ...(salesAgent ? { salesAgent } : {}),
+      };
+
       // Sales
       salesData = await OrderModel.aggregate([
-        {
-          $match: {
-            createdAt: { $gte: new Date(now.getFullYear(), 0, 1) },
-            ...(salesAgent ? { salesAgent } : {}),
-          },
-        },
+        { $match: dateFilter },
         {
           $group: { _id: { $month: "$createdAt" }, sales: { $sum: "$price" } },
         },
         { $sort: { _id: 1 } },
       ]);
-      salesData = salesData.map((s) => ({
-        month: monthNames[s._id - 1],
-        sales: s.sales,
-      }));
+
+      salesData = monthNames.map((name, index) => {
+        const monthData = salesData.find((s) => s._id === index + 1);
+        return {
+          month: name,
+          sales: monthData ? monthData.sales : 0,
+        };
+      });
 
       // Orders
       ordersData = await OrderModel.aggregate([
-        {
-          $match: {
-            createdAt: { $gte: new Date(now.getFullYear(), 0, 1) },
-            ...(salesAgent ? { salesAgent } : {}),
-          },
-        },
+        { $match: dateFilter },
         { $group: { _id: { $month: "$createdAt" }, orders: { $sum: 1 } } },
         { $sort: { _id: 1 } },
       ]);
-      ordersData = ordersData.map((o) => ({
-        month: monthNames[o._id - 1],
-        orders: o.orders,
-      }));
+
+      ordersData = monthNames.map((name, index) => {
+        const monthData = ordersData.find((o) => o._id === index + 1);
+        return {
+          month: name,
+          orders: monthData ? monthData.orders : 0,
+        };
+      });
+
+      responseKey = "currentYear";
+    } else if (timeRange === "currentYear") {
+      const startOfYear = new Date(now.getFullYear(), 0, 1);
+      const endOfYear = new Date(now.getFullYear(), 11, 31, 23, 59, 59, 999);
+
+      const dateFilter = {
+        createdAt: { $gte: startOfYear, $lte: endOfYear },
+        ...(salesAgent ? { salesAgent } : {}),
+      };
+
+      // Sales
+      salesData = await OrderModel.aggregate([
+        { $match: dateFilter },
+        {
+          $group: { _id: { $month: "$createdAt" }, sales: { $sum: "$price" } },
+        },
+        { $sort: { _id: 1 } },
+      ]);
+
+      salesData = monthNames.map((name, index) => {
+        const monthData = salesData.find((s) => s._id === index + 1);
+        return {
+          month: name,
+          sales: monthData ? monthData.sales : 0,
+        };
+      });
+
+      // Orders
+      ordersData = await OrderModel.aggregate([
+        { $match: dateFilter },
+        { $group: { _id: { $month: "$createdAt" }, orders: { $sum: 1 } } },
+        { $sort: { _id: 1 } },
+      ]);
+
+      ordersData = monthNames.map((name, index) => {
+        const monthData = ordersData.find((o) => o._id === index + 1);
+        return {
+          month: name,
+          orders: monthData ? monthData.orders : 0,
+        };
+      });
 
       responseKey = "currentYear";
     }
@@ -551,13 +597,13 @@ const GetOrdersTableStats = async (req, res) => {
       ...order.toObject(),
       createdAt: order.createdAt
         ? new Date(order.createdAt).toLocaleString("en-GB", {
-          day: "numeric",
-          month: "short",
-          year: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: false,
-        })
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: false,
+          })
         : null,
     }));
 

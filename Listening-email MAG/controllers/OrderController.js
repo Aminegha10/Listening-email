@@ -22,7 +22,6 @@ const addOrder = async (products, orderDetails) => {
       logger.error("Invalid product entry detected. All fields are required.");
       return;
     }
-
     const res = await axios.post(
       `http://217.65.146.240:5000/api/Lead`,
       {
@@ -38,11 +37,10 @@ const addOrder = async (products, orderDetails) => {
         },
       }
     );
-    // const pdfPath = await generatePdf(orderInfo);
-    logger.info(
-      "MAG email send and order created or updated with MAG Products successfully"
-    );
-    logger.info(`Order Created/Updated: ${JSON.stringify(res.data, null, 2)}`);
+    // const pdfPath = await generatePdf(orderInfo);--------------------------------------------------------
+    // log the response of adding order
+    logger.info(res.data.message);
+    logger.info(JSON.stringify(res.data.newOrder, null, 2));
     return;
   } catch (err) {
     logger.error(err.response.data);

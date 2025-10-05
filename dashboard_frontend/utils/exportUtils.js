@@ -294,6 +294,8 @@ export const exportToPDF = async (
             ? "Orders Count"
             : "Products Ordered",
         ]
+      : dataType === "Sales" // ✅ New case for area chart
+      ? ["Label", "Sales (DH)"] // Label = day/week/month depending on timeRange
       : ["Product", filterPieChart];
 
   const rows =
@@ -323,6 +325,8 @@ export const exportToPDF = async (
         ])
       : dataType === "TopClients"
       ? data.map((row) => [row.clientName, row[filter]])
+      : dataType === "Sales" // ✅ New case for area chart
+      ? data.map((row) => [row.label, row.sales])
       : data.map((row) => [row.product, row[filterPieChart]]);
 
   autoTable(doc, {
@@ -348,13 +352,6 @@ export const exportToPDF = async (
     alternateRowStyles: {
       fillColor: [245, 245, 245], // light gray for alternate rows
     },
-    // columnStyles: {
-    //   0: { cellWidth: 25 }, // adjust column width for first column
-    //   1: { cellWidth: 35 }, // adjust for client/product name
-    //   2: { cellWidth: 25 },
-    //   3: { cellWidth: 30 },
-    //   4: { cellWidth: 25 },
-    // },
     margin: { top: startY, left: 10, right: 10 },
     tableLineColor: [200, 200, 200], // subtle table border
     tableLineWidth: 0.3,
@@ -377,7 +374,9 @@ export const exportToPDF = async (
         titleY
       );
 
+      // Create isolated container for rendering chart
       const tempContainer = document.createElement("div");
+      tempContainer.id = "pdf-clone";
       tempContainer.style.position = "absolute";
       tempContainer.style.left = "-9999px";
       tempContainer.style.top = "-9999px";
@@ -386,78 +385,99 @@ export const exportToPDF = async (
       tempContainer.style.borderRadius = "8px";
       tempContainer.style.boxShadow = "0 2px 10px rgba(0,0,0,0.1)";
 
+      // Clone chart node
       const chartClone = chartElement.cloneNode(true);
 
+      // Add scoped styles to temp container
       const style = document.createElement("style");
       style.textContent = `
-        * { color: #333 !important; background-color: #fff !important; border-color: #ddd !important; }
-        .recharts-pie-label-text { fill: #333 !important; font-size: 10px !important; } /* smaller labels */
-        .recharts-tooltip-wrapper { background-color: #fff !important; border: 1px solid #ddd !important; }
-      `;
+      #pdf-clone * {
+        color: #333 !important;
+        background-color: #fff !important;
+        border-color: #ddd !important;
+      }
+      #pdf-clone .recharts-pie-label-text {
+        fill: #333 !important;
+        font-size: 10px !important;
+      }
+      #pdf-clone .recharts-tooltip-wrapper {
+        background-color: #fff !important;
+        border: 1px solid #ddd !important;
+      }
+    `;
       tempContainer.appendChild(style);
       tempContainer.appendChild(chartClone);
       document.body.appendChild(tempContainer);
 
+      // Capture chart as canvas
       const canvas = await html2canvas(tempContainer, {
         scale: 2,
         backgroundColor: "#ffffff",
         useCORS: true,
       });
+
+      // Add image to PDF
       const imgData = canvas.toDataURL("image/png");
       const imgProps = doc.getImageProperties(imgData);
-      const pdfWidth = 120; // slightly smaller chart width
+      const pdfWidth = 120;
       const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
       const chartX = (210 - pdfWidth) / 2;
       const chartY = headerHeight + 20;
       doc.addImage(imgData, "PNG", chartX, chartY, pdfWidth, pdfHeight);
 
-      // ===== LEGEND =====
-      const legendX = 20;
-      let legendY = chartY + pdfHeight + 10;
-      const boxSize = 3; // smaller box
-      const spacing = 3;
-      const lineHeight = 4; // smaller line height
+      // Optional: Draw custom legend
+      if (dataType === "TopSellingProducts") {
+        const legendX = 20;
+        let legendY = chartY + pdfHeight + 10;
+        const boxSize = 3;
+        const spacing = 3;
+        const lineHeight = 4;
 
-      const COLORS = [
-        "#e72f0b", // chart-1 / primary (bright red)
-        "#b71c1c", // chart-2 / dark red
-        "#ff7043", // chart-3 / orange-red
-        "#ffb74d", // chart-4 / light orange
-        "#f4511e", // chart-5 / deep orange
-        "#d32f2f", // primary-alt / secondary red
-        "#ff8a65", // accent / warm salmon
-        "#43a047", // success / green (clearly different)
-        "#0288d1", // destructive / blue (contrasting)
-        "#fff3f0", // muted background / very light
-        "#c62828", // sidebar-primary / strong dark red
-        "#ef6c00", // sidebar-accent / orange
-        "#8d2300", // sidebar-border / deep brown-red
-        "#ffffff", // primary-foreground / text on primary
-        "#ffe0b2", // secondary-foreground / light contrast
-        "#ffffff", // accent-foreground
-        "#ffffff", // destructive-foreground
-        "#ffccbc", // muted-foreground / soft light
-        "#fff8f5", // card background / very light
-        "#ffffff", // popover background
-      ];
+        const COLORS = [
+          "#e72f0b",
+          "#b71c1c",
+          "#ff7043",
+          "#ffb74d",
+          "#f4511e",
+          "#d32f2f",
+          "#ff8a65",
+          "#43a047",
+          "#0288d1",
+          "#fff3f0",
+          "#c62828",
+          "#ef6c00",
+          "#8d2300",
+          "#ffffff",
+          "#ffe0b2",
+          "#ffffff",
+          "#ffffff",
+          "#ffccbc",
+          "#fff8f5",
+          "#ffffff",
+        ];
 
-      data.forEach((item, i) => {
-        const color = COLORS[i % COLORS.length];
-        const text = item.product;
+        data.forEach((item, i) => {
+          const color = COLORS[i % COLORS.length];
+          const text = item.product || item.label || `Item ${i + 1}`;
 
-        doc.setFillColor(color);
-        doc.rect(legendX, legendY, boxSize, boxSize, "F");
+          doc.setFillColor(color);
+          doc.rect(legendX, legendY, boxSize, boxSize, "F");
 
-        doc.setTextColor(0);
-        doc.setFontSize(7); // smaller font for legend
-        doc.text(text, legendX + boxSize + spacing, legendY + boxSize - 1);
+          doc.setTextColor(0);
+          doc.setFontSize(7);
+          doc.text(text, legendX + boxSize + spacing, legendY + boxSize - 1);
 
-        legendY += lineHeight;
-      });
+          legendY += lineHeight;
+        });
+      }
 
+      // Clean up temporary container
       document.body.removeChild(tempContainer);
     } catch (error) {
       console.warn("Chart capture failed:", error);
+      // Optional: remove tempContainer even if error
+      const orphan = document.getElementById("pdf-clone");
+      if (orphan) document.body.removeChild(orphan);
     }
   }
 
@@ -484,8 +504,27 @@ export const exportToPDF = async (
   }
 
   doc.save(
-    `${dataType}-${filter}-${filterDate}-${
+    `${dataType}-${filter ?? "all"}-${filterDate}-${
       new Date().toISOString().split("T")[0]
     }.pdf`
   );
+};
+
+export const exportChartPDF = async (chartRef) => {
+  if (!chartRef.current) return;
+
+  const canvas = await html2canvas(chartRef.current, { scale: 2 });
+  const imgData = canvas.toDataURL("image/png");
+
+  const pdf = new jsPDF({
+    orientation: "landscape",
+    unit: "px",
+    format: [canvas.width, canvas.height],
+  });
+
+  pdf.setFontSize(14);
+  pdf.text("Sales Area Chart", 20, 20);
+  pdf.addImage(imgData, "PNG", 20, 40, canvas.width - 40, canvas.height - 60);
+
+  pdf.save("sales-chart.pdf");
 };

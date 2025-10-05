@@ -27,6 +27,7 @@ import {
 import { useGetLeadStatsQuery } from "@/features/dataApi";
 import { ThreeDot } from "react-loading-indicators";
 import { useState } from "react";
+import { useRef } from "react";
 import {
   Select,
   SelectTrigger,
@@ -41,6 +42,7 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { Button } from "../ui/button";
+import { exportChartPDF, exportToPDF } from "@/utils/exportUtils";
 
 // Weekday abbreviations (two-letter)
 const weekDayAbbr = {
@@ -79,17 +81,18 @@ const weekAbbr = {
 };
 
 export function SaleAreaChart({ timeRange }) {
+  const chartRef = useRef(null); // <-- add this
   const [agentFilter, setAgentFilter] = useState("all");
 
   // Function to format X-axis ticks based on screen size
   const formatTick = (value) => {
-    if (typeof window !== "undefined" && window.innerWidth < 640) {
+    if (typeof window !== "undefined") {
       // Only abbreviate for small screens
       if (timeRange === "thisWeek") {
         return weekDayAbbr[value] || value;
       } else if (timeRange === "thisMonth") {
         return weekAbbr[value] || value;
-      } else if (timeRange === "currentYear") {
+      } else if (timeRange === "currentYear" && window.innerWidth > 640) {
         return monthAbbr[value] || value;
       }
     }
@@ -134,6 +137,18 @@ export function SaleAreaChart({ timeRange }) {
       color: "var(--primary)",
     },
   };
+  // Handler for export options
+  const handleExportPDF = () => {
+    if (!chartData || chartData.length === 0) return;
+
+    exportToPDF(chartData, timeRange, "Sales", null, chartRef.current);
+  };
+  // export as canva
+  // const handleExportChartPDF = () => {
+  //   if (!chartData || chartData.length === 0) return;
+
+  //   exportChartPDF(chartRef);
+  // };
 
   return (
     <Card
@@ -161,6 +176,39 @@ export function SaleAreaChart({ timeRange }) {
                   : "Sales performance this Year"}
               </p>
             </div>
+            {/* Export dropdown */}
+          </div>
+          <div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="flex items-center gap-1 rounded-lg border border-border hover:border-primary hover:text-primary hover:bg-primary/5 transition-all duration-200 font-medium bg-transparent text-xs"
+                >
+                  <Download className="h-4 w-4" />
+                  <span className="sm:inline hidden">Export</span>
+                  <ChevronDown className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                {/* <DropdownMenuItem onClick={handleExportCSV}>
+                  Export as CSV{" "}
+                  <Sheet className="text-green-500 stroke-[2px]" />
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleExportJSON}>
+                  Export as JSON{" "}
+                  <FileJson className="text-yellow-500 stroke-[2px]" />
+                </DropdownMenuItem> */}
+                <DropdownMenuItem onClick={handleExportPDF}>
+                  Export as PDF
+                  <FileText className="text-[#f32b2b] stroke-[2px]" />
+                </DropdownMenuItem>
+                {/* <DropdownMenuItem onClick={handleExportChartPDF}>
+                  Export Chart as PDF
+                  <FileText className="text-[#f32b2b] stroke-[2px]" />
+                </DropdownMenuItem> */}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       </CardHeader>
@@ -196,7 +244,7 @@ export function SaleAreaChart({ timeRange }) {
         )}
 
         {!isLoading && !error && chartData.length > 0 && (
-          <div className="mt-2">
+          <div className="mt-2" ref={chartRef}>
             <ChartContainer config={chartConfig} className="h-[300px] w-full">
               <AreaChart
                 accessibilityLayer
