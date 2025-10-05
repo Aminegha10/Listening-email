@@ -474,7 +474,7 @@ export const exportToPDF = async (
       // Clean up temporary container
       document.body.removeChild(tempContainer);
     } catch (error) {
-      console.warn("Chart capture failed:", error);
+      console.warn("Chart capture failed :", error);
       // Optional: remove tempContainer even if error
       const orphan = document.getElementById("pdf-clone");
       if (orphan) document.body.removeChild(orphan);
