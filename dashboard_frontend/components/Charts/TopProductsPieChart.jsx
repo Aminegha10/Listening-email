@@ -226,7 +226,7 @@ export function TopProductsPieChart({ timeRange }) {
               </DropdownMenu>
 
               {/* Table link button */}
-              <Link href="/dashboard/tables#products" passHref>
+              <Link href="/dashboard/records#products" passHref>
                 <Button className="!p-2  hidden bg-white dark:bg-secondary dark:border dark:border-border dark:hover:bg-slate-200 text-slate-700 rounded-lg border border-slate-300 hover:border-slate-400 sm:flex items-center gap-1 text-xs sm:!p-2 sm:gap-2 sm:text-sm">
                   <Table className="w-3 h-3 sm:w-4 sm:h-4" />
                 </Button>

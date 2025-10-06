@@ -46,14 +46,7 @@ function TopClients({ timeRange }) {
   } = useGetClientsQuery({ filter, goal: 120, timeRange });
   console.log(topClients);
 
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(amount);
-  };
+
 
   const getFrequencyColor = (frequency) => {
     switch (frequency) {
@@ -117,8 +110,8 @@ function TopClients({ timeRange }) {
                   {filter === "revenue"
                     ? "Revenue"
                     : filter === "productsQuantity"
-                    ? "Products"
-                    : "Orders"}
+                      ? "Products"
+                      : "Orders"}
                 </span>
                 <ChevronDown className="h-4 w-4" />
               </Button>
@@ -215,23 +208,29 @@ function TopClients({ timeRange }) {
               <div className="flex items-center gap-4">
                 <div className="flex-shrink-0">
                   <div
-                    className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
-                      index === 0
-                        ? "bg-yellow-100 text-yellow-800"
-                        : index === 1
+                    className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${index === 0
+                      ? "bg-yellow-100 text-yellow-800"
+                      : index === 1
                         ? "bg-slate-200 text-slate-600"
                         : index === 2
-                        ? "bg-orange-100 text-orange-800"
-                        : "bg-slate-50 text-slate-500"
-                    }`}
+                          ? "bg-orange-100 text-orange-800"
+                          : "bg-slate-50 text-slate-500"
+                      }`}
                   >
                     {index + 1}
                   </div>
                 </div>
 
-                <Avatar className="w-12 h-12 ">
+                <Avatar className="w-12 h-12">
                   <AvatarFallback className="dark:text-white bg-[var(--color-destructive)] text-[var(--color-primary)] text-xs">
-                    KA
+                    {client?.clientName
+                      ? client.clientName
+                        .split(" ")
+                        .map(word => word[0]) // Take the first letter of each word
+                        .join("")
+                        .toUpperCase()
+                        .slice(0, 2) // Only first 2 letters (optional)
+                      : "?"}
                   </AvatarFallback>
                 </Avatar>
 
@@ -258,16 +257,16 @@ function TopClients({ timeRange }) {
                     <div className="text-lg font-bold text-slate-900">
                       {filter == "revenue" ? (
                         <div className="flex gap-2 items-center dark:text-white">
-                          {formatCurrency(client.revenue)}{" "}
+                          {client.revenue} DH
                           <Wallet className="text-[var(--color-primary)]" />
                         </div>
                       ) : filter == "productsQuantity" ? (
-                        <div className="flex gap-2 items-center">
+                        <div className="flex gap-2 items-center dark:text-white">
                           {client.productsQuantity}
                           <Package className="text-[var(--color-primary)]" />
                         </div>
                       ) : (
-                        <div className="flex gap-2 items-center">
+                        <div className="flex gap-2 items-center dark:text-white">
                           {client.ordersCount}
                           <ShoppingCartIcon className="text-[var(--color-primary)]" />
                         </div>

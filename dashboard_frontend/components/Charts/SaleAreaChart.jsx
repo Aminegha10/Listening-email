@@ -8,6 +8,7 @@ import {
   FileText,
   Funnel,
   Sheet,
+  TrendingDown,
   TrendingUp,
   Users,
 } from "lucide-react";
@@ -172,8 +173,8 @@ export function SaleAreaChart({ timeRange }) {
                 {timeRange === "thisWeek"
                   ? "Sales performance this Week"
                   : timeRange === "thisMonth"
-                  ? "Sales performance this Month"
-                  : "Sales performance this Year"}
+                    ? "Sales performance this Month"
+                    : "Sales performance this Year"}
               </p>
             </div>
             {/* Export dropdown */}
@@ -345,16 +346,43 @@ export function SaleAreaChart({ timeRange }) {
         <div className="flex w-full items-start gap-2 text-sm">
           <div className="grid gap-2">
             <div className="flex items-center gap-2 leading-none font-medium text-gray-900">
-              <div className="flex items-center gap-1.5 px-2 py-1 bg-green-50 rounded-md">
-                <TrendingUp className="h-3.5 w-3.5 text-green-600" />
-                <span className="text-green-700 font-semibold">+5.2%</span>
+              <div
+                className={`flex items-center gap-1.5 px-2 py-1 rounded-md ${leadStats?.salesGrowth > 0
+                  ? "bg-green-50"
+                  : leadStats?.salesGrowth < 0
+                    ? "bg-red-50"
+                    : "bg-gray-100"
+                  }`}
+              >
+                {leadStats?.salesGrowth > 0 ? (
+                  <TrendingUp className="h-3.5 w-3.5 text-green-600" />
+                ) : leadStats?.salesGrowth < 0 ? (
+                  <TrendingDown className="h-3.5 w-3.5 text-red-600" />
+                ) : null}
+                <span
+                  className={`font-semibold ${leadStats?.salesGrowth > 0
+                    ? "text-green-700"
+                    : leadStats?.salesGrowth < 0
+                      ? "text-red-700"
+                      : "text-gray-700"
+                    }`}
+                >
+                  {leadStats?.salesGrowth > 0
+                    ? `+${leadStats.salesGrowth.toFixed(2)}%`
+                    : leadStats?.salesGrowth < 0
+                      ? `${leadStats.salesGrowth.toFixed(2)}%`
+                      : "0%"}
+                </span>
               </div>
-              <span>growth this month</span>
+
+              <span className="text-muted-foreground">
+                growth this {timeRange === "thisMonth" ? "month" : timeRange === "thisWeek" ? "week" : "year"}
+              </span>
             </div>
-            <div className="text-muted-foreground flex items-center gap-2 leading-none">
+            {/* <div className="text-muted-foreground flex items-center gap-2 leading-none">
               <Users className="h-3.5 w-3.5" />
               <span>January - June 2024</span>
-            </div>
+            </div> */}
           </div>
         </div>
       </CardFooter>

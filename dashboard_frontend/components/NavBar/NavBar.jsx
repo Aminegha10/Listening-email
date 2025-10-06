@@ -11,9 +11,11 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { useTheme } from "next-themes";
+import { usePathname } from "next/navigation";
 
 export function NavBar() {
   const { theme, setTheme, resolvedTheme } = useTheme();
+  const path = usePathname();
   console.log("Current theme:", theme);
   console.log("Resolved theme:", resolvedTheme);
 
@@ -34,7 +36,7 @@ export function NavBar() {
             <span className="text-gray-500 dark:text-gray-400">Pages</span>
             <span className="text-gray-300 dark:text-gray-600">/</span>
             <span className="text-gray-900 dark:text-white font-medium bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded-md">
-              Dashboard
+              {path.split("/").filter(Boolean).pop()}
             </span>
           </nav>
         </div>

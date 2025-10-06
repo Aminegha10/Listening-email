@@ -1,9 +1,7 @@
 import logger from "../utils/Logger.js";
-import axios from "axios";
-import dotenv from "dotenv";
 import OrderModel from "../models/OrderModel.js";
 
-// get top clients
+// Get top clients or clients table
 const GetClients = async (req, res) => {
   try {
     const { filter, goal, timeRange } = req.query;
@@ -14,10 +12,11 @@ const GetClients = async (req, res) => {
     let sortStage = null;
 
     // -------------------------
-    // Time range filter
+    // 🕒 Time range filter
     // -------------------------
     const now = new Date();
     let dateFilter = {};
+
     switch (timeRange) {
       case "today":
         const startOfToday = new Date();
@@ -28,7 +27,7 @@ const GetClients = async (req, res) => {
         break;
 
       case "thisWeek":
-        const day = now.getDay(); // Sunday = 0, Monday = 1
+        const day = now.getDay();
         const diffToMonday = day === 0 ? 6 : day - 1;
         const startOfWeek = new Date(now);
         startOfWeek.setDate(now.getDate() - diffToMonday);
@@ -58,25 +57,16 @@ const GetClients = async (req, res) => {
         break;
     }
 
+    // -------------------------
+    // 🧮 Grouping logic
+    // -------------------------
     switch (filter) {
       case "all":
-        group = {
-          revenue: {
-            $sum: { $multiply: ["$products.price", "$products.quantity"] },
-          },
-          orders: { $addToSet: "$_id" },
-          productsQuantity: { $sum: "$products.quantity" },
-        };
-        needsUnwind = true;
+        needsUnwind = true; // only for productsQuantity
         break;
 
       case "revenue":
-        group = {
-          revenue: {
-            $sum: { $multiply: ["$products.price", "$products.quantity"] },
-          },
-        };
-        needsUnwind = true;
+        group = { revenue: { $sum: "$price" } };
         sortStage = { revenue: -1 };
         break;
 
@@ -97,24 +87,56 @@ const GetClients = async (req, res) => {
           .json({ success: false, message: "Invalid filter parameter" });
     }
 
-    // Apply date filter
+    // -------------------------
+    // 🧩 Build aggregation pipeline
+    // -------------------------
     if (Object.keys(dateFilter).length > 0) {
       pipeline.push({ $match: dateFilter });
     }
-    if (needsUnwind) pipeline.push({ $unwind: "$products" });
 
-    pipeline.push({
-      $group: {
-        _id: "$client",
-        firstOrderDate: { $min: "$createdAt" }, // Get earliest order date
-        ...group,
-      },
-    });
+    if (filter === "all") {
+      // Step 1: unwind products to sum productsQuantity per order
+      pipeline.push({ $unwind: "$products" });
 
+      // Step 2: group by order to get productsQuantity
+      pipeline.push({
+        $group: {
+          _id: "$_id", // order ID
+          client: { $first: "$client" },
+          price: { $first: "$price" },
+          productsQuantity: { $sum: "$products.quantity" },
+          createdAt: { $first: "$createdAt" },
+        },
+      });
+
+      // Step 3: group by client to sum revenue and productsQuantity
+      pipeline.push({
+        $group: {
+          _id: "$client",
+          firstOrderDate: { $min: "$createdAt" },
+          revenue: { $sum: "$price" },
+          orders: { $addToSet: "$_id" },
+          productsQuantity: { $sum: "$productsQuantity" },
+        },
+      });
+    } else {
+      if (needsUnwind) pipeline.push({ $unwind: "$products" });
+      pipeline.push({
+        $group: {
+          _id: "$client",
+          firstOrderDate: { $min: "$createdAt" },
+          ...group,
+        },
+      });
+    }
+
+    // -------------------------
+    // Projection
+    // -------------------------
     pipeline.push({
       $project: {
         clientName: "$_id",
-        firstOrderDate: 1, // Include in projection
+        firstOrderDate: 1,
         revenue: 1,
         ordersCount: { $size: { $ifNull: ["$orders", []] } },
         productsQuantity: 1,
@@ -125,12 +147,15 @@ const GetClients = async (req, res) => {
     if (sortStage) pipeline.push({ $sort: sortStage });
     if (filter !== "all") pipeline.push({ $limit: 10 });
 
+    // -------------------------
+    // 🧾 Execute aggregation
+    // -------------------------
     const [topClients, totalClientsAgg] = await Promise.all([
       OrderModel.aggregate(pipeline),
       OrderModel.distinct("client", dateFilter),
     ]);
 
-    // Format dates and ensure progress values are correct
+    // Format result
     const formattedClients = topClients.map((client) => ({
       ...client,
       firstOrderDate: client.firstOrderDate
@@ -148,29 +173,16 @@ const GetClients = async (req, res) => {
     const totalClients = totalClientsAgg.length;
 
     // -------------------------
-    // jjnj Truly New Clients Today
+    // 🧍‍♂️ Truly new clients today
     // -------------------------
     const startOfToday = new Date();
     startOfToday.setHours(0, 0, 0, 0);
     const endOfToday = new Date();
     endOfToday.setHours(23, 59, 59, 999);
 
-    // Get clients whose first order is today
     const trulyNewClientsToday = await OrderModel.aggregate([
-      // Group by client and get the date of their first order
-      {
-        $group: {
-          _id: "$client",
-          firstOrderDate: { $min: "$createdAt" },
-        },
-      },
-      // Keep only clients whose first order is today
-      {
-        $match: {
-          firstOrderDate: { $gte: startOfToday, $lte: endOfToday },
-        },
-      },
-      // Count them
+      { $group: { _id: "$client", firstOrderDate: { $min: "$createdAt" } } },
+      { $match: { firstOrderDate: { $gte: startOfToday, $lte: endOfToday } } },
       { $count: "newClientsToday" },
     ]);
 
@@ -184,19 +196,9 @@ const GetClients = async (req, res) => {
     const endOfYesterday = new Date(startOfYesterday);
     endOfYesterday.setHours(23, 59, 59, 999);
 
-    // Get clients whose first order was yesterday
     const trulyNewClientsYesterday = await OrderModel.aggregate([
-      {
-        $group: {
-          _id: "$client",
-          firstOrderDate: { $min: "$createdAt" },
-        },
-      },
-      {
-        $match: {
-          firstOrderDate: { $gte: startOfYesterday, $lte: endOfYesterday },
-        },
-      },
+      { $group: { _id: "$client", firstOrderDate: { $min: "$createdAt" } } },
+      { $match: { firstOrderDate: { $gte: startOfYesterday, $lte: endOfYesterday } } },
       { $count: "newClientsYesterday" },
     ]);
 
@@ -206,23 +208,26 @@ const GetClients = async (req, res) => {
     const growthRate =
       yesterdayClientsCount > 0
         ? (
-            ((newClientsCount - yesterdayClientsCount) /
-              yesterdayClientsCount) *
+            ((newClientsCount - yesterdayClientsCount) / yesterdayClientsCount) *
             100
           ).toFixed(2)
         : 0;
-    let progress = null;
-    if (!isNaN(goal) && goal > 0) {
-      progress = ((totalClients / goal) * 100).toFixed(2);
-    }
 
+    const progress =
+      !isNaN(goal) && goal > 0
+        ? parseFloat(((totalClients / goal) * 100).toFixed(2))
+        : null;
+
+    // -------------------------
+    // ✅ Final response
+    // -------------------------
     res.status(200).json({
       success: true,
       data: formattedClients,
       newClientsToday: newClientsCount,
       growthRate: parseFloat(growthRate),
       totalClients,
-      progress: progress ? parseFloat(progress) : null,
+      progress,
     });
   } catch (err) {
     logger.error(err);

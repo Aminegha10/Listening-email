@@ -246,6 +246,8 @@ const GetOrderAndSalesStats = async (req, res) => {
       { $sort: { totalSales: -1 } }, // top performing first
     ]);
 
+
+
     // =========================
     // Build time-based sales/orders (reuses your original logic)
     // =========================
@@ -513,7 +515,73 @@ const GetOrderAndSalesStats = async (req, res) => {
 
       responseKey = "currentYear";
     }
+    // =========================
+    // Growth calculation (vs previous period)
+    // =========================
+    let previousFilter = {};
 
+    if (timeRange === "thisWeek") {
+      const today = new Date();
+      today.setHours(23, 59, 59, 999);
+      const day = today.getDay();
+      const diffToMonday = day === 0 ? 6 : day - 1;
+
+      const startOfThisWeek = new Date(today);
+      startOfThisWeek.setDate(today.getDate() - diffToMonday);
+      startOfThisWeek.setHours(0, 0, 0, 0);
+
+      const endOfLastWeek = new Date(startOfThisWeek);
+      endOfLastWeek.setDate(startOfThisWeek.getDate() - 1);
+      endOfLastWeek.setHours(23, 59, 59, 999);
+
+      const startOfLastWeek = new Date(endOfLastWeek);
+      startOfLastWeek.setDate(endOfLastWeek.getDate() - 6);
+      startOfLastWeek.setHours(0, 0, 0, 0);
+
+      previousFilter = { createdAt: { $gte: startOfLastWeek, $lte: endOfLastWeek } };
+    }
+    else if (timeRange === "thisMonth") {
+      const today = new Date();
+      const startOfThisMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+      const endOfLastMonth = new Date(today.getFullYear(), today.getMonth(), 0); // last day of previous month
+      const startOfLastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+
+      previousFilter = { createdAt: { $gte: startOfLastMonth, $lte: endOfLastMonth } };
+    }
+    else if (timeRange === "currentYear") {
+      const startOfThisYear = new Date(now.getFullYear(), 0, 1);
+      const endOfLastYear = new Date(now.getFullYear() - 1, 11, 31, 23, 59, 59, 999);
+      const startOfLastYear = new Date(now.getFullYear() - 1, 0, 1);
+
+      previousFilter = { createdAt: { $gte: startOfLastYear, $lte: endOfLastYear } };
+    }
+    // Merge salesAgent filter if needed
+    if (salesAgent) {
+      previousFilter.salesAgent = salesAgent;
+    }
+
+    // Get previous totals
+    const previousOrders = await OrderModel.countDocuments(previousFilter);
+    const previousSalesResult = await OrderModel.aggregate([
+      { $match: { ...previousFilter, price: { $ne: null } } },
+      { $group: { _id: null, total: { $sum: "$price" } } },
+    ]);
+    const previousSales = previousSalesResult[0]?.total || 0;
+
+    // Calculate growth %
+    const ordersGrowth =
+      previousOrders > 0
+        ? ((totalOrdersByTimeRange - previousOrders) / previousOrders) * 100
+        : totalOrdersByTimeRange > 0
+          ? 100
+          : 0;
+
+    const salesGrowth =
+      previousSales > 0
+        ? ((totalSalesByTimeRange - previousSales) / previousSales) * 100
+        : totalSalesByTimeRange > 0
+          ? 100
+          : 0;
     // =========================
     // Final response
     // =========================
@@ -525,11 +593,12 @@ const GetOrderAndSalesStats = async (req, res) => {
       allAgents,
       totalOrdersByTimeRange,
       totalSalesByTimeRange,
-      // agents: agentsAggregate,
-      agents: agentsByTimeRange, // ✅ NEW
+      agents: agentsByTimeRange,
       salesData,
       ordersData,
       responseKey,
+      salesGrowth: Number(salesGrowth.toFixed(2)),
+      ordersGrowth: Number(ordersGrowth.toFixed(2)),
     });
   } catch (error) {
     console.error(error.message);
@@ -597,13 +666,13 @@ const GetOrdersTableStats = async (req, res) => {
       ...order.toObject(),
       createdAt: order.createdAt
         ? new Date(order.createdAt).toLocaleString("en-GB", {
-            day: "numeric",
-            month: "short",
-            year: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-            hour12: false,
-          })
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: false,
+        })
         : null,
     }));
 

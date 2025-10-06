@@ -455,7 +455,7 @@ export function OrdersTable({ id }) {
         id={id}
       >
         <Table>
-          <TableHeader className="bg-muted/50 border-b border-border sticky top-0 z-10">
+          <TableHeader className="bg-muted/50 border-b border-border sticky top-0 z-0">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id} className="hover:bg-transparent">
                 {headerGroup.headers.map((header) => (

@@ -188,7 +188,7 @@ export function ClientsTable() {
     filter: "all",
     timeRange,
   });
-
+  console.log(clients)
   const table = useReactTable({
     data: clients.data || [],
     columns,
@@ -260,10 +260,10 @@ export function ClientsTable() {
                 {timeRange === "today"
                   ? "Today"
                   : timeRange === "thisWeek"
-                  ? "This Week"
-                  : timeRange === "thisMonth"
-                  ? "This Month"
-                  : "All Time"}
+                    ? "This Week"
+                    : timeRange === "thisMonth"
+                      ? "This Month"
+                      : "All Time"}
                 <ChevronDown className="ml-1 h-3 w-3" />
               </Button>
             </DropdownMenuTrigger>
@@ -385,9 +385,9 @@ export function ClientsTable() {
                     {header.isPlaceholder
                       ? null
                       : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
                   </TableHead>
                 ))}
               </TableRow>
@@ -418,11 +418,9 @@ export function ClientsTable() {
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  className={`hover:bg-primary/5 transition-all duration-200 border-b border-border/50 ${
-                    idx % 2 === 0 ? "bg-background" : "bg-muted/20"
-                  } ${
-                    row.getIsSelected() ? "bg-primary/10 border-primary/20" : ""
-                  }`}
+                  className={`hover:bg-primary/5 transition-all duration-200 border-b border-border/50 ${idx % 2 === 0 ? "bg-background" : "bg-muted/20"
+                    } ${row.getIsSelected() ? "bg-primary/10 border-primary/20" : ""
+                    }`}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell

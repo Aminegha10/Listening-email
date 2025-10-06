@@ -25,7 +25,7 @@ const __dirname = path.dirname(__filename);
 // };
 //
 const generatePdf = async (orderInfo) => {
-  console.log(orderInfo);
+  //   console.log(orderInfo);
   const { orderNumber, orderDate, salesAgent, products } = orderInfo;
   const formattedDate = orderDate.replace(/\//g, "-");
   const pdfFileName = `${orderNumber}_${formattedDate}.pdf`;
@@ -35,17 +35,17 @@ const generatePdf = async (orderInfo) => {
   // Ensure absolute path for PM2
   const absolutePdfPath = path.resolve(pdfPath);
   //   C:\Users\anasg\OneDrive\Bureau\projects\Watch_Emails\Listening-email MED\orders\1442_05-08-2025.pdf
-  // Read logo file and convert to base64
+  // // Read logo file and convert to base64
   let logoBase64 = "";
   try {
     const logoPath = path.join(__dirname, "..", "public", "smab.png");
     const logoBuffer = await fs.readFile(logoPath);
     logoBase64 = `data:image/png;base64,${logoBuffer.toString("base64")}`;
+    console.log("logo:", logoBase64)
   } catch (error) {
-    logger.err("Could not load logo image:", error.message);
+    logger.warn("Could not load logo image:", error);
     logoBase64 = "data:image/png;base64,";
   }
-  console.log(logoBase64)
 
   const templatePath = path.join(__dirname, "..", "views", "index.ejs");
   logger.info(`Using template: ${templatePath}`);
@@ -56,7 +56,7 @@ const generatePdf = async (orderInfo) => {
     orderDate,
     products,
     logoBase64,
-  })
+  });
 
   logger.info(`Launching browser for PDF generation: ${pdfFileName}`);
   let browser;
@@ -107,7 +107,7 @@ const generatePdf = async (orderInfo) => {
     });
 
     logger.info("PDF generated successfully: " + pdfFileName);
-    printPDF(absolutePdfPath, "EPSONE4B0DF (L6490 Series)");
+    // printPDF(absolutePdfPath, "EPSONE4B0DF (L6490 Series)");
     return absolutePdfPath;
   } catch (error) {
     logger.error(

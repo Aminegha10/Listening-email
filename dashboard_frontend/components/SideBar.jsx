@@ -59,7 +59,7 @@ const data = {
     },
     {
       title: "Records",
-      url: "/dashboard/tables",
+      url: "/dashboard/records",
       icon: Table,
       badge: "New",
     },

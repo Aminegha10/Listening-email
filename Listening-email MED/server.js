@@ -50,21 +50,9 @@ app.get("/", (req, res) => {
 
 // Start polling
 startPolling(oauth2Client);
-const listPrinters = async () => {
-  try {
-    const printers = await getPrinters();
-    printers.forEach((printer) =>
-      logger.info("Available Printers: " + printer.name)
-    );
-    return printers;
-  } catch (error) {
-    logger.error("Error fetching printers:", error.message);
-    return [];
-  }
-};
-await listPrinters();
 
 // Start server
 app.listen(port, () => {
   logger.info(`Server running at http://localhost:${port}`);
 });
+

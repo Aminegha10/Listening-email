@@ -1,3 +1,4 @@
+import { generatePdf } from "../services/EmailPrinting.js";
 import logger from "../utils/Logger.js";
 // import OrderModel from "../models/OrderModel.js";
 // import { generatePdf } from "../services/EmailPrinting.js";
@@ -36,13 +37,18 @@ const addOrder = async (products, orderDetails) => {
         },
       }
     );
-    // const pdfPath = await generatePdf(orderInfo);--------------------------------------------------------
+    console.log("im amine")
+    // --------------------------------------------------------
+    // const pdfPath = await generatePdf(orderDetails);
+    console.log(pdfPath)
+    console.log("im amine")
+
     // log the response of adding order
     logger.info(res.data.message);
     logger.info(JSON.stringify(res.data.newOrder, null, 2));
     return;
   } catch (err) {
-    logger.error(err.response.data);
+    logger.error(err.response.data || err);
     return;
   }
 };
