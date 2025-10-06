@@ -9,7 +9,7 @@ export const LogOutScreen = () => {
         <LogOut className="h-24 w-24 text-red-500 relative z-10 drop-shadow-lg" />
       </div>
       <div className="space-y-4 max-w-md">
-        <h2 className="text-4xl font-bold bg-gradient-to-r from-red-600 to-pink-600 dark:from-red-400 dark:to-pink-400 bg-clip-text text-transparent">
+        <h2 className="text-4xl pb-2 font-bold bg-gradient-to-r from-red-600 to-pink-600 dark:from-red-400 dark:to-pink-400 bg-clip-text text-transparent">
           You have successfully logged out!
         </h2>
         <p className="text-lg text-slate-600 dark:text-slate-300 leading-relaxed">

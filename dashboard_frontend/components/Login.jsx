@@ -67,12 +67,13 @@ const Login = () => {
       const res = await login(data).unwrap();
       if (res.user.newUser) {
         setNewUser(true);
-        router.push("/change-password");
+        setTimeout(() => {
+          router.push("/change-password");
+        }, 2000);
       } else {
         setTimeout(() => {
           router.push("/dashboard");
-        }, 2000); // 3 seconds delay
-        // router.push("/dashboard");
+        }, 2000);
       }
     } catch (err) {
       // Handle specific error messages
@@ -136,7 +137,7 @@ const Login = () => {
           // Enhanced Login form
           <div className="min-h-screen bg-gray-50 dark:bg-background flex items-center justify-center p-4 overflow-visible relative">
             {/* Background layers */}
-      
+
             {/* Card */}
             <Card
               style={{

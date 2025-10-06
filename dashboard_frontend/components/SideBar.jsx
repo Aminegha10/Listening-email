@@ -134,7 +134,7 @@ export function SideBar({ setLogOut, ...props }) {
                     className={cn(
                       "group relative rounded-xl px-4 py-3.5 text-sm font-semibold transition-all duration-300 hover:bg-sidebar-accent/80 hover:text-sidebar-accent-foreground hover:shadow-sm",
                       isActive &&
-                        "bg-primary/10 text-primary shadow-sm ring-1 ring-primary/20 hover:bg-primary/15"
+                      "bg-primary/10 text-primary shadow-sm ring-1 ring-primary/20 hover:bg-primary/15"
                     )}
                   >
                     <Link
@@ -182,7 +182,7 @@ export function SideBar({ setLogOut, ...props }) {
                       "group rounded-xl px-4 py-3.5 cursor-pointer text-sm font-semibold transition-all duration-300 dark:hover:bg-destructive/10  dark:hover:text-destructive hover:shadow-sm",
                       (adminCollapsed == true ||
                         pathname === "/dashboard/administration/users") &&
-                        "dark:bg-destructive/10 dark:text-destructive shadow-sm bg-[#d40924]/10 text-[#d40924] ring-1 ring-[#d40924]/20 "
+                      "dark:bg-destructive/10 dark:text-destructive shadow-sm bg-[#d40924]/10 text-[#d40924] ring-1 ring-[#d40924]/20 "
                     )}
                   >
                     <Shield className="h-5 w-5 dark:text-destructive/80  text-[#d40924]/80 transition-colors duration-300" />
@@ -203,7 +203,7 @@ export function SideBar({ setLogOut, ...props }) {
                           className={cn(
                             "flex items-center gap-2 cursor-pointer pl-4 text-sm font-medium rounded-lg transition-all duration-200 hover:bg-primary/10 hover:text-primary bg-sidebar-accent ",
                             pathname === "/dashboard/administration/users" &&
-                              "bg-primary/10 text-primary"
+                            "bg-primary/10 text-primary"
                           )}
                         >
                           <Users className="h-5 w-5 text-primary  transition-colors duration-300" />
@@ -224,7 +224,7 @@ export function SideBar({ setLogOut, ...props }) {
           <SidebarMenuItem>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <SidebarMenuButton className="h-14 hover:bg-sidebar-accent/50 rounded-xl transition-all duration-300">
+                <SidebarMenuButton className="h-14 cursor-pointer hover:bg-sidebar-accent/50 rounded-xl transition-all duration-300">
                   <div className="flex items-center gap-4 w-full">
                     <div className="relative">
                       <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center shadow-md hover:shadow-lg transition-all duration-300 ring-1 ring-primary/20">

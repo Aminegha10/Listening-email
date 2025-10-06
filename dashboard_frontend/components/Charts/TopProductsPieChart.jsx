@@ -178,8 +178,8 @@ export function TopProductsPieChart({ timeRange }) {
                       {filter === "unitsSold"
                         ? "Most Sold"
                         : filter === "revenue"
-                        ? "Top Revenue"
-                        : "Top Ordered"}
+                          ? "Top Revenue"
+                          : "Top Ordered"}
                     </span>
                     <ChevronDown className="h-4 w-4" />
                   </Button>
@@ -294,19 +294,29 @@ export function TopProductsPieChart({ timeRange }) {
                   ))}
                 </Pie>
               </PieChart>
-              <div className=" flex justify-center">
+              <div className=" w-full flex justify-center">
                 <Badge
                   variant="secondary"
-                  className="bg-primary/10 text-primary border-primary/20 px-4 py-1.5 font-medium"
+                  className="bg-primary/10 text-primary block w-64 text-center  border-primary/20 px-4 py-1.5 font-medium"
                 >
-                  Total distinct Products {data?.totalDistinctProducts} || Total
-                  Products Sold : {data?.totalAllProducts || 0} :  
-                  {timeRange === "thisWeek"
-                    ? "This Week"
-                    : timeRange === "thisMonth"
-                    ? "This Month"
-                    : "This Year"}
+                  Total Distinct Products: {data?.totalDistinctProducts || 0}{" "}
+                  <span className="text-xs text-muted-foreground ml-1">
+                    {timeRange === "thisWeek"
+                      ? "(This Week)"
+                      : timeRange === "thisMonth"
+                        ? "(This Month)"
+                        : "(This Year)"}
+                  </span>{" "}
+                  Total Products Sold: {data?.totalAllProducts || 0}{" "}
+                  <span className="text-xs text-muted-foreground ml-1">
+                    {timeRange === "thisWeek"
+                      ? "(This Week)"
+                      : timeRange === "thisMonth"
+                        ? "(This Month)"
+                        : "(This Year)"}
+                  </span>
                 </Badge>
+
               </div>
             </ChartContainer>
           )}

@@ -48,13 +48,13 @@ export default function DashboardLayout({ children }) {
         "--header-height": "calc(var(--spacing) * 12)",
       }}
     >
-      <style jsx global>{`
+      {/* <style jsx global>{`
         @media (min-width: 1536px) {
           :root {
             --sidebar-width: calc(var(--spacing) * 72);
           }
         }
-      `}</style>
+      `}</style> */}
       <SideBar variant="inset" setLogOut={setLogOut} />
       <SidebarInset>
         <NavBar />
