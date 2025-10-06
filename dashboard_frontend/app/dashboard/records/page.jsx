@@ -13,7 +13,7 @@ const TablesPage = () => {
         title="Clients Overview"
         subtitle="Key insights and engagement tracking for your customers"
         icon={
-          <Users className="h-5 w-5 text-[var(--color-primary)] dark:text-teal-400" />
+          <Users className="h-5 w-5 text-[var(--color-primary)] dark:text-white" />
         }
       />
       <ClientsTable />
@@ -22,7 +22,7 @@ const TablesPage = () => {
         title="Orders & Transactions"
         subtitle="Monitor sales, revenue trends, and fulfillment status"
         icon={
-          <ShoppingCart className="h-5 w-5 text-[var(--color-primary)] dark:text-emerald-400" />
+          <ShoppingCart className="h-5 w-5 text-[var(--color-primary)] dark:text-white" />
         }
       />
       <OrdersTable id="clients" />
@@ -31,7 +31,7 @@ const TablesPage = () => {
         title="Product Performance"
         subtitle="Analyze top-selling items and inventory statistics"
         icon={
-          <Package className="h-5 w-5 text-[var(--color-primary)] dark:text-cyan-400" />
+          <Package className="h-5 w-5 text-[var(--color-primary)] dark:text-white" />
         }
       />
       <ProductsTable id="products" />

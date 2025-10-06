@@ -83,13 +83,15 @@ export const columns = [
   {
     accessorKey: "quantitySold",
     header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        className="hover:bg-primary/5 hover:text-primary font-semibold"
-      >
-        Quantity Sold <ArrowUpDown className="ml-2 h-4 w-4" />
-      </Button>
+      <div classNam="text-center">
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="hover:bg-primary/5 text-md hover:text-primary dark:hover:text-white font-semibold"
+        >
+          Quantity Sold <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      </div>
     ),
     cell: ({ row }) => (
       <div className="lowercase justify-center flex items-center gap-2 font-medium">
@@ -100,7 +102,16 @@ export const columns = [
   },
   {
     accessorKey: "revenue",
-    header: () => <div className="text-right font-semibold">Revenue</div>,
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        className="hover:bg-primary/5 text-md hover:text-primary dark:hover:text-white font-semibold"
+      >
+        Revenue <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
+
     cell: ({ row }) => {
       const revenue = Number.parseFloat(row.getValue("revenue"));
       const formatted = new Intl.NumberFormat("en-US", {
@@ -114,7 +125,15 @@ export const columns = [
   },
   {
     accessorKey: "ordersCount",
-    header: "Orders Count",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        className="hover:bg-primary/5 text-md hover:text-primary dark:hover:text-white font-semibold"
+      >
+        Orders Count <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
     cell: ({ row }) => (
       <div className="lowercase justify-center flex items-center gap-2 font-medium">
         {row.getValue("ordersCount")}{" "}

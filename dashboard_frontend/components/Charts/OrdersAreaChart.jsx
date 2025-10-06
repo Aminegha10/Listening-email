@@ -2,6 +2,7 @@
 
 import {
   ArrowUpFromLine as ChartNoAxesCombined,
+  ChartNoAxesCombinedIcon,
   ChevronDown,
   Download,
   FileJson,
@@ -149,7 +150,7 @@ export function OrdersAreaChart({ timeRange }) {
         <div className="flex items-center justify-between flex-wrap gap-3">
           <div className="flex items-center gap-3">
             <div className="p-2.5 bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl border border-primary/10">
-              <ChartNoAxesCombined className="h-5 w-5 text-primary dark:text-white" />
+              <ChartNoAxesCombinedIcon className="h-5 w-5 text-primary dark:text-white" />
             </div>
             <div>
               <h3 className="text-lg font-semibold dark:text-foreground text-gray-900 tracking-tight">
@@ -159,8 +160,8 @@ export function OrdersAreaChart({ timeRange }) {
                 {timeRange === "thisWeek"
                   ? "Orders performance this Week"
                   : timeRange === "thisMonth"
-                    ? "Orders performance this Month"
-                    : "Orders performance this Year"}{" "}
+                  ? "Orders performance this Month"
+                  : "Orders performance this Year"}{" "}
               </p>
             </div>
           </div>
@@ -335,12 +336,13 @@ export function OrdersAreaChart({ timeRange }) {
           <div className="grid gap-2">
             <div className="flex items-center gap-2 leading-none font-medium text-gray-900">
               <div
-                className={`flex items-center gap-1.5 px-2 py-1 rounded-md ${leadStats?.ordersGrowth > 0
-                  ? "bg-green-50"
-                  : leadStats?.ordersGrowth < 0
+                className={`flex items-center gap-1.5 px-2 py-1 rounded-md ${
+                  leadStats?.ordersGrowth > 0
+                    ? "bg-green-50"
+                    : leadStats?.ordersGrowth < 0
                     ? "bg-red-50"
                     : "bg-gray-100"
-                  }`}
+                }`}
               >
                 {leadStats?.ordersGrowth > 0 ? (
                   <TrendingUp className="h-3.5 w-3.5 text-green-600" />
@@ -348,22 +350,28 @@ export function OrdersAreaChart({ timeRange }) {
                   <TrendingDown className="h-3.5 w-3.5 text-red-600" />
                 ) : null}
                 <span
-                  className={`font-semibold ${leadStats?.ordersGrowth > 0
-                    ? "text-green-700"
-                    : leadStats?.ordersGrowth < 0
+                  className={`font-semibold ${
+                    leadStats?.ordersGrowth > 0
+                      ? "text-green-700"
+                      : leadStats?.ordersGrowth < 0
                       ? "text-red-700"
                       : "text-gray-700"
-                    }`}
+                  }`}
                 >
                   {leadStats?.ordersGrowth > 0
-                    ? `+${leadStats.ordersGrowth.toFixed(2)}%`
+                    ? `+${leadStats.ordersGrowth} Orders`
                     : leadStats?.ordersGrowth < 0
-                      ? `${leadStats.ordersGrowth.toFixed(2)}%`
-                      : "0%"}
+                    ? `${leadStats.ordersGrowth} Orders`
+                    : "0"}
                 </span>
               </div>
               <span className="text-muted-foreground">
-                growth this {timeRange === "thisMonth" ? "month" : timeRange === "thisWeek" ? "week" : "year"}
+                growth this{" "}
+                {timeRange === "thisMonth"
+                  ? "month"
+                  : timeRange === "thisWeek"
+                  ? "week"
+                  : "year"}
               </span>
             </div>
             {/* <div className="text-muted-foreground flex items-center gap-2 leading-none">

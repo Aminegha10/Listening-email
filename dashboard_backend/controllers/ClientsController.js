@@ -198,7 +198,11 @@ const GetClients = async (req, res) => {
 
     const trulyNewClientsYesterday = await OrderModel.aggregate([
       { $group: { _id: "$client", firstOrderDate: { $min: "$createdAt" } } },
-      { $match: { firstOrderDate: { $gte: startOfYesterday, $lte: endOfYesterday } } },
+      {
+        $match: {
+          firstOrderDate: { $gte: startOfYesterday, $lte: endOfYesterday },
+        },
+      },
       { $count: "newClientsYesterday" },
     ]);
 
@@ -206,12 +210,7 @@ const GetClients = async (req, res) => {
       trulyNewClientsYesterday[0]?.newClientsYesterday || 0;
 
     const growthRate =
-      yesterdayClientsCount > 0
-        ? (
-            ((newClientsCount - yesterdayClientsCount) / yesterdayClientsCount) *
-            100
-          ).toFixed(2)
-        : 0;
+      (newClientsCount - yesterdayClientsCount) / yesterdayClientsCount;
 
     const progress =
       !isNaN(goal) && goal > 0

@@ -197,7 +197,7 @@ const GetProductsDetails = async (req, res) => {
           barcode: { $first: "$products.barcode" },
           warehouse: { $first: "$products.warehouse" },
           ordersCount: { $sum: 1 },
-          lastOrderedDate: { $max: "$orderDate" },
+          lastOrderedDate: { $max: "$createdAt" },
         },
       },
       {

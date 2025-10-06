@@ -147,17 +147,17 @@ export function TopProductsPieChart({ timeRange }) {
       >
         {/* Header */}
         <CardHeader>
-          <div className="p-4 sm:p-6 border-b border-slate-200 flex flex-row justify-between items-center gap-3">
+          <div className="p-4 sm:p-6 border-b border-slate-200 sm:flex flex-row justify-between items-center gap-3">
             {/* Left side — Title */}
-            <div className="flex flex-row items-center justify-between sm:items-center gap-2 sm:gap-3">
+            <div className="flex flex-row items-center sm:justify-between sm:items-center gap-2 sm:gap-3">
               <div className="p-2.5 bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl border border-primary/10">
                 <Package className="h-4 w-4 sm:h-5 sm:w-5 text-primary dark:text-white" />
               </div>
               <div>
-                <h3 className="text-xs sm:text-xl font-semibold text-slate-900 dark:text-white ">
+                <h3 className="text-lg font-semibold text-slate-900 dark:text-white ">
                   Top 10 Products
                 </h3>
-                <p className="text-[10px] sm:text-sm text-gray-500 font-medium ">
+                <p className="text-sm text-gray-500 font-medium ">
                   Showing {TopProducts?.length} of {data?.totalDistinctProducts}{" "}
                   products
                 </p>
@@ -165,7 +165,7 @@ export function TopProductsPieChart({ timeRange }) {
             </div>
 
             {/* Right side — Controls */}
-            <div className="flex justify-end gap-3 sm:gap-3">
+            <div className="flex justify-center sm:justify-end gap-3 sm:gap-3 sm:mt-0 mt-4">
               {/* Filter dropdown */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -174,12 +174,12 @@ export function TopProductsPieChart({ timeRange }) {
                     className="flex items-center gap-1 rounded-lg border border-border hover:border-primary hover:text-primary hover:bg-primary/5 transition-all duration-200 font-medium bg-transparent text-xs"
                   >
                     <Settings2 className="h-4 w-4 " />
-                    <span className="sm:inline hidden">
+                    <span className="">
                       {filter === "unitsSold"
                         ? "Most Sold"
                         : filter === "revenue"
-                          ? "Top Revenue"
-                          : "Top Ordered"}
+                        ? "Top Revenue"
+                        : "Top Ordered"}
                     </span>
                     <ChevronDown className="h-4 w-4" />
                   </Button>
@@ -205,7 +205,7 @@ export function TopProductsPieChart({ timeRange }) {
                     className="flex items-center gap-1 rounded-lg border border-border hover:border-primary hover:text-primary hover:bg-primary/5 transition-all duration-200 font-medium bg-transparent text-xs"
                   >
                     <Download className="h-4 w-4" />
-                    <span className="sm:inline hidden">Export</span>
+                    <span className="">Export</span>
                     <ChevronDown className="h-4 w-4" />
                   </Button>
                 </DropdownMenuTrigger>
@@ -227,7 +227,7 @@ export function TopProductsPieChart({ timeRange }) {
 
               {/* Table link button */}
               <Link href="/dashboard/records#products" passHref>
-                <Button className="!p-2  hidden bg-white dark:bg-secondary dark:border dark:border-border dark:hover:bg-slate-200 text-slate-700 rounded-lg border border-slate-300 hover:border-slate-400 sm:flex items-center gap-1 text-xs sm:!p-2 sm:gap-2 sm:text-sm">
+                <Button className="!p-2   hidden bg-white dark:bg-secondary dark:border dark:border-border dark:hover:bg-slate-200 text-slate-700 rounded-lg border border-slate-300 hover:border-slate-400 sm:flex items-center gap-1 text-xs sm:!p-3 sm:gap-2 sm:text-sm">
                   <Table className="w-3 h-3 sm:w-4 sm:h-4" />
                 </Button>
               </Link>
@@ -304,19 +304,18 @@ export function TopProductsPieChart({ timeRange }) {
                     {timeRange === "thisWeek"
                       ? "(This Week)"
                       : timeRange === "thisMonth"
-                        ? "(This Month)"
-                        : "(This Year)"}
+                      ? "(This Month)"
+                      : "(This Year)"}
                   </span>{" "}
                   Total Products Sold: {data?.totalAllProducts || 0}{" "}
                   <span className="text-xs text-muted-foreground ml-1">
                     {timeRange === "thisWeek"
                       ? "(This Week)"
                       : timeRange === "thisMonth"
-                        ? "(This Month)"
-                        : "(This Year)"}
+                      ? "(This Month)"
+                      : "(This Year)"}
                   </span>
                 </Badge>
-
               </div>
             </ChartContainer>
           )}
@@ -362,12 +361,12 @@ export function TopProductsPieChart({ timeRange }) {
                         : `${TopProducts[0][filter]}${filterInfo.unit}`}
                     </div>
 
-                    <div className="flex sm:justify-end items-center gap-1 text-sm dark:text-gray-500 text-green-600">
+                    {/* <div className="flex sm:justify-end items-center gap-1 text-sm dark:text-gray-500 text-green-600">
                       <TrendingUp className="w-4 h-4 flex-shrink-0 dark:text-green-500" />
                       <span className="text-xs sm:text-sm">
                         Leading performance
                       </span>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
               </div>

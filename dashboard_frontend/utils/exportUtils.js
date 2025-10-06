@@ -268,7 +268,7 @@ export const exportToPDF = async (
 
   const headers =
     dataType === "Orders"
-      ? ["Order #", "Client", "Price", "Sales Agent", "Products Count"]
+      ? ["Order #", "Client", "Price (DH)", "Sales Agent", "Products Count","Order Date"]
       : dataType === "Products"
       ? [
           "Product Name",
@@ -306,6 +306,7 @@ export const exportToPDF = async (
           row.getValue("price") || "N/A",
           row.getValue("salesAgent"),
           (row.getValue("products") || []).length,
+          row.getValue("createdAt"),
         ])
       : dataType === "Products"
       ? data.map((row) => [

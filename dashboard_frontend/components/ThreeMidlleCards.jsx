@@ -449,9 +449,9 @@ export const ThreeMidlleCards = () => {
                 <div className="p-1 rounded-full bg-rose-500/10">
                   <ArrowUpRight className="h-3 w-3 text-emerald-500" />
                 </div>
-                <span className="text-xs text-emerald-500">
-                  +{clients?.growthRate ?? 0}% vs yesterday
-                </span>
+                <div className="text-xs text-emerald-500 flex items-center">
+                  +{clients?.growthRate ?? 0} clients vs yesterday
+                </div>
               </>
             ) : (
               <>

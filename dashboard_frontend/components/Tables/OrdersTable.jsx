@@ -80,7 +80,7 @@ export const columns = [
     accessorKey: "orderNumber",
     header: "Order #",
     cell: ({ row }) => (
-      <div className="capitalize text-center font-medium">
+      <div className="capitalize text-md text-center font-medium">
         {row.getValue("orderNumber")}
       </div>
     ),
@@ -88,13 +88,15 @@ export const columns = [
   {
     accessorKey: "client",
     header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        className="hover:bg-primary/5 hover:text-primary font-semibold"
-      >
-        Client <ArrowUpDown className="ml-2 h-4 w-4" />
-      </Button>
+      <div className="text-center">
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="hover:bg-primary/5  text-md hover:text-primary font-semibold"
+        >
+          Client <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      </div>
     ),
     cell: ({ row }) => (
       <div className="lowercase justify-center flex items-center font-medium text-center">
@@ -105,11 +107,11 @@ export const columns = [
   {
     accessorKey: "price",
     header: ({ column }) => (
-      <div className="text-right font-semibold">
+      <div className="text-center font-semibold">
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="hover:bg-primary/5 hover:text-primary font-semibold"
+          className="hover:bg-primary/5 text-md hover:text-primary font-semibold"
         >
           Price <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
@@ -128,7 +130,8 @@ export const columns = [
   },
   {
     accessorKey: "salesAgent",
-    header: "Sales Agent",
+    header: () => <div className="text-center text-md">Sales Agent</div>,
+
     cell: ({ row }) => (
       <div className="capitalize text-center font-medium">
         {row.getValue("salesAgent")}
@@ -137,7 +140,7 @@ export const columns = [
   },
   {
     accessorKey: "products",
-    header: () => <div className="text-center">Products</div>,
+    header: () => <div className="text-center text-md">Products</div>,
     cell: ({ row }) => {
       const products = row.getValue("products") || [];
       return (
@@ -224,10 +227,10 @@ export const columns = [
   },
   {
     accessorKey: "typedepaiement",
-    header: "Payment Type",
+    header: () => <div className="text-center text-md">Payment Type</div>,
     cell: ({ row }) => (
       <div className="text-center">
-        <span className="rounded-md bg-sky-50 px-1.5 py-1 text-xs font-medium text-sky-700 ring-1 ring-inset ring-sky-200">
+        <span className="rounded-md bg-sky-50 px-1.5 py-1 text-xs dark:bg-sky-500/20 font-medium dark:text-white dark:ring-muted-foreground text-sky-700 ring-1 ring-inset ring-sky-200">
           {row.getValue("typedepaiement")}
         </span>
       </div>
@@ -236,13 +239,15 @@ export const columns = [
   {
     accessorKey: "createdAt",
     header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        className="hover:bg-primary/5 hover:text-primary font-semibold"
-      >
-        Order Date <ArrowUpDown className="ml-2 h-4 w-4" />
-      </Button>
+      <div className="text-center">
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="hover:bg-primary/5 text-md hover:text-primary font-semibold"
+        >
+          Order Date <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      </div>
     ),
     cell: ({ row }) => (
       <div className="capitalize text-center font-medium text-muted-foreground">
@@ -324,7 +329,7 @@ export function OrdersTable({ id }) {
           />
         </div>
 
-        <div className="flex items-center gap-2 flex-wrap">
+        <div className="flex items-center gap-2 sm:flex-wrap">
           {/* Orders Filter */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -507,9 +512,7 @@ export function OrdersTable({ id }) {
                 >
                   <div className="flex flex-col items-center gap-2">
                     <ShoppingCart className="h-6 w-6 text-muted-foreground/50" />
-                    <span className="text-sm font-medium">
-                      No order found.
-                    </span>
+                    <span className="text-sm font-medium">No order found.</span>
                     <span className="text-xs">
                       Try adjusting your search or filters
                     </span>

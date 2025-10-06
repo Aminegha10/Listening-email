@@ -21,6 +21,7 @@ import {
 import { ThreeDot } from "react-loading-indicators";
 import { Badge } from "../ui/badge";
 import {
+  ChartColumnIncreasing,
   ArrowUpFromLine as ChartNoAxesCombined,
   ChevronDown,
   ShoppingCart,
@@ -62,17 +63,17 @@ export default function SalesOrdersBarchart({ timeRange }) {
       }}
     >
       <CardHeader className="px-6 pb-4 border-b border-gray-100">
-        <div className="flex items-center justify-between  gap-3 sm:gap-4">
+        <div className="sm:flex items-center justify-between    sm:gap-4">
           {/* Left section */}
           <div className="flex items-center gap-1 sm:gap-3">
             <div className="p-2.5 bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl border border-primary/10">
-              <ChartNoAxesCombined className="h-4 w-4 sm:h-5 sm:w-5 text-primary dark:text-white" />
+              <ChartColumnIncreasing className="h-4 w-4 sm:h-5 sm:w-5 text-primary dark:text-white" />
             </div>
             <div>
-              <h3 className="text-xs sm:text-xl font-semibold text-slate-900 dark:text-white ">
+              <h3 className=" sm:text-lg font-semibold text-slate-900 dark:text-white ">
                 {type === "orders" ? "Orders Analytics" : "Sales Analytics"}
               </h3>
-              <p className="text-[10px] sm:text-sm text-gray-500 font-medium ">
+              <p className=" sm:text-sm text-gray-500 font-medium ">
                 {type === "orders"
                   ? timeRange === "thisWeek"
                     ? "Orders performance this Week"
@@ -89,7 +90,7 @@ export default function SalesOrdersBarchart({ timeRange }) {
           </div>
 
           {/* Right section */}
-          <div className="flex justify-end items-center gap-2">
+          <div className="flex sm:justify-end sm:mt-0 mt-4 justify-center  items-center gap-2">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -101,7 +102,7 @@ export default function SalesOrdersBarchart({ timeRange }) {
                   ) : (
                     <Users className="h-4 w-4" />
                   )}
-                  <span className="sm:inline hidden">
+                  <span className="">
                     {type === "orders" ? "Orders" : "Sales"}
                   </span>
                   <ChevronDown className="h-4 w-4" />
@@ -130,7 +131,7 @@ export default function SalesOrdersBarchart({ timeRange }) {
                   className="flex items-center gap-1 rounded-lg border border-border hover:border-primary hover:text-primary hover:bg-primary/5 transition-all duration-200 font-medium bg-transparent text-xs"
                 >
                   <Users className="h-4 w-4" />
-                  <span className="sm:inline hidden">
+                  <span className="">
                     {agentFilter === "all" ? "All Agents" : agentFilter}
                   </span>
                   <ChevronDown className="h-4 w-4" />
