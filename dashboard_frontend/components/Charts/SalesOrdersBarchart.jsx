@@ -32,7 +32,7 @@ import { Button } from "../ui/button";
 export default function SalesOrdersBarchart({ timeRange }) {
   // const [timeRange, setTimeRange] = useState("thisMonth");
   const [agentFilter, setAgentFilter] = useState("all");
-  const [type, setType] = useState("orders");
+  const [type, setType] = useState("sales");
 
   const {
     data: stats,

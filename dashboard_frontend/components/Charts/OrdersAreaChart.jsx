@@ -160,47 +160,12 @@ export function OrdersAreaChart({ timeRange }) {
                 {timeRange === "thisWeek"
                   ? "Orders performance this Week"
                   : timeRange === "thisMonth"
-                  ? "Orders performance this Month"
-                  : "Orders performance this Year"}{" "}
+                    ? "Orders performance this Month"
+                    : "Orders performance this Year"}{" "}
               </p>
             </div>
           </div>
           {/* Right section */}
-          {/* <div className="flex items-center gap-2 flex-wrap">
-            <Select value={type} onValueChange={setType}>
-              <SelectTrigger className="min-w-[120px] h-9 bg-background border-border/60 hover:border-primary/30 transition-colors">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="orders">Orders</SelectItem>
-                <SelectItem value="sales">Sales</SelectItem>
-              </SelectContent>
-            </Select>
-
-            <Select value={timeRange} onValueChange={setTimeRange}>
-              <SelectTrigger className="min-w-[120px] h-9 bg-background border-border/60 hover:border-primary/30 transition-colors">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="thisWeek">Last 7 Days</SelectItem>
-                <SelectItem value="thisMonth">Last 30 Days</SelectItem>
-                <SelectItem value="ytd">Current Year</SelectItem>
-              </SelectContent>
-            </Select>
-
-            <Select value={agentFilter} onValueChange={setAgentFilter}>
-              <SelectTrigger className="min-w-[140px] h-9 bg-background border-border/60 hover:border-primary/30 transition-colors">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {["all", ...(stats?.allAgents || [])].map((a) => (
-                  <SelectItem key={a} value={a}>
-                    {a === "all" ? "All Agents" : a}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div> */}
         </div>
       </CardHeader>
 
@@ -336,13 +301,12 @@ export function OrdersAreaChart({ timeRange }) {
           <div className="grid gap-2">
             <div className="flex items-center gap-2 leading-none font-medium text-gray-900">
               <div
-                className={`flex items-center gap-1.5 px-2 py-1 rounded-md ${
-                  leadStats?.ordersGrowth > 0
+                className={`flex items-center gap-1.5 px-2 py-1 rounded-md ${leadStats?.ordersGrowth > 0
                     ? "bg-green-50"
                     : leadStats?.ordersGrowth < 0
-                    ? "bg-red-50"
-                    : "bg-gray-100"
-                }`}
+                      ? "bg-red-50"
+                      : "bg-gray-100"
+                  }`}
               >
                 {leadStats?.ordersGrowth > 0 ? (
                   <TrendingUp className="h-3.5 w-3.5 text-green-600" />
@@ -350,19 +314,18 @@ export function OrdersAreaChart({ timeRange }) {
                   <TrendingDown className="h-3.5 w-3.5 text-red-600" />
                 ) : null}
                 <span
-                  className={`font-semibold ${
-                    leadStats?.ordersGrowth > 0
+                  className={`font-semibold ${leadStats?.ordersGrowth > 0
                       ? "text-green-700"
                       : leadStats?.ordersGrowth < 0
-                      ? "text-red-700"
-                      : "text-gray-700"
-                  }`}
+                        ? "text-red-700"
+                        : "text-gray-700"
+                    }`}
                 >
                   {leadStats?.ordersGrowth > 0
                     ? `+${leadStats.ordersGrowth} Orders`
                     : leadStats?.ordersGrowth < 0
-                    ? `${leadStats.ordersGrowth} Orders`
-                    : "0"}
+                      ? `${leadStats.ordersGrowth} Orders`
+                      : "0"}
                 </span>
               </div>
               <span className="text-muted-foreground">
@@ -370,8 +333,8 @@ export function OrdersAreaChart({ timeRange }) {
                 {timeRange === "thisMonth"
                   ? "month"
                   : timeRange === "thisWeek"
-                  ? "week"
-                  : "year"}
+                    ? "week"
+                    : "year"}
               </span>
             </div>
             {/* <div className="text-muted-foreground flex items-center gap-2 leading-none">

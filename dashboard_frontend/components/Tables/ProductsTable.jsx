@@ -83,7 +83,7 @@ export const columns = [
   {
     accessorKey: "quantitySold",
     header: ({ column }) => (
-      <div classNam="text-center">
+      <div className="text-center">
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}

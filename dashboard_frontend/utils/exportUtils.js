@@ -105,9 +105,8 @@ export const exportToCSV = (data, filterDate, dataType, _, __, filter) => {
   const url = window.URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = `${dataType}-${filter}-${filterDate || "all"}-${
-    new Date().toISOString().split("T")[0]
-  }.csv`;
+  a.download = `${dataType}-${filter}-${filterDate || "all"}-${new Date().toISOString().split("T")[0]
+    }.csv`;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
@@ -197,9 +196,8 @@ export const exportToJSON = (data, filterDate, dataType, _, __, filter) => {
   const url = window.URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = `${dataType}-${filter}-${filterDate || "all"}-${
-    new Date().toISOString().split("T")[0]
-  }.json`;
+  a.download = `${dataType}-${filter}-${filterDate || "all"}-${new Date().toISOString().split("T")[0]
+    }.json`;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
@@ -268,67 +266,67 @@ export const exportToPDF = async (
 
   const headers =
     dataType === "Orders"
-      ? ["Order #", "Client", "Price (DH)", "Sales Agent", "Products Count","Order Date"]
+      ? ["Order #", "Client", "Price (DH)", "Sales Agent", "Products Count", "Order Date"]
       : dataType === "Products"
-      ? [
+        ? [
           "Product Name",
           "Quantity Sold",
           "Revenue",
           "Orders Count",
           "Last Order Date",
         ]
-      : dataType === "Clients"
-      ? [
-          "Client Name",
-          "Orders Count",
-          "Products Ordered",
-          "Order Average",
-          "Revenue",
-        ]
-      : dataType === "TopClients"
-      ? [
-          "Client Name",
-          filter === "revenue"
-            ? "Revenue DH"
-            : filter === "ordersCount"
-            ? "Orders Count"
-            : "Products Ordered",
-        ]
-      : dataType === "Sales" // ✅ New case for area chart
-      ? ["Label", "Sales (DH)"] // Label = day/week/month depending on timeRange
-      : ["Product", filterPieChart];
+        : dataType === "Clients"
+          ? [
+            "Client Name",
+            "Orders Count",
+            "Products Ordered",
+            "Order Average",
+            "Revenue",
+          ]
+          : dataType === "TopClients"
+            ? [
+              "Client Name",
+              filter === "revenue"
+                ? "Revenue DH"
+                : filter === "ordersCount"
+                  ? "Orders Count"
+                  : "Products Ordered",
+            ]
+            : dataType === "Sales" // ✅ New case for area chart
+              ? ["Label", "Sales (DH)"] // Label = day/week/month depending on timeRange
+              : ["Product", filterPieChart];
 
   const rows =
     dataType === "Orders"
       ? data.map((row) => [
-          row.getValue("orderNumber"),
-          row.getValue("client"),
-          row.getValue("price") || "N/A",
-          row.getValue("salesAgent"),
-          (row.getValue("products") || []).length,
-          row.getValue("createdAt"),
-        ])
+        row.getValue("orderNumber"),
+        row.getValue("client"),
+        row.getValue("price") || "N/A",
+        row.getValue("salesAgent"),
+        (row.getValue("products") || []).length,
+        row.getValue("createdAt"),
+      ])
       : dataType === "Products"
-      ? data.map((row) => [
+        ? data.map((row) => [
           row.getValue("productName"),
           row.getValue("quantitySold"),
           row.getValue("revenue") || "N/A",
           row.getValue("ordersCount"),
           row.getValue("lastOrderedDate"),
         ])
-      : dataType === "Clients"
-      ? data.map((row) => [
-          row.getValue("clientName"),
-          row.getValue("ordersCount"),
-          row.getValue("productsQuantity") || "N/A",
-          row.getValue("orderAverage"),
-          row.getValue("revenue"),
-        ])
-      : dataType === "TopClients"
-      ? data.map((row) => [row.clientName, row[filter]])
-      : dataType === "Sales" // ✅ New case for area chart
-      ? data.map((row) => [row.label, row.sales])
-      : data.map((row) => [row.product, row[filterPieChart]]);
+        : dataType === "Clients"
+          ? data.map((row) => [
+            row.getValue("clientName"),
+            row.getValue("ordersCount"),
+            row.getValue("productsQuantity") || "N/A",
+            row.getValue("orderAverage"),
+            row.getValue("revenue"),
+          ])
+          : dataType === "TopClients"
+            ? data.map((row) => [row.clientName, row[filter]])
+            : dataType === "Sales" // ✅ New case for area chart
+              ? data.map((row) => [row.label, row.sales])
+              : data.map((row) => [row.product, row[filterPieChart]]);
 
   autoTable(doc, {
     head: [headers],
@@ -393,19 +391,34 @@ export const exportToPDF = async (
       const style = document.createElement("style");
       style.textContent = `
       #pdf-clone * {
-        color: #333 !important;
-        background-color: #fff !important;
-        border-color: #ddd !important;
-      }
-      #pdf-clone .recharts-pie-label-text {
-        fill: #333 !important;
-        font-size: 10px !important;
-      }
-      #pdf-clone .recharts-tooltip-wrapper {
-        background-color: #fff !important;
-        border: 1px solid #ddd !important;
-      }
-    `;
+    color: #333 !important;
+    background-color: #fff !important;
+    border-color: #ddd !important;
+  }
+  #pdf-clone .recharts-pie-label-text {
+    fill: #333 !important;
+    font-size: 10px !important;
+  }
+  #pdf-clone .recharts-tooltip-wrapper {
+    background-color: #fff !important;
+    border: 1px solid #ddd !important;
+  }
+
+  /* Fix flex height issue for Badge */
+  #pdf-clone .flex {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-height: 40px; /* or whatever the badge height needs */
+  }
+
+  #pdf-clone .badge, 
+  #pdf-clone .block {
+    display: inline-block !important;
+    min-height: 1em !important; 
+  }
+`;
+
       tempContainer.appendChild(style);
       tempContainer.appendChild(chartClone);
       document.body.appendChild(tempContainer);
@@ -505,8 +518,7 @@ export const exportToPDF = async (
   }
 
   doc.save(
-    `${dataType}-${filter ?? "all"}-${filterDate}-${
-      new Date().toISOString().split("T")[0]
+    `${dataType}-${filter ?? "all"}-${filterDate}-${new Date().toISOString().split("T")[0]
     }.pdf`
   );
 };

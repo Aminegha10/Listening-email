@@ -76,14 +76,14 @@ export function SectionCards() {
       icon: <Grid2x2Plus className="w-6 h-6" />,
     },
     {
-      title: "Total Sales",
-      value:  stats?.totalSales + " DH",
+      title: "Total Sales (MAD)",
+      value:  stats?.totalSales,
       change: "+5%",
       isPositive: true,
       icon: <Wallet className="w-6 h-6" />,
     },
     {
-      title: "Today Sales",
+      title: "Today Sales (MAD)",
       value: stats?.totalSalesToday + " DH",
       change: "+2%",
       isPositive: true,

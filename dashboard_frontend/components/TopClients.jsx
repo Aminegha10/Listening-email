@@ -20,6 +20,7 @@ import {
   ChartNoAxesCombined,
   Sheet,
   FileJson,
+  ChartNoAxesCombinedIcon,
 } from "lucide-react";
 import { useGetLeadStatsQuery, useGetClientsQuery } from "@/features/dataApi";
 import {
@@ -36,6 +37,7 @@ import { Button } from "./ui/button";
 import Link from "next/link";
 import { Avatar, AvatarFallback } from "./ui/avatar";
 import { exportToCSV, exportToJSON, exportToPDF } from "@/utils/exportUtils";
+import { Card, CardHeader } from "./ui/card";
 
 function TopClients({ timeRange }) {
   const [filter, setFilter] = useState("revenue");
@@ -71,7 +73,7 @@ function TopClients({ timeRange }) {
     exportToPDF(topClients.data, timeRange, "TopClients", null, null, filter);
 
   return (
-    <div
+    <Card
       className="max-w-6xl mx-auto dark:bg-[var(--card)]  "
       style={{
         boxShadow:
@@ -79,84 +81,86 @@ function TopClients({ timeRange }) {
       }}
     >
       {/* Clients Card */}
-      <div className="p-6 border-b border-slate-200   dark:border-white dark:border-b-1 sm:flex flex-row justify-between items-center sm:items-center sm:gap-1">
-        {/* Left: Title + Icon */}
-        <div className="flex items-center gap-3 w-full sm:w-auto">
-          <div className="p-2.5 bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl border border-primary/10">
-            <Users className="h-5 w-5 text-primary dark:text-white" />
+      <CardHeader className="px-6 pb-4 border-b border-gray-100">
+        <div className="flex items-center justify-between flex-wrap gap-3">
+          {/* Left: Title + Icon */}
+          <div className="flex items-center gap-3 w-full sm:w-auto">
+            <div className="p-2.5 bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl border border-primary/10">
+              <Users className="h-5 w-5 text-primary dark:text-white" />
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-slate-900 dark:text-white ">
+                Top 10 Clients
+              </h3>
+              <p className="text-sm text-gray-500 font-medium ">
+                Showing {topClients?.data.length} of {topClients?.totalClients}{" "}
+                clients
+              </p>
+            </div>
           </div>
-          <div>
-            <h3 className="text-lg font-semibold text-slate-900 dark:text-white ">
-              Top 10 Clients
-            </h3>
-            <p className="text-sm text-gray-500 font-medium ">
-              Showing {topClients?.data.length} of {topClients?.totalClients}{" "}
-              clients
-            </p>
+          {/* Right section */}
+          {/* Right: Filters & Export */}
+          <div className="flex  gap-2 w-full sm:w-auto justify-center sm:mt-0 mt-4 sm:justify-end">
+            {/* Filter Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="flex items-center gap-1 rounded-lg border border-border hover:border-primary hover:text-primary hover:bg-primary/5 transition-all duration-200 font-medium bg-transparent text-xs"
+                >
+                  <Settings2 className="h-4 w-4" />
+                  <span className="">
+                    {filter === "revenue"
+                      ? "Revenue"
+                      : filter === "productsQuantity"
+                        ? "Products"
+                        : "Orders"}
+                  </span>
+                  <ChevronDown className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem onClick={() => setFilter("revenue")}>
+                  Top Revenue
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setFilter("ordersCount")}>
+                  Total Orders
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setFilter("productsQuantity")}>
+                  Products Quantity
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            {/* Export Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="flex items-center gap-1 rounded-lg border border-border hover:border-primary hover:text-primary hover:bg-primary/5 transition-all duration-200 font-medium bg-transparent text-xs"
+                >
+                  <Download className="h-4 w-4" />
+                  <span className="">Export</span>
+                  <ChevronDown className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={handleExportCSV}>
+                  Export as CSV <Sheet className="text-green-500 stroke-[2px]" />
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleExportJSON}>
+                  Export as JSON{" "}
+                  <FileJson className="text-yellow-500 stroke-[2px]" />
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleExportPDF}>
+                  Export as PDF{" "}
+                  <FileText className="text-[#f32b2b] stroke-[2px]" />
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
-
-        {/* Right: Filters & Export */}
-        <div className="flex  gap-2 w-full sm:w-auto justify-center sm:mt-0 mt-4 sm:justify-end">
-          {/* Filter Dropdown */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="outline"
-                className="flex items-center gap-1 rounded-lg border border-border hover:border-primary hover:text-primary hover:bg-primary/5 transition-all duration-200 font-medium bg-transparent text-xs"
-              >
-                <Settings2 className="h-4 w-4" />
-                <span className="">
-                  {filter === "revenue"
-                    ? "Revenue"
-                    : filter === "productsQuantity"
-                      ? "Products"
-                      : "Orders"}
-                </span>
-                <ChevronDown className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuItem onClick={() => setFilter("revenue")}>
-                Top Revenue
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setFilter("ordersCount")}>
-                Total Orders
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setFilter("productsQuantity")}>
-                Products Quantity
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-
-          {/* Export Dropdown */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="outline"
-                className="flex items-center gap-1 rounded-lg border border-border hover:border-primary hover:text-primary hover:bg-primary/5 transition-all duration-200 font-medium bg-transparent text-xs"
-              >
-                <Download className="h-4 w-4" />
-                <span className="">Export</span>
-                <ChevronDown className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={handleExportCSV}>
-                Export as CSV <Sheet className="text-green-500 stroke-[2px]" />
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={handleExportJSON}>
-                Export as JSON{" "}
-                <FileJson className="text-yellow-500 stroke-[2px]" />
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={handleExportPDF}>
-                Export as PDF{" "}
-                <FileText className="text-[#f32b2b] stroke-[2px]" />
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-      </div>
+      </CardHeader>
 
       {/* Chart Container */}
       <div className="divide-y divide-slate-100">
@@ -309,7 +313,7 @@ function TopClients({ timeRange }) {
           ))
         )}
       </div>
-    </div>
+    </Card>
   );
 }
 
