@@ -327,7 +327,7 @@ export function TopProductsPieChart({ timeRange }) {
             <div className="w-full p-4 sm:p-6">
               <div className="bg-white dark:bg-secondary  border border-slate-200 rounded-xl p-4 sm:p-5 shadow-sm">
                 {/* Responsive layout */}
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 ">
                   {/* Left: Icon + Info */}
                   <div className="flex items-start sm:items-center gap-3 sm:gap-4 w-full sm:w-auto">
                     <div className="flex items-center justify-center w-12 h-12 bg-gradient-to-br from-[var(--color-primary)] to-indigo-300 dark:to-secondary rounded-xl shadow-lg flex-shrink-0">
@@ -347,7 +347,7 @@ export function TopProductsPieChart({ timeRange }) {
                         </span>
                       </div>
 
-                      <h4 className="text-base sm:text-lg font-semibold text-slate-900 dark:text-white truncate max-w-[200px] sm:max-w-md">
+                      <h4 className="text-sm font-semibold text-slate-900 dark:text-white truncate max-w-[200px] sm:max-w-md">
                         {TopProducts[0].product}
                       </h4>
                     </div>
@@ -355,7 +355,7 @@ export function TopProductsPieChart({ timeRange }) {
 
                   {/* Right: Value + Trend */}
                   <div className="w-full sm:w-auto text-left sm:text-right">
-                    <div className="text-xl sm:text-2xl font-bold dark:text-white text-slate-900 mb-1">
+                    <div className="text-sm font-bold dark:text-white text-slate-900 mb-1">
                       {filterInfo.unit === "$"
                         ? `${TopProducts[0][filter]} DH`
                         : `${TopProducts[0][filter]}${filterInfo.unit}`}
