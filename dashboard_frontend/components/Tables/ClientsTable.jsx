@@ -82,13 +82,13 @@ export const columns = [
       <Button
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        className="hover:bg-primary/5 hover:text-primary font-semibold"
+        className="hover:bg-primary/5 text-md hover:text-primary font-semibold"
       >
         Orders Count <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
     cell: ({ row }) => (
-      <div className="justify-center flex items-center gap-2 font-medium">
+      <div className="justify-center  flex items-center gap-2 font-medium">
         {row.getValue("ordersCount")}
         <ShoppingCart className="h-4 w-4 text-primary" />
       </div>
@@ -100,7 +100,7 @@ export const columns = [
       <Button
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        className="hover:bg-primary/5 hover:text-primary font-semibold"
+        className="hover:bg-primary/5 text-md hover:text-primary font-semibold"
       >
         Products Ordered <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
@@ -153,7 +153,7 @@ export const columns = [
       <Button
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        className="hover:bg-primary/5 hover:text-primary font-semibold"
+        className="hover:bg-primary/5 text-md hover:text-primary font-semibold"
       >
         First Order Date <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>

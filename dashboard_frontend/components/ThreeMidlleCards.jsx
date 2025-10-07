@@ -459,7 +459,7 @@ export const ThreeMidlleCards = () => {
                   <ArrowDownRight className="h-4 w-4 text-rose-500" />
                 </div>
                 <span className="text-xs text-rose-500">
-                  {clients?.growthRate ?? 0}% vs yesterday
+                  {clients?.growthRate ?? 0} clients vs yesterday
                 </span>
               </>
             )}

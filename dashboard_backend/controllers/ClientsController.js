@@ -160,13 +160,13 @@ const GetClients = async (req, res) => {
       ...client,
       firstOrderDate: client.firstOrderDate
         ? new Date(client.firstOrderDate).toLocaleString("en-GB", {
-            day: "numeric",
-            month: "short",
-            year: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-            hour12: false,
-          })
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: false,
+        })
         : null,
     }));
 
@@ -210,7 +210,7 @@ const GetClients = async (req, res) => {
       trulyNewClientsYesterday[0]?.newClientsYesterday || 0;
 
     const growthRate =
-      (newClientsCount - yesterdayClientsCount) / yesterdayClientsCount;
+      (newClientsCount - yesterdayClientsCount);
 
     const progress =
       !isNaN(goal) && goal > 0

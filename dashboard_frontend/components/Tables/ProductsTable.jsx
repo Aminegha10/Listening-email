@@ -41,7 +41,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "../ui/dialog";
 
 import { useGetProductsDetailsQuery } from "@/features/dataApi";
 import ProductInfoCard from "../ui/productCardInfo";
@@ -148,10 +148,10 @@ export const columns = [
       const dateValue = row.getValue("lastOrderedDate");
       const formattedDate = dateValue
         ? new Date(dateValue).toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "short",
-            day: "numeric",
-          })
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+        })
         : "-";
 
       return (
@@ -274,10 +274,10 @@ export function ProductsTable({ id }) {
                 {timeRange === "today"
                   ? "Today"
                   : timeRange === "thisWeek"
-                  ? "This Week"
-                  : timeRange === "thisMonth"
-                  ? "This Month"
-                  : "All Time"}
+                    ? "This Week"
+                    : timeRange === "thisMonth"
+                      ? "This Month"
+                      : "All Time"}
                 <ChevronDown className="ml-1 h-3 w-3" />
               </Button>
             </DropdownMenuTrigger>
@@ -402,9 +402,9 @@ export function ProductsTable({ id }) {
                     {header.isPlaceholder
                       ? null
                       : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
                   </TableHead>
                 ))}
               </TableRow>
@@ -417,11 +417,9 @@ export function ProductsTable({ id }) {
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  className={`hover:bg-primary/5 transition-all duration-200 border-b border-border/50 ${
-                    idx % 2 === 0 ? "bg-background" : "bg-muted/20"
-                  } ${
-                    row.getIsSelected() ? "bg-primary/10 border-primary/20" : ""
-                  }`}
+                  className={`hover:bg-primary/5 transition-all duration-200 border-b border-border/50 ${idx % 2 === 0 ? "bg-background" : "bg-muted/20"
+                    } ${row.getIsSelected() ? "bg-primary/10 border-primary/20" : ""
+                    }`}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell
