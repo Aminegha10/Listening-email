@@ -23,7 +23,7 @@ const addOrder = async (products, orderDetails) => {
       return;
     }
     const res = await axios.post(
-      `http://217.65.146.240:5000/api/Lead`,
+      `http://localhost:3000/api/orders/AddOrder`,
       {
         orderNumber,
         salesAgent,
@@ -37,12 +37,8 @@ const addOrder = async (products, orderDetails) => {
         },
       }
     );
-    console.log("im amine")
     // --------------------------------------------------------
     // const pdfPath = await generatePdf(orderDetails);
-    console.log(pdfPath)
-    console.log("im amine")
-
     // log the response of adding order
     logger.info(res.data.message);
     logger.info(JSON.stringify(res.data.newOrder, null, 2));

@@ -39,7 +39,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useGetClientsQuery } from "@/features/dataApi";
-import { Input } from "../ui/input";
+import { Input } from "@/components/input";
 import { exportToCSV, exportToJSON, exportToPDF } from "@/utils/exportUtils";
 
 export const columns = [

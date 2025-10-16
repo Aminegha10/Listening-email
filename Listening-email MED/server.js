@@ -11,7 +11,7 @@ const { getPrinters } = pkg;
 dotenv.config();
 
 const app = express();
-const port = 4000;
+const port = 8000;
 const tokensPath = "tokens.json";
 
 // OAuth2 client setup

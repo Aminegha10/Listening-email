@@ -46,8 +46,8 @@ import {
   DialogContent,
   DialogTitle,
   DialogTrigger,
-} from "../ui/dialog";
-import { Badge } from "../ui/badge";
+} from "@/components/dialog";
+import { Badge } from "@/components/badge";
 import { exportToCSV, exportToJSON, exportToPDF } from "@/utils/exportUtils";
 import { Calendar } from "lucide-react";
 

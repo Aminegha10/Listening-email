@@ -42,8 +42,8 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
-import { Button } from "../ui/button";
+} from "@/components/dropdown-menu";
+import { Button } from "@/components/button";
 import { exportChartPDF, exportToPDF } from "@/utils/exportUtils";
 
 // Weekday abbreviations (two-letter)
@@ -174,8 +174,8 @@ export function SaleAreaChart({ timeRange }) {
                 {timeRange === "thisWeek"
                   ? "Sales performance this Week"
                   : timeRange === "thisMonth"
-                  ? "Sales performance this Month"
-                  : "Sales performance this Year"}
+                    ? "Sales performance this Month"
+                    : "Sales performance this Year"}
               </p>
             </div>
             {/* Export dropdown */}
@@ -348,13 +348,12 @@ export function SaleAreaChart({ timeRange }) {
           <div className="grid gap-2">
             <div className="flex items-center gap-2 leading-none font-medium text-gray-900">
               <div
-                className={`flex items-center gap-1.5 px-2 py-1 rounded-md ${
-                  leadStats?.salesGrowth > 0
-                    ? "bg-green-50"
-                    : leadStats?.salesGrowth < 0
+                className={`flex items-center gap-1.5 px-2 py-1 rounded-md ${leadStats?.salesGrowth > 0
+                  ? "bg-green-50"
+                  : leadStats?.salesGrowth < 0
                     ? "bg-red-50"
                     : "bg-gray-100"
-                }`}
+                  }`}
               >
                 {leadStats?.salesGrowth > 0 ? (
                   <TrendingUp className="h-3.5 w-3.5 text-green-600" />
@@ -362,19 +361,18 @@ export function SaleAreaChart({ timeRange }) {
                   <TrendingDown className="h-3.5 w-3.5 text-red-600" />
                 ) : null}
                 <span
-                  className={`font-semibold ${
-                    leadStats?.salesGrowth > 0
-                      ? "text-green-700"
-                      : leadStats?.salesGrowth < 0
+                  className={`font-semibold ${leadStats?.salesGrowth > 0
+                    ? "text-green-700"
+                    : leadStats?.salesGrowth < 0
                       ? "text-red-700"
                       : "text-gray-700"
-                  }`}
+                    }`}
                 >
                   {leadStats?.salesGrowth > 0
                     ? `+${leadStats.salesGrowth.toFixed(2)} MAD`
                     : leadStats?.salesGrowth < 0
-                    ? `${leadStats.salesGrowth.toFixed(2)} MAD`
-                    : "0 MAD"}
+                      ? `${leadStats.salesGrowth.toFixed(2)} MAD`
+                      : "0 MAD"}
                 </span>
               </div>
 
@@ -383,8 +381,8 @@ export function SaleAreaChart({ timeRange }) {
                 {timeRange === "thisMonth"
                   ? "month"
                   : timeRange === "thisWeek"
-                  ? "week"
-                  : "year"}
+                    ? "week"
+                    : "year"}
               </span>
             </div>
             {/* <div className="text-muted-foreground flex items-center gap-2 leading-none">

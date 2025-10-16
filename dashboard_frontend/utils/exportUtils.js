@@ -523,21 +523,21 @@ export const exportToPDF = async (
   );
 };
 
-export const exportChartPDF = async (chartRef) => {
-  if (!chartRef.current) return;
+// export const exportChartPDF = async (chartRef) => {
+//   if (!chartRef.current) return;
 
-  const canvas = await html2canvas(chartRef.current, { scale: 2 });
-  const imgData = canvas.toDataURL("image/png");
+//   const canvas = await html2canvas(chartRef.current, { scale: 2 });
+//   const imgData = canvas.toDataURL("image/png");
 
-  const pdf = new jsPDF({
-    orientation: "landscape",
-    unit: "px",
-    format: [canvas.width, canvas.height],
-  });
+//   const pdf = new jsPDF({
+//     orientation: "landscape",
+//     unit: "px",
+//     format: [canvas.width, canvas.height],
+//   });
 
-  pdf.setFontSize(14);
-  pdf.text("Sales Area Chart", 20, 20);
-  pdf.addImage(imgData, "PNG", 20, 40, canvas.width - 40, canvas.height - 60);
+//   pdf.setFontSize(14);
+//   pdf.text("Sales Area Chart", 20, 20);
+//   pdf.addImage(imgData, "PNG", 20, 40, canvas.width - 40, canvas.height - 60);
 
-  pdf.save("sales-chart.pdf");
-};
+//   pdf.save("sales-chart.pdf");
+// };

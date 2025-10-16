@@ -39,7 +39,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Badge } from "../ui/badge";
+import { Badge } from "@/components/badge";
 
 import { useRegisterMutation } from "../../features/authApi";
 import { useGetAllUsersQuery } from "../../features/dataApi";

@@ -41,10 +41,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "../ui/dialog";
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/dialog";
 
 import { useGetProductsDetailsQuery } from "@/features/dataApi";
-import ProductInfoCard from "../ui/productCardInfo";
+import ProductInfoCard from "@/components/productCardInfo";
 
 export const columns = [
   {

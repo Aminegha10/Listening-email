@@ -9,7 +9,7 @@ import logger from "./utils/Logger.js";
 dotenv.config();
 
 const app = express();
-const port = 3000;
+const port = 5000;
 const tokensPath = "tokens.json";
 
 // OAuth2 client setup

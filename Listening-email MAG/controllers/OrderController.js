@@ -24,7 +24,7 @@ const addOrder = async (products, orderDetails) => {
       return;
     }
     const res = await axios.post(
-      `http://217.65.146.240:5000/api/Lead`,
+      `http://localhost:3000/api/orders/AddOrder`,
       {
         orderNumber,
         salesAgent,
