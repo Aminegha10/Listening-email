@@ -19,7 +19,7 @@ import {
   Tooltip,
 } from "recharts";
 import { ThreeDot } from "react-loading-indicators";
-import { Badge } from "@/components/badge";
+import { Badge } from "@/components/ui/badge";
 import {
   ChartColumnIncreasing,
   ArrowUpFromLine as ChartNoAxesCombined,
@@ -27,7 +27,7 @@ import {
   ShoppingCart,
   Users,
 } from "lucide-react";
-import { Button } from "@/components/button";
+import { Button } from "@/components/ui/button";
 
 export default function SalesOrdersBarchart({ timeRange }) {
   // const [timeRange, setTimeRange] = useState("thisMonth");

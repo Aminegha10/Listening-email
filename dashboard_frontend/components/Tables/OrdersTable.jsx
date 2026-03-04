@@ -46,8 +46,8 @@ import {
   DialogContent,
   DialogTitle,
   DialogTrigger,
-} from "@/components/dialog";
-import { Badge } from "@/components/badge";
+} from "@/components/ui/dialog";
+import { Badge } from "@/components/ui/badge";
 import { exportToCSV, exportToJSON, exportToPDF } from "@/utils/exportUtils";
 import { Calendar } from "lucide-react";
 
@@ -342,10 +342,10 @@ export function OrdersTable({ id }) {
                 {timeRange === "today"
                   ? "Today"
                   : timeRange === "thisWeek"
-                  ? "This Week"
-                  : timeRange === "thisMonth"
-                  ? "This Month"
-                  : "All Time"}
+                    ? "This Week"
+                    : timeRange === "thisMonth"
+                      ? "This Month"
+                      : "All Time"}
                 <ChevronDown className="ml-1 h-3 w-3" />
               </Button>
             </DropdownMenuTrigger>
@@ -471,9 +471,9 @@ export function OrdersTable({ id }) {
                     {header.isPlaceholder
                       ? null
                       : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
                   </TableHead>
                 ))}
               </TableRow>
@@ -485,11 +485,9 @@ export function OrdersTable({ id }) {
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  className={`hover:bg-primary/5 transition-all duration-200 border-b border-border/50 ${
-                    idx % 2 === 0 ? "bg-background" : "bg-muted/20"
-                  } ${
-                    row.getIsSelected() ? "bg-primary/10 border-primary/20" : ""
-                  }`}
+                  className={`hover:bg-primary/5 transition-all duration-200 border-b border-border/50 ${idx % 2 === 0 ? "bg-background" : "bg-muted/20"
+                    } ${row.getIsSelected() ? "bg-primary/10 border-primary/20" : ""
+                    }`}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell

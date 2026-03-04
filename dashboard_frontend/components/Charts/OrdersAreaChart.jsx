@@ -42,7 +42,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/button";
+import { Button } from "@/components/ui/button";
 
 // Weekday abbreviations (two-letter)
 const weekDayAbbr = {

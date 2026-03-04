@@ -42,8 +42,8 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/dropdown-menu";
-import { Button } from "@/components/button";
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
 import { exportChartPDF, exportToPDF } from "@/utils/exportUtils";
 
 // Weekday abbreviations (two-letter)

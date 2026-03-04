@@ -1,15 +1,15 @@
 import { Button } from "@/components/ui/button";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Bell, Settings, Menu, Sun, Moon } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/avatar";
-import { Badge } from "@/components/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/dropdown-menu";
+} from "@/components/ui/dropdown-menu";
 import { useTheme } from "next-themes";
 import { usePathname } from "next/navigation";
 

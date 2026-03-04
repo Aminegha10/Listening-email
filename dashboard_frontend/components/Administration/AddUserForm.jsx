@@ -9,7 +9,7 @@ import {
   DialogTrigger,
   DialogFooter,
   DialogClose,
-} from "@/components/dialog";
+} from "@/components/ui/dialog";
 import {
   Select,
   SelectContent,
