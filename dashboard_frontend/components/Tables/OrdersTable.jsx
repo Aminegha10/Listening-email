@@ -273,6 +273,7 @@ export function OrdersTable({ id }) {
     timeRange,
     search,
   });
+  console.log("🚀 ~ OrdersTable ~ Orders:", Orders);
 
   const table = useReactTable({
     data: Orders || [],
@@ -295,7 +296,7 @@ export function OrdersTable({ id }) {
       "Orders",
       null,
       null,
-      Orders.length
+      Orders.length,
     );
   const handleExportJSON = () =>
     exportToJSON(
@@ -304,7 +305,7 @@ export function OrdersTable({ id }) {
       "Orders",
       null,
       null,
-      Orders.length
+      Orders.length,
     );
   const handleExportPDF = () =>
     exportToPDF(
@@ -313,7 +314,7 @@ export function OrdersTable({ id }) {
       "Orders",
       null,
       null,
-      Orders.length
+      Orders.length,
     );
 
   return (
@@ -471,9 +472,9 @@ export function OrdersTable({ id }) {
                     {header.isPlaceholder
                       ? null
                       : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )}
                   </TableHead>
                 ))}
               </TableRow>
@@ -485,9 +486,11 @@ export function OrdersTable({ id }) {
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  className={`hover:bg-primary/5 transition-all duration-200 border-b border-border/50 ${idx % 2 === 0 ? "bg-background" : "bg-muted/20"
-                    } ${row.getIsSelected() ? "bg-primary/10 border-primary/20" : ""
-                    }`}
+                  className={`hover:bg-primary/5 transition-all duration-200 border-b border-border/50 ${
+                    idx % 2 === 0 ? "bg-background" : "bg-muted/20"
+                  } ${
+                    row.getIsSelected() ? "bg-primary/10 border-primary/20" : ""
+                  }`}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell
@@ -496,7 +499,7 @@ export function OrdersTable({ id }) {
                     >
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext()
+                        cell.getContext(),
                       )}
                     </TableCell>
                   ))}

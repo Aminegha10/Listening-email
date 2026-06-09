@@ -109,8 +109,8 @@ export function SaleAreaChart({ timeRange }) {
     timeRange,
     type: "orders",
   });
+    console.log("🚀 ~ SaleAreaChart ~ leadStats:", leadStats)
 
-  console.log(leadStats);
   // Determine chart data based on timeRange
   let chartData = [];
   if (timeRange === "thisWeek") {

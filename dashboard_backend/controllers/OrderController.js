@@ -38,7 +38,7 @@ const AddOrder = async (req, res) => {
     // Fetch lead data
     const { data } = await axios.get(
       `https://smabapi.qalqul.io/api/qalqul-leads/lead/${orderNumber}`,
-      { headers: { Authorization: `${process.env.API_TOKEN}` } }
+      { headers: { Authorization: `${process.env.API_TOKEN}` } },
     );
     // console.log(data);
 
@@ -51,7 +51,7 @@ const AddOrder = async (req, res) => {
       : notes || "";
 
     logger.info(
-      `Creating or updating order #${orderNumber} with ${products.length} product(s).`
+      `Creating or updating order #${orderNumber} with ${products.length} product(s).`,
     );
 
     // Try to create order
@@ -76,7 +76,7 @@ const AddOrder = async (req, res) => {
     } catch (err) {
       if (err.code !== 11000) throw err;
       logger.error(
-        `Duplicate order #${orderNumber} found. Updating existing order...`
+        `Duplicate order #${orderNumber} found. Updating existing order...`,
       );
     }
 
@@ -96,7 +96,7 @@ const AddOrder = async (req, res) => {
 
     const newOrder = await existingOrder.save();
     logger.info(
-      `Updated order #${orderNumber} successfully with ${products[0].warehouse} products.`
+      `Updated order #${orderNumber} successfully with ${products[0].warehouse} products.`,
     );
     return res.send({
       message:
@@ -116,7 +116,7 @@ const AddOrder = async (req, res) => {
 const GetOrderAndSalesStats = async (req, res) => {
   try {
     const { salesAgent, timeRange } = req.query;
-    console.log(salesAgent);
+    console.log("salesAgent:", salesAgent);
     const now = new Date();
     const monthNames = [
       "January",
@@ -132,6 +132,11 @@ const GetOrderAndSalesStats = async (req, res) => {
       "November",
       "December",
     ];
+    const order = await OrderModel.findOne().lean();
+
+    console.log(order.createdAt);
+    console.log(typeof order.createdAt);
+    console.log(order.createdAt instanceof Date);
 
     // =========================
     // Global stats (not filtered)
@@ -416,7 +421,7 @@ const GetOrderAndSalesStats = async (req, res) => {
 
       const allWeeks = Array.from(
         { length: totalWeeks },
-        (_, i) => `week${i + 1}`
+        (_, i) => `week${i + 1}`,
       );
       salesData = allWeeks.map((w) => {
         const found = salesData.find((x) => x.week === w);
@@ -430,12 +435,15 @@ const GetOrderAndSalesStats = async (req, res) => {
       responseKey = "thisMonth";
     } else if (timeRange === "currentYear") {
       const startOfYear = new Date(now.getFullYear(), 0, 1);
+      console.log("🚀 ~ GetOrderAndSalesStats ~ startOfYear:", startOfYear);
       const endOfYear = new Date(now.getFullYear(), 11, 31, 23, 59, 59, 999);
+      console.log("🚀 ~ GetOrderAndSalesStats ~ endOfYear:", endOfYear);
 
       const dateFilter = {
         createdAt: { $gte: startOfYear, $lte: endOfYear },
         ...(salesAgent ? { salesAgent } : {}),
       };
+      console.log("🚀 ~ GetOrderAndSalesStats ~ dateFilter:", dateFilter);
 
       // Sales
       salesData = await OrderModel.aggregate([
@@ -445,6 +453,7 @@ const GetOrderAndSalesStats = async (req, res) => {
         },
         { $sort: { _id: 1 } },
       ]);
+      console.log("🚀 ~ GetOrderAndSalesStats ~ salesData:", salesData);
 
       salesData = monthNames.map((name, index) => {
         const monthData = salesData.find((s) => s._id === index + 1);
@@ -480,6 +489,7 @@ const GetOrderAndSalesStats = async (req, res) => {
       };
 
       // Sales
+      console.log("🚀 ~ GetOrderAndSalesStats ~ salesData:", salesData);
       salesData = await OrderModel.aggregate([
         { $match: dateFilter },
         {
@@ -487,7 +497,7 @@ const GetOrderAndSalesStats = async (req, res) => {
         },
         { $sort: { _id: 1 } },
       ]);
-
+      // setup only structure of the output
       salesData = monthNames.map((name, index) => {
         const monthData = salesData.find((s) => s._id === index + 1);
         return {
@@ -544,13 +554,13 @@ const GetOrderAndSalesStats = async (req, res) => {
       const startOfThisMonth = new Date(
         today.getFullYear(),
         today.getMonth(),
-        1
+        1,
       );
       const endOfLastMonth = new Date(today.getFullYear(), today.getMonth(), 0); // last day of previous month
       const startOfLastMonth = new Date(
         today.getFullYear(),
         today.getMonth() - 1,
-        1
+        1,
       );
 
       previousFilter = {
@@ -565,7 +575,7 @@ const GetOrderAndSalesStats = async (req, res) => {
         23,
         59,
         59,
-        999
+        999,
       );
       const startOfLastYear = new Date(now.getFullYear() - 1, 0, 1);
 
@@ -574,7 +584,6 @@ const GetOrderAndSalesStats = async (req, res) => {
       };
     }
 
-    console.log(previousFilter);
     // Get previous totals
     const previousOrders = await OrderModel.countDocuments(previousFilter);
     const previousSalesResult = await OrderModel.aggregate([
@@ -664,7 +673,7 @@ const GetOrdersTableStats = async (req, res) => {
 
     const Orders = await OrderModel.find(
       query,
-      "orderNumber salesAgent products client createdAt price typedepaiement"
+      "orderNumber salesAgent products client createdAt price typedepaiement",
     ).sort({ createdAt: -1 });
 
     // Format the orders with proper date

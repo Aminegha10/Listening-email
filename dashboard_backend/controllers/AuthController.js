@@ -9,7 +9,7 @@ import { generateEmailFromName } from "../utils/generateEmailFromName.js";
 export const register = async (req, res) => {
   try {
     let { name, email, role, password } = req.body;
-
+    console.log("req.body:", req.body);
     // 🧩 If no email provided → generate one from name
     if (!email && name) {
       email = generateEmailFromName(name);
@@ -59,6 +59,7 @@ export const register = async (req, res) => {
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
+    console.log("🚀 ~ login ~ req.body:", req.body)
 
     // Check if email exists
     const user = await UserModel.findOne({ email });
@@ -80,7 +81,7 @@ export const login = async (req, res) => {
     let accessToken = jwt.sign(
       { id: user._id, mustChangePassword: user.mustChangePassword },
       process.env.JWT_SECRET,
-      { expiresIn: "2d" } // only valid for update-password
+      { expiresIn: "2d" }, // only valid for update-password
     );
     console.log(accessToken);
 
@@ -90,13 +91,13 @@ export const login = async (req, res) => {
       refreshToken = jwt.sign(
         { id: user._id, role: user.role, name: user.name, email: user.email },
         process.env.JWT_REFRESH_SECRET,
-        { expiresIn: "7d" }
+        { expiresIn: "7d" },
       );
 
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
-        // secure: process.env.NODE_ENV === "production",
-        // sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
+        // secure: true,
+        // sameSite:  "none",
         maxAge: 7 * 24 * 60 * 60 * 1000,
         path: "/",
       });
@@ -132,7 +133,7 @@ export const refresh = (req, res) => {
     const accessToken = jwt.sign(
       { id: decoded.id, role: decoded.role }, // optional: include role in token
       process.env.JWT_SECRET,
-      { expiresIn: "15m" }
+      { expiresIn: "15m" },
     );
 
     // 2. Fetch user from DB
@@ -178,7 +179,7 @@ export const updatePassword = async (req, res) => {
         password: hashedPassword,
         mustChangePassword: false,
       },
-      { new: true }
+      { new: true },
     );
 
     if (!user) {
